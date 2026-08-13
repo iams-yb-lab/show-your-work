@@ -1,0 +1,63 @@
+{
+  "profile_id": "deep-onyx-slow",
+  "profile_version": 1,
+  "purpose": "Deep, slow, calm epic narration for the assembly film; an unhurried storyteller, not an announcer.",
+  "identity_source": "Kokoro-82M built-in preset voice am_onyx. No real-person clone, and no conditioning prompt.",
+  "model": "hexgrad/Kokoro-82M",
+  "generation": {
+    "voice": "am_onyx",
+    "speed": 0.78,
+    "lang_code": "a",
+    "base_seed": 20260813
+  },
+  "sample_rate": 24000,
+  "channels": 1,
+  "reference_file": "deep_onyx_slow_reference.wav",
+  "reference_sha256": "bf9e3af4dc044696b8916132a18d03895bd87e90b2b3432764079923e386f32a",
+  "reference_duration_seconds": 11.7,
+  "reference_is_conditioning_input": false,
+  "selection": {
+    "method": "chosen by ear from four speeds of one passage, then confirmed against three alternative engine chains",
+    "median_f0_hz": 87.56,
+    "f0_iqr_hz": 10.0,
+    "word_error_rate": 0.0,
+    "rejected_alternatives": [
+      "speed 0.88 (v7.2's setting), 0.82, 0.74 of the same voice",
+      "Step-Audio-EditX 3B cloning this voice, raw",
+      "the same clone plus MossFormer2_SR_48K",
+      "the same clone plus restoration and the v7.2 condenser EQ"
+    ]
+  },
+  "measured_output_range": {
+    "median_f0_hz": [83.6, 88.3],
+    "cross_line_f0_spread_hz": 4.7,
+    "lead_in_s": [0.26, 0.32],
+    "tail_s": [0.84, 1.01],
+    "word_error_rate": 0.0
+  },
+  "acoustic_policy": {
+    "generate_continuous_sections": true,
+    "preserve_native_endings": true,
+    "silence_threshold_trimming": false,
+    "time_stretch": false,
+    "artificial_reverb": false,
+    "echo_taps": false,
+    "room_tone": false,
+    "denoise": false,
+    "gate": false,
+    "compression": false,
+    "exciter": false,
+    "stereo_processing": false,
+    "optional_speech_restoration": "MossFormer2_SR_48K with per-section fallback gates"
+  },
+  "eq": {
+    "highpass_hz": 45,
+    "note": "High-pass only. The warm-natural five-band curve is profile-specific and was not copied; nothing else is applied to this voice without a measured reason."
+  },
+  "notes": [
+    "Kokoro takes no conditioning prompt, so the stored WAV is an identity reference for auditioning, not an input to generation. Reproduce the voice from voice + speed + seed, not from the file.",
+    "Seeding does not vary this engine much: takes of one line differ only in sampling noise, with identical durations. Cross-line register consistency is therefore inherent rather than selected for.",
+    "Chosen over a 3B cloning model whose output the listener ranked below this engine's raw output.",
+    "Film-specific placements, levels and takes live with the film, in video/showoff/assembly/audio/VOICE-LOG.md."
+  ]
+}

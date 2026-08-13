@@ -1,0 +1,196 @@
+1
+00:00:01,170 --> 00:00:07,770
+A laser only stays injection-locked while its frequency sits inside the master’s locking range.
+
+2
+00:00:07,850 --> 00:00:14,910
+That frequency follows the laser’s temperature. Let the temperature wander, and the lock is gone.
+
+3
+00:00:14,990 --> 00:00:19,260
+So the instrument has one job: hold the temperature still.
+
+4
+00:00:19,860 --> 00:00:22,710
+How still? Zoom in.
+
+5
+00:00:22,940 --> 00:00:27,070
+Past a kelvin. Past fifty millikelvin.
+
+6
+00:00:27,150 --> 00:00:34,890
+One millikelvin, peak to peak, across a continuous one-hour hold — the whole window you see here.
+
+7
+00:00:34,970 --> 00:00:41,850
+Everything in the design serves that number — under four constraints: cheap, easy to manufacture, modular, simple.
+
+8
+00:00:42,970 --> 00:00:46,020
+The instrument is a closed loop.
+
+9
+00:00:46,290 --> 00:00:52,090
+A thermistor senses the laser’s temperature; its resistance falls as it warms.
+
+10
+00:00:52,170 --> 00:00:57,060
+A front end turns that resistance into a voltage ratio.
+
+11
+00:00:57,140 --> 00:01:02,120
+An AD7124-8 converter turns the ratio into a 24-bit number.
+
+12
+00:01:02,200 --> 00:01:10,440
+A Teensy 4.1 compares it with the setpoint and runs the PID locally — never over the network.
+
+13
+00:01:10,520 --> 00:01:17,590
+Its PWM command drives a MAX1968, which pushes current through a thermoelectric cooler, either direction.
+
+14
+00:01:17,670 --> 00:01:20,970
+Heat moves, the thermistor sees it, and the loop closes.
+
+15
+00:01:22,590 --> 00:01:25,730
+Three different things get called stability.
+
+16
+00:01:26,010 --> 00:01:33,400
+Resolution and short-term noise: can it see a tiny change, and how much do readings jump?
+
+17
+00:01:33,480 --> 00:01:39,210
+Drift: the real temperature holds, but the reported number slowly moves.
+
+18
+00:01:39,290 --> 00:01:44,680
+And absolute accuracy: how close the reading is to the truth.
+
+19
+00:01:44,760 --> 00:01:51,940
+Accuracy we can live without — the working point is found on the bench. Drift is the one that matters.
+
+20
+00:01:53,770 --> 00:01:55,790
+Here is why.
+
+21
+00:01:56,050 --> 00:02:05,860
+The controller can only act on the number the electronics give it. It heats or cools until that number matches the setpoint.
+
+22
+00:02:05,940 --> 00:02:13,420
+Now suppose the real temperature has not changed, but the electronics slowly begin to report high.
+
+23
+00:02:13,500 --> 00:02:20,960
+The controller believes it, and cools the laser until the displayed value returns to the setpoint.
+
+24
+00:02:21,040 --> 00:02:26,900
+The reading now looks perfect. The laser is colder than it was.
+
+25
+00:02:26,980 --> 00:02:35,690
+That error happens before the reading reaches the controller, so the loop cannot see it. More gain cannot help.
+
+26
+00:02:35,770 --> 00:02:40,120
+Which is why most of the design effort goes into stopping the reading from wandering.
+
+27
+00:02:42,510 --> 00:02:45,860
+The main tool is ratiometric measurement.
+
+28
+00:02:46,130 --> 00:02:54,790
+The converter does not report volts. It reports the signal as a fraction of a reference — a ruler.
+
+29
+00:02:54,870 --> 00:03:02,330
+Arrange the circuit so a change moves the signal and the ruler equally, and it cancels.
+
+30
+00:03:02,410 --> 00:03:07,820
+Move only one, and it looks exactly like a temperature change.
+
+31
+00:03:07,900 --> 00:03:12,900
+For scale: at 25 °C, one millikelvin is 44 parts per million of the thermistor’s resistance.
+
+32
+00:03:15,150 --> 00:03:21,060
+Rather than argue about the best arrangement, the comparison board carries four of them.
+
+33
+00:03:22,100 --> 00:03:32,420
+Arm one drives the thermistor with the converter’s own current and rules it against a 22 kΩ resistor, so current drift cancels.
+
+34
+00:03:32,500 --> 00:03:40,500
+But that ruler is also a ceiling: once the thermistor passes 22 kΩ — around 8 °C — the reading clips.
+
+35
+00:03:41,190 --> 00:03:54,090
+Arm two is a divider from a precision 2.5 V reference, measured against the whole divider — so the source, its buffer and the track drop all cancel.
+
+36
+00:03:54,170 --> 00:04:01,140
+Arms three and four are one divider with two power sources, chosen by a jumper.
+
+37
+00:04:01,220 --> 00:04:06,740
+Three’s divider supply and its ruler are independent, so nothing cancels.
+
+38
+00:04:06,820 --> 00:04:14,190
+Any drift between them lands straight on the reading — one kelvin of board change eats the entire budget. Three is out.
+
+39
+00:04:16,740 --> 00:04:26,500
+Arm one has no clear edge in drift or in channel count, and its range is bounded — so it steps aside too.
+
+40
+00:04:26,990 --> 00:04:31,700
+That leaves two and four, and they are genuinely tied.
+
+41
+00:04:32,060 --> 00:04:39,980
+Arm two has the lowest costed drift — about 0.21 millikelvin for every kelvin the board moves.
+
+42
+00:04:40,060 --> 00:04:47,180
+But its ruler needs a dedicated reference input pin, so it stops at two channels.
+
+43
+00:04:47,260 --> 00:04:56,520
+Arm four gives up a little drift and needs no reference pins at all — so it scales to eight.
+
+44
+00:04:56,600 --> 00:05:00,380
+Precision against expandability. The board is how we find out which we would rather have.
+
+45
+00:05:03,190 --> 00:05:06,070
+Why build it at all?
+
+46
+00:05:06,370 --> 00:05:15,890
+Commercial laser temperature controllers are expensive — easily over a thousand dollars — and their performance you simply have to trust.
+
+47
+00:05:15,970 --> 00:05:24,260
+A laser’s frequency depends on current and temperature. Control those two, and the whole system gets dramatically simpler.
+
+48
+00:05:24,340 --> 00:05:31,070
+And a temperature controller is versatile equipment — useful far beyond one lab.
+
+49
+00:05:31,150 --> 00:05:37,000
+The design, the calculations and the board are all open. Come build it with us.
+

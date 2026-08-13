@@ -1,0 +1,707 @@
+{
+  "profile": "warm-natural-narrator-v2",
+  "purpose": "Warm, welcoming technical introduction; not an epic/deep announcer read.",
+  "model": "ChatterboxTTS",
+  "chatterbox_package_version": "0.1.7",
+  "torch_version": "2.6.0+cu124",
+  "sample_rate": 24000,
+  "prompt": "C:\\temperature-controller\\video\\natural-voice\\profiles\\warm-natural\\warm_narrator_prompt.wav",
+  "prompt_sha256": "516e8938994d0c0fe22663939b7b7c1497d300674f2d3a45af7ca7a1b41cbb5b",
+  "captions_sha256": "61199ebb6cd48729828b05c4e77ae86fe334e65f6fcea235061e86f10c76b2bc",
+  "voiceover_script_sha256": "e43cc4376e4030f1df486628c7d3d619a9cc8622ae58f9da686be68d95e73d09",
+  "selected_group_takes": {
+    "1": 1,
+    "2": 3,
+    "3": 2,
+    "4": 1,
+    "5": 3,
+    "6": 4,
+    "7": 3,
+    "8": 3,
+    "9": 2,
+    "10": 2,
+    "11": 1,
+    "12": 1,
+    "13": 4,
+    "14": 2,
+    "15": 4,
+    "16": 4,
+    "17": 1,
+    "18": 4,
+    "19": 2
+  },
+  "group_params": {
+    "1": {
+      "exaggeration": 0.36,
+      "cfg_weight": 0.42,
+      "temperature": 0.8
+    },
+    "2": {
+      "exaggeration": 0.4,
+      "cfg_weight": 0.38,
+      "temperature": 0.78
+    },
+    "3": {
+      "exaggeration": 0.32,
+      "cfg_weight": 0.46,
+      "temperature": 0.74
+    },
+    "4": {
+      "exaggeration": 0.34,
+      "cfg_weight": 0.38,
+      "temperature": 0.72
+    }
+  },
+  "selected_line_retakes": {
+    "5": 3,
+    "31": 4,
+    "34": 5,
+    "41": 4
+  },
+  "retake_params": {
+    "1": {
+      "exaggeration": 0.36,
+      "cfg_weight": 0.42,
+      "temperature": 0.78
+    },
+    "2": {
+      "exaggeration": 0.32,
+      "cfg_weight": 0.46,
+      "temperature": 0.74
+    },
+    "3": {
+      "exaggeration": 0.4,
+      "cfg_weight": 0.38,
+      "temperature": 0.72
+    },
+    "4": {
+      "exaggeration": 0.34,
+      "cfg_weight": 0.35,
+      "temperature": 0.7
+    }
+  },
+  "generation_report": [
+    {
+      "kind": "context-group",
+      "group": 1,
+      "line_ids": [
+        1,
+        2,
+        3
+      ],
+      "take": 1,
+      "seed": 2600154,
+      "params": {
+        "exaggeration": 0.36,
+        "cfg_weight": 0.42,
+        "temperature": 0.8
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group01_take1_raw.wav",
+      "duration": 12.56,
+      "sha256": "bfab36dab5b0d5360b3d58e286a1d78cf9c36173bc784dd3c334bc35ee6b6d78",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group01_take1.wav",
+        "legacy_duration": 12.173333333333334,
+        "replayed_trim_duration": 12.173333333333334,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.051722887903452e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 2,
+      "line_ids": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "take": 3,
+      "seed": 2600331,
+      "params": {
+        "exaggeration": 0.32,
+        "cfg_weight": 0.46,
+        "temperature": 0.74
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group02_take3_raw.wav",
+      "duration": 15.96,
+      "sha256": "5b31efc15ae1a280200a0b793ceb0813e96af32e6d926490f0ad2ecb44b868aa",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group02_take3.wav",
+        "legacy_duration": 15.586666666666666,
+        "replayed_trim_duration": 15.586666666666666,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 0.05810093879699707,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 3,
+      "line_ids": [
+        8,
+        9,
+        10
+      ],
+      "take": 2,
+      "seed": 2600439,
+      "params": {
+        "exaggeration": 0.4,
+        "cfg_weight": 0.38,
+        "temperature": 0.78
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group03_take2_raw.wav",
+      "duration": 10.4,
+      "sha256": "a37948d413645f8d92eb43df0e0bfc159c7215b8986b84b600ddc7f93fed41fc",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group03_take2.wav",
+        "legacy_duration": 9.058666666666667,
+        "replayed_trim_duration": 10.189333333333334,
+        "length_delta_samples": 27136,
+        "max_abs_sample_delta": 1.2437613010406494,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 4,
+      "line_ids": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "take": 1,
+      "seed": 2600547,
+      "params": {
+        "exaggeration": 0.36,
+        "cfg_weight": 0.42,
+        "temperature": 0.8
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group04_take1_raw.wav",
+      "duration": 19.72,
+      "sha256": "fa54707972b43b73b2d6d7b99b577314011c2e38f491efca287a696b454d0aba",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group04_take1.wav",
+        "legacy_duration": 19.874666666666666,
+        "replayed_trim_duration": 19.512,
+        "length_delta_samples": -8704,
+        "max_abs_sample_delta": 1.1242598295211792,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 5,
+      "line_ids": [
+        15,
+        16
+      ],
+      "take": 3,
+      "seed": 2600724,
+      "params": {
+        "exaggeration": 0.32,
+        "cfg_weight": 0.46,
+        "temperature": 0.74
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group05_take3_raw.wav",
+      "duration": 8.44,
+      "sha256": "33f2d601503ada4004f529bb54b0985172323679a8421967e5fca37847be393a",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group05_take3.wav",
+        "legacy_duration": 8.098666666666666,
+        "replayed_trim_duration": 8.098666666666666,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0516646802425385e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 6,
+      "line_ids": [
+        17,
+        18,
+        19
+      ],
+      "take": 4,
+      "seed": 2600878,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.38,
+        "temperature": 0.72
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group06_take4_raw.wav",
+      "duration": 12.52,
+      "sha256": "917cfefe6f1a248de777c9c05b85bde9192f6de16ead7b81dd55c91da1c6f69e",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group06_take4.wav",
+        "legacy_duration": 12.216,
+        "replayed_trim_duration": 12.216,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 0.02251124382019043,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 7,
+      "line_ids": [
+        20,
+        21
+      ],
+      "take": 3,
+      "seed": 2600986,
+      "params": {
+        "exaggeration": 0.32,
+        "cfg_weight": 0.46,
+        "temperature": 0.74
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group07_take3_raw.wav",
+      "duration": 7.68,
+      "sha256": "5d7b3f33262f79f19da620d411212768e94c403419b22a84ae4818b1d1d6198d",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group07_take3.wav",
+        "legacy_duration": 7.330666666666667,
+        "replayed_trim_duration": 7.330666666666667,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0516181141138077e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 8,
+      "line_ids": [
+        22,
+        23
+      ],
+      "take": 3,
+      "seed": 2601117,
+      "params": {
+        "exaggeration": 0.32,
+        "cfg_weight": 0.46,
+        "temperature": 0.74
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group08_take3_raw.wav",
+      "duration": 10.32,
+      "sha256": "dd335906ef335c6c6d426bda168e8976e1fa6464d649a43e0093d64732bad5ca",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group08_take3.wav",
+        "legacy_duration": 10.082666666666666,
+        "replayed_trim_duration": 10.082666666666666,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0516646802425385e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 9,
+      "line_ids": [
+        24,
+        25,
+        26
+      ],
+      "take": 2,
+      "seed": 2601225,
+      "params": {
+        "exaggeration": 0.4,
+        "cfg_weight": 0.38,
+        "temperature": 0.78
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group09_take2_raw.wav",
+      "duration": 13.12,
+      "sha256": "ecf1cb6091676b4113879ac18c8abb82cd07fa7f256fcabf2f9b1c83b79218a2",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group09_take2.wav",
+        "legacy_duration": 12.984,
+        "replayed_trim_duration": 12.984,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 0.040372371673583984,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 10,
+      "line_ids": [
+        27,
+        28
+      ],
+      "take": 2,
+      "seed": 2601356,
+      "params": {
+        "exaggeration": 0.4,
+        "cfg_weight": 0.38,
+        "temperature": 0.78
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group10_take2_raw.wav",
+      "duration": 7.96,
+      "sha256": "de21bf100ba59101a86f75ec5b2640dd4867fccf3899173a78d3aff3635ac9c0",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group10_take2.wav",
+        "legacy_duration": 7.522666666666667,
+        "replayed_trim_duration": 7.629333333333333,
+        "length_delta_samples": 2560,
+        "max_abs_sample_delta": 1.1306869983673096,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 11,
+      "line_ids": [
+        29,
+        30,
+        31
+      ],
+      "take": 1,
+      "seed": 2601464,
+      "params": {
+        "exaggeration": 0.36,
+        "cfg_weight": 0.42,
+        "temperature": 0.8
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group11_take1_raw.wav",
+      "duration": 15.44,
+      "sha256": "5fd777e543d46e73dd3fbd7ad98c5fca546adedaa38938ce6a3b90fbfd3c3f78",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group11_take1.wav",
+        "legacy_duration": 14.712,
+        "replayed_trim_duration": 15.053333333333333,
+        "length_delta_samples": 8192,
+        "max_abs_sample_delta": 1.2788116931915283,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 12,
+      "line_ids": [
+        32,
+        33
+      ],
+      "take": 1,
+      "seed": 2601595,
+      "params": {
+        "exaggeration": 0.36,
+        "cfg_weight": 0.42,
+        "temperature": 0.8
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group12_take1_raw.wav",
+      "duration": 12.48,
+      "sha256": "0e89bb11505a64cbc80ed8003d2f0c5a62a6095826558d0608ef1908ac9215e8",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group12_take1.wav",
+        "legacy_duration": 11.042666666666667,
+        "replayed_trim_duration": 12.173333333333334,
+        "length_delta_samples": 27136,
+        "max_abs_sample_delta": 1.436812162399292,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 13,
+      "line_ids": [
+        34,
+        35
+      ],
+      "take": 4,
+      "seed": 2601795,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.38,
+        "temperature": 0.72
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group13_take4_raw.wav",
+      "duration": 16.4,
+      "sha256": "34dd914304974ae61759d2a8b78beb7d7589d4ca10a605b8a2cf55c720a379a9",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group13_take4.wav",
+        "legacy_duration": 15.992,
+        "replayed_trim_duration": 15.992,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0517112463712692e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 14,
+      "line_ids": [
+        36,
+        37,
+        38
+      ],
+      "take": 2,
+      "seed": 2601880,
+      "params": {
+        "exaggeration": 0.4,
+        "cfg_weight": 0.38,
+        "temperature": 0.78
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group14_take2_raw.wav",
+      "duration": 14.08,
+      "sha256": "d932d28da1f85b20719c33ae4aab4dc50f99148c3133e784879bddbc44054af7",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group14_take2.wav",
+        "legacy_duration": 13.901333333333334,
+        "replayed_trim_duration": 13.901333333333334,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0517112463712692e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 15,
+      "line_ids": [
+        39,
+        40
+      ],
+      "take": 4,
+      "seed": 2602057,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.38,
+        "temperature": 0.72
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group15_take4_raw.wav",
+      "duration": 8.52,
+      "sha256": "52fb5bd46cf09a2d20e9e04024b013fb6846ecf32b2f7b8cdf246117535d8973",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group15_take4.wav",
+        "legacy_duration": 8.269333333333334,
+        "replayed_trim_duration": 8.269333333333334,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0516646802425385e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 16,
+      "line_ids": [
+        41,
+        42
+      ],
+      "take": 4,
+      "seed": 2602188,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.38,
+        "temperature": 0.72
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group16_take4_raw.wav",
+      "duration": 10.44,
+      "sha256": "ce9de07274c6345abbc764680fc94d84c28e89577ad582da5400bb64ffc6a0f2",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group16_take4.wav",
+        "legacy_duration": 10.210666666666667,
+        "replayed_trim_duration": 10.210666666666667,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0517025152221322e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 17,
+      "line_ids": [
+        43,
+        44
+      ],
+      "take": 1,
+      "seed": 2602250,
+      "params": {
+        "exaggeration": 0.36,
+        "cfg_weight": 0.42,
+        "temperature": 0.8
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group17_take1_raw.wav",
+      "duration": 9.48,
+      "sha256": "50d0eaa6d8e85644bbda7d9d4122ef15ae473a8d66ad6c300b66e2319fa4b1ab",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group17_take1.wav",
+        "legacy_duration": 9.122666666666667,
+        "replayed_trim_duration": 9.122666666666667,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0517112463712692e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 18,
+      "line_ids": [
+        45,
+        46
+      ],
+      "take": 4,
+      "seed": 2602450,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.38,
+        "temperature": 0.72
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group18_take4_raw.wav",
+      "duration": 8.2,
+      "sha256": "3d143e79be377eb0f0df43b3607558aa0b5568ea0e735a7e9a68d4d4131fb16d",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group18_take4.wav",
+        "legacy_duration": 7.970666666666666,
+        "replayed_trim_duration": 7.970666666666666,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0516646802425385e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "context-group",
+      "group": 19,
+      "line_ids": [
+        47,
+        48,
+        49
+      ],
+      "take": 2,
+      "seed": 2602535,
+      "params": {
+        "exaggeration": 0.4,
+        "cfg_weight": 0.38,
+        "temperature": 0.78
+      },
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\group19_take2_raw.wav",
+      "duration": 16.68,
+      "sha256": "bd16eec474f518e74c7ab8674a96929a02ddd1192bf445795b39feef086f6e46",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group19_take2.wav",
+        "legacy_duration": 16.376,
+        "replayed_trim_duration": 16.376,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0517112463712692e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "line-retake",
+      "line": 5,
+      "take": 3,
+      "seed": 4100848,
+      "params": {
+        "exaggeration": 0.4,
+        "cfg_weight": 0.38,
+        "temperature": 0.72
+      },
+      "text": "Past a kelvin. Past fifty milli-kelvin.",
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\line05_retake3_raw.wav",
+      "duration": 2.76,
+      "sha256": "63aedb167464b3ca5f92a7bf0bf3d3aa335f811e3e29057378470981ea856380",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\line05_retake3.wav",
+        "legacy_duration": 2.7226666666666666,
+        "replayed_trim_duration": 2.7226666666666666,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 6.486475467681885e-05,
+        "same_performance": false
+      }
+    },
+    {
+      "kind": "line-retake",
+      "line": 31,
+      "take": 4,
+      "seed": 4104805,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.35,
+        "temperature": 0.7
+      },
+      "text": "For scale: at twenty-five degrees C, one milli-kelvin is forty-four parts per million of the thermister's resistance.",
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\line31_retake4_raw.wav",
+      "duration": 6.68,
+      "sha256": "795d7d7784fcebf12bc1fd0f367b39c18523cea9f6a53eb0d1fa131bef9202f1",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\line31_retake4.wav",
+        "legacy_duration": 6.349333333333333,
+        "replayed_trim_duration": 6.349333333333333,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.051571547985077e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "line-retake",
+      "line": 34,
+      "take": 5,
+      "seed": 4105289,
+      "params": {
+        "exaggeration": 0.36,
+        "cfg_weight": 0.42,
+        "temperature": 0.78
+      },
+      "text": "But that ruler is also a ceiling. Once the thermister passes twenty-two K ohms, around eight degrees C, the reading clips.",
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\line34_retake5_raw.wav",
+      "duration": 7.44,
+      "sha256": "4879e645671f67ffd160495e63ce535e76bda72ca59cad2effaba8670a9d38e0",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\line34_retake5.wav",
+        "legacy_duration": 7.2026666666666666,
+        "replayed_trim_duration": 7.2026666666666666,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 3.0516646802425385e-05,
+        "same_performance": true
+      }
+    },
+    {
+      "kind": "line-retake",
+      "line": 41,
+      "take": 4,
+      "seed": 4106315,
+      "params": {
+        "exaggeration": 0.34,
+        "cfg_weight": 0.35,
+        "temperature": 0.7
+      },
+      "text": "Arm two has the lowest costed drift, about zero point two one milli-kelvin for every kelvin the board moves.",
+      "path": "C:\\temperature-controller\\video\\out\\education\\warm-natural-v2\\voice-raw-selected\\line41_retake4_raw.wav",
+      "duration": 5.84,
+      "sha256": "c8baaabd2c5fb2e0ef52e5f59f8ad3bcbc06d135731d2522a330e9d150ff7fe2",
+      "legacy_comparison": {
+        "available": true,
+        "legacy_path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\line41_retake4.wav",
+        "legacy_duration": 5.56,
+        "replayed_trim_duration": 5.56,
+        "length_delta_samples": 0,
+        "max_abs_sample_delta": 0.0043021440505981445,
+        "same_performance": false
+      }
+    }
+  ],
+  "ending_policy": "Keep the untrimmed model output; alignment adds protected post-roll.",
+  "script_changed": false
+}

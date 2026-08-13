@@ -1,0 +1,192 @@
+[
+  {
+    "take": 1,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group01_take1.wav",
+    "duration": 12.173333333333334,
+    "f0": 112.89644048061314,
+    "f0_iqr": 40.718073722872475,
+    "wer": 0.0,
+    "score": 0.2103559519386863,
+    "hyp": " A laser only stays injection locked while its frequency sits inside the master's locking range. That frequency follows the laser's temperature. Let the temperature wander and the lock is gone, so the instrument has one job, hold the temperature still."
+  },
+  {
+    "take": 3,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group02_take3.wav",
+    "duration": 15.586666666666666,
+    "f0": 105.33610359548358,
+    "f0_iqr": 25.71775345287159,
+    "wer": 0.046511627906976744,
+    "score": 3.2919710358004792,
+    "hyp": " How still? Zoom in. Pasta Kelvin, past 50 milli-kelvin. One milli-kelvin, peak to peak across a continuous one-hour hold. The whole window you see here. Everything in the design serves that number under four constraints. Cheap, easy to manufacture, modular, simple."
+  },
+  {
+    "take": 2,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group03_take2.wav",
+    "duration": 9.058666666666667,
+    "f0": 116.87772485612456,
+    "f0_iqr": 48.95069893718893,
+    "wer": 0.03571428571428571,
+    "score": 2.0031961131138956,
+    "hyp": " The instrument is a closed loop. A thermostore senses the laser's temperature. Its resistance falls as it warms. A front end turns that resistance into a voltage ratio."
+  },
+  {
+    "take": 1,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group04_take1.wav",
+    "duration": 19.874666666666666,
+    "f0": 113.55044290708773,
+    "f0_iqr": 36.96584234744252,
+    "wer": 0.04285714285714286,
+    "score": 2.28781285214837,
+    "hyp": " An AD7124-8 converter turns the ratio into a 24-bit number. A teensy 4.1 compares it with the set point and runs the PID locally, never over the network. Its PWM command drives a MAX 1968, which pushes current through a thermoelector cooler either direction. Heat moves, the thermostore sees it, and the loop closes."
+  },
+  {
+    "take": 3,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group05_take3.wav",
+    "duration": 8.098666666666666,
+    "f0": 113.55044290708773,
+    "f0_iqr": 40.70976212970862,
+    "wer": 0.0,
+    "score": 0.1449557092912272,
+    "hyp": " Three different things get called stability. Resolution and short-term noise Can it see a tiny change? And how much do readings jump?"
+  },
+  {
+    "take": 4,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group06_take4.wav",
+    "duration": 12.216,
+    "f0": 114.53903471539032,
+    "f0_iqr": 52.37411341978569,
+    "wer": 0.0,
+    "score": 0.18278757282927122,
+    "hyp": " Drift, the real temperature holds, but the reported number slowly moves. And absolute accuracy, how close the reading is to the truth. Accuracy we can live without, the working point is found on the bench. Drift is the one that matters."
+  },
+  {
+    "take": 3,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group07_take3.wav",
+    "duration": 7.330666666666667,
+    "f0": 113.55044290708773,
+    "f0_iqr": 38.19128799677759,
+    "wer": 0.0,
+    "score": 0.1449557092912272,
+    "hyp": " Here is why. The controller can only act on the number the electronics give it. It heats or cools until that number matches the set point."
+  },
+  {
+    "take": 3,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group08_take3.wav",
+    "duration": 10.082666666666666,
+    "f0": 116.54114177595426,
+    "f0_iqr": 38.44788414793118,
+    "wer": 0.0,
+    "score": 0.15411417759542587,
+    "hyp": " Now suppose the real temperature has not changed, but the electronics slowly begin to report high. The controller believes it and cools the laser until the displayed value returns to the set point."
+  },
+  {
+    "take": 2,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group09_take2.wav",
+    "duration": 12.984,
+    "f0": 114.20823393107715,
+    "f0_iqr": 28.00338039794039,
+    "wer": 0.0,
+    "score": 0.07917660689228541,
+    "hyp": " The reading now looks perfect. The laser is colder than it was. That error happens before the reading reaches the controller, so the loop cannot see it. More gain cannot help. Which is why most of the design effort goes into stopping the reading from wandering."
+  },
+  {
+    "take": 2,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group10_take2.wav",
+    "duration": 7.522666666666667,
+    "f0": 114.20823393107715,
+    "f0_iqr": 33.86377219856722,
+    "wer": 0.0,
+    "score": 0.07917660689228541,
+    "hyp": " The main tool is ratio metric measurement. The converter does not report volts. It reports the signal as a fraction of a reference, a ruler."
+  },
+  {
+    "take": 1,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group11_take1.wav",
+    "duration": 14.712,
+    "f0": 118.9207115002721,
+    "f0_iqr": 31.91986107834886,
+    "wer": 0.043478260869565216,
+    "score": 2.5659841935054715,
+    "hyp": " Arrange the circuit so a change moves the signal and the ruler equally, and it cancels. Move only one, and it looks exactly like a temperature change. For scale, at 25 degrees C, 1 mA is 44 parts per million of the thermostores resistance."
+  },
+  {
+    "take": 1,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group12_take1.wav",
+    "duration": 11.042666666666667,
+    "f0": 114.20823393107715,
+    "f0_iqr": 28.751375180986656,
+    "wer": 0.10526315789473684,
+    "score": 5.342334501629127,
+    "hyp": " Rather than argue about the best arrangement, the comparison board carries four of them. Arm 1 drives the thermostore with the converter's own current and rules it against a 22K ohms resistor, so current drift cancels."
+  },
+  {
+    "take": 4,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group13_take4.wav",
+    "duration": 15.992,
+    "f0": 110.31788221637464,
+    "f0_iqr": 32.15711368697248,
+    "wer": 0.0784313725490196,
+    "score": 4.389780405813516,
+    "hyp": " But that ruler is also a ceiling once the thermostur passes 22K ohms, around 8 degrees C, the reading clips. Arm 2 is a divider from a precision 2.5 volts reference, measured against the whole divider, so the source, its buffer and the track drop all cancel."
+  },
+  {
+    "take": 2,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group14_take2.wav",
+    "duration": 13.901333333333334,
+    "f0": 112.89644048061314,
+    "f0_iqr": 45.70540127221581,
+    "wer": 0.0,
+    "score": 0.2103559519386863,
+    "hyp": " Arms 3 and 4 are 1 divider with 2 power sources chosen by a jumper. 3's divider supply and its ruler are independent, so nothing cancels. Any drift between them lands straight on the reading. 1 Kelvin of board change eats the entire budget. 3 is out."
+  },
+  {
+    "take": 4,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group15_take4.wav",
+    "duration": 8.269333333333334,
+    "f0": 112.2462048309373,
+    "f0_iqr": 22.436423375600526,
+    "wer": 0.0,
+    "score": 0.27537951690626983,
+    "hyp": " Arm 1 has no clear edge in drift or in channel count, and its range is bounded, so it steps aside too. That leaves 2 and 4, and they are genuinely tied."
+  },
+  {
+    "take": 4,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group16_take4.wav",
+    "duration": 10.210666666666667,
+    "f0": 104.72941228206267,
+    "f0_iqr": 20.995372452737158,
+    "wer": 0.029411764705882353,
+    "score": 2.497647007087851,
+    "hyp": " Arm II has the lowest costed drift, about 0.21 mcl for every kelvin the board moves. But its ruler needs a dedicated reference input pin, so it stops at two channels."
+  },
+  {
+    "take": 1,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group17_take1.wav",
+    "duration": 9.122666666666667,
+    "f0": 117.89528461553785,
+    "f0_iqr": 45.78913461251207,
+    "wer": 0.029411764705882353,
+    "score": 1.760116696847902,
+    "hyp": " Arm 4 gives up a little drift and needs no reference pins at all, so it scales to 8. Precision against expandability. The board is how we find out which we would rather have."
+  },
+  {
+    "take": 4,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group18_take4.wav",
+    "duration": 7.970666666666666,
+    "f0": 111.27833073490342,
+    "f0_iqr": 36.96584234744252,
+    "wer": 0.0,
+    "score": 0.372166926509658,
+    "hyp": " Why build it at all? Commercial laser temperature controllers are expensive, easily over a thousand dollars, and their performance you simply have to trust."
+  },
+  {
+    "take": 2,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\chatterbox-intro-context-warm\\group19_take2.wav",
+    "duration": 16.376,
+    "f0": 117.55479062836088,
+    "f0_iqr": 38.11438656624749,
+    "wer": 0.0,
+    "score": 0.2554790628360877,
+    "hyp": " A laser's frequency depends on current and temperature. Control those two, and the whole system gets dramatically simpler. And a temperature controller is versatile equipment, useful far beyond one lab. The design, the calculations, and the board are all open. Come build it with us."
+  }
+]

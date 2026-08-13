@@ -1,0 +1,11 @@
+{
+  "source_video": "1d23cb43f1abb3858b22ef34fd5a927a1443127c482c24879d0fbf0ade52728c",
+  "captions": "61199ebb6cd48729828b05c4e77ae86fe334e65f6fcea235061e86f10c76b2bc",
+  "voiceover_script": "e43cc4376e4030f1df486628c7d3d619a9cc8622ae58f9da686be68d95e73d09",
+  "prompt": "516e8938994d0c0fe22663939b7b7c1497d300674f2d3a45af7ca7a1b41cbb5b",
+  "speech_restoration_checkpoint": "549035d29a03928a854815b9c1b21c02d825845aa2e5f093af45694a236c1f19",
+  "prior_deliverables": {
+    "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\Temperature Controller Intro - Warm Natural Narration and Music.wav": "f45b90a6bc89d847c380894535982b0502f0887b7e33ecb3e4e86a942a1a28b4",
+    "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\Temperature Controller Intro 1080p - Warm Natural Narration.mp4": "8e2eeb01addd8cd233026ce3cdb2eba7e7e00ff7958ad11ac1c19f9a3ae9a635"
+  }
+}

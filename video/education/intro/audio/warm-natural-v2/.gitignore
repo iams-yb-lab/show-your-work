@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# Heavy takes, stems, mixes and deliverables live under video/out/education/warm-natural-v2/,
+# which the repository-wide video/.gitignore already excludes.

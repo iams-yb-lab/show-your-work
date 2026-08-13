@@ -1,0 +1,65 @@
+{
+  "text": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
+  "chosen": {
+    "take": 2,
+    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take2.wav",
+    "duration": 7.441333333333334,
+    "wer": 0.0,
+    "f0": 107.52715702943429,
+    "f0_iqr": 24.34440710453724,
+    "exaggeration": 0.36,
+    "cfg_weight": 0.42,
+    "hyp": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
+    "score": 1.8293539710741933
+  },
+  "takes": [
+    {
+      "take": 1,
+      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take1.wav",
+      "duration": 8.06,
+      "wer": 0.0,
+      "f0": 122.804867039613,
+      "f0_iqr": 53.661886009085066,
+      "exaggeration": 0.32,
+      "cfg_weight": 0.42,
+      "hyp": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
+      "score": 2.142929105292315
+    },
+    {
+      "take": 2,
+      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take2.wav",
+      "duration": 7.441333333333334,
+      "wer": 0.0,
+      "f0": 107.52715702943429,
+      "f0_iqr": 24.34440710453724,
+      "exaggeration": 0.36,
+      "cfg_weight": 0.42,
+      "hyp": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
+      "score": 1.8293539710741933
+    },
+    {
+      "take": 3,
+      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take3.wav",
+      "duration": 7.633333333333334,
+      "wer": 0.0,
+      "f0": 121.3943328362307,
+      "f0_iqr": 51.89173300984703,
+      "exaggeration": 0.38,
+      "cfg_weight": 0.48,
+      "hyp": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
+      "score": 1.9535649257314347
+    },
+    {
+      "take": 4,
+      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take4.wav",
+      "duration": 7.292,
+      "wer": 0.0,
+      "f0": 120.0,
+      "f0_iqr": 88.99600480041012,
+      "exaggeration": 0.42,
+      "cfg_weight": 0.38,
+      "hyp": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
+      "score": 3.2133501800153796
+    }
+  ]
+}

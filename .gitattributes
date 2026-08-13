@@ -1,0 +1,17 @@
+# This repository checks its own integrity by sha256 (tools/skill-hashes.txt), so the working tree
+# has to agree byte for byte on every machine. Git's line-ending normalisation would rewrite every
+# LF on a Windows checkout, change the bytes, and make check_links.py report that the read-only
+# skills had been edited — on a clone where nobody touched them.
+#
+# So: LF in the working tree everywhere, and no conversion at all for the files whose bytes are the
+# guarantee.
+
+* text=auto eol=lf
+
+# The skills are copied byte-identical and verified by hash. Never normalise, never diff.
+.claude/skills/** -text -diff
+
+# Binary assets: the voice prompt WAVs are immutable conditioning identities.
+*.wav binary
+*.png binary
+*.mp4 binary

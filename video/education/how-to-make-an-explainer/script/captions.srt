@@ -1,0 +1,219 @@
+1
+00:00:00,900 --> 00:00:05,160
+You finished the thing. Now other people have to understand it, and none of them were there.
+
+2
+00:00:05,780 --> 00:00:08,420
+You want a few clean minutes that explain it, not a course.
+
+3
+00:00:09,480 --> 00:00:11,580
+And you don't want to become a video producer to get one.
+
+4
+00:00:11,920 --> 00:00:15,880
+You want to hand the work to something that can do it quickly, and still end up with something you'd put your name on.
+
+5
+00:00:16,480 --> 00:00:22,420
+That's a reasonable thing to want. It's also, now, a reasonable thing to get — as long as you know which parts are yours to decide.
+
+6
+00:00:24,300 --> 00:00:29,940
+Open the Claude app, or VS Code with Claude in it. Ask it to install the repository linked below this video.
+
+7
+00:00:30,300 --> 00:00:34,720
+That's the setup. Nothing to configure, no editing software to learn, nothing else to download.
+
+8
+00:00:35,820 --> 00:00:38,720
+From there you talk in plain language, and Claude runs four stages.
+
+9
+00:00:39,360 --> 00:00:42,100
+It stops at every one to show you what it made and ask whether it's right.
+
+10
+00:00:44,080 --> 00:00:46,900
+Before any of that, three things your video has to do.
+
+11
+00:00:47,720 --> 00:00:53,580
+One. The people you aimed it at understand it — the ones you named before writing a word. Aim at everyone, land on nobody.
+
+12
+00:00:54,660 --> 00:00:59,800
+Two. Everything in it is true, and you can say why. If something isn't built or measured yet, the video says so.
+
+13
+00:01:00,120 --> 00:01:03,220
+A confident voice over a wrong number does more damage than saying nothing.
+
+14
+00:01:04,880 --> 00:01:09,280
+Three. Nothing sounds wrong: no clipped word, no hurried sentence, no caption running behind.
+
+15
+00:01:09,960 --> 00:01:12,820
+Your viewer won't know why they stopped trusting you. Only that they did.
+
+16
+00:01:15,120 --> 00:01:18,280
+Four stages, one order, each finished before the next begins.
+
+17
+00:01:18,820 --> 00:01:21,880
+The document: everything true about your subject, written down and checked.
+
+18
+00:01:21,880 --> 00:01:25,500
+The script: the words, in order, each with the seconds it needs.
+
+19
+00:01:26,220 --> 00:01:29,780
+The sound: one recording, frozen — from here on, it owns the clock.
+
+20
+00:01:30,180 --> 00:01:32,820
+The picture: frames cut to fill lengths already decided.
+
+21
+00:01:33,740 --> 00:01:37,580
+Claude does all four. The drafting, the counting, the recording, the checking.
+
+22
+00:01:38,060 --> 00:01:43,540
+You do the three things it can't: say who this is for, say what's actually true about your work, and say yes or no at each stage.
+
+23
+00:01:44,060 --> 00:01:47,800
+That last one isn't a formality. A model can't know a number has gone stale.
+
+24
+00:01:49,820 --> 00:01:54,140
+Stage one, the document. Claude asks what the thing is, and writes it down with you.
+
+25
+00:01:54,520 --> 00:01:59,120
+It presses on which of your numbers are measured and which are only planned, and won't let the same fact in twice.
+
+26
+00:01:59,640 --> 00:02:03,100
+Your part: tell it the truth about your own work, and say when the document is right.
+
+27
+00:02:03,400 --> 00:02:07,220
+Because nothing later can repair a wrong number. Animation only enlarges it.
+
+28
+00:02:07,980 --> 00:02:15,540
+Stage two, the script. Claude turns the document into the words, in order, each line given the seconds it needs so nothing has to be hurried.
+
+29
+00:02:16,020 --> 00:02:17,940
+It refuses any claim the document doesn't make.
+
+30
+00:02:18,540 --> 00:02:23,900
+Your part: read it once. It's the last cheap moment to change a word — after this, a change costs a re-recording.
+
+31
+00:02:26,420 --> 00:02:29,360
+Stage three. Claude records it, and freezes one file.
+
+32
+00:02:29,760 --> 00:02:33,360
+That happens before a single frame exists — and it's the one idea here worth keeping.
+
+33
+00:02:33,760 --> 00:02:38,340
+A finished picture has a fixed length. Change what's on screen halfway through and you render it again.
+
+34
+00:02:38,780 --> 00:02:44,900
+Speech has no such give. A sentence takes as long as it takes, and read faster, your listener hears the hurry instead of the sentence.
+
+35
+00:02:45,520 --> 00:02:48,800
+So whichever one you finish first becomes the box the other has to fit.
+
+36
+00:02:49,540 --> 00:02:55,020
+Finish the picture first and the sentence is what gets damaged: cut short, hurried, or spliced — and all three are audible.
+
+37
+00:02:55,460 --> 00:03:00,720
+Finish the sound first and the picture absorbs it instead. A diagram resting a moment longer is invisible.
+
+38
+00:03:01,400 --> 00:03:03,480
+So the thing that can't be squeezed sets the clock.
+
+39
+00:03:04,360 --> 00:03:08,820
+From that one file, the captions come off word by word — and so does every length the picture gets cut to.
+
+40
+00:03:09,500 --> 00:03:15,200
+Claude also checks the recording actually said the script. On one film, five lines were rewritten because a word had gone missing.
+
+41
+00:03:16,360 --> 00:03:22,340
+Your part: listen. Timing and pronunciation can be checked automatically. Whether it sounds like a person cannot.
+
+42
+00:03:22,880 --> 00:03:28,100
+Two complete soundtracks were thrown out here after passing every check there was. That's why the file comes to you.
+
+43
+00:03:29,620 --> 00:03:34,840
+Stage four, the picture. Every length is already decided, so it has one job: fill the time it's given.
+
+44
+00:03:35,140 --> 00:03:38,420
+And from where you sit, it's one step. Claude hands you a single prompt.
+
+45
+00:03:38,920 --> 00:03:44,380
+It already carries the scene list, what each scene shows, what the video should look like, and where every file is sitting on your disk.
+
+46
+00:03:45,100 --> 00:03:47,000
+You paste it into Claude Design, and wait.
+
+47
+00:03:47,700 --> 00:03:53,400
+What comes back is a finished video with the sound already in it. Not a silent picture you then have to combine with something.
+
+48
+00:03:55,820 --> 00:04:00,060
+Document, script, sound, picture. Do it backwards and each step has its own price.
+
+49
+00:04:00,760 --> 00:04:04,680
+Picture first is the normal way, and the expensive one: the sentence is what gets damaged.
+
+50
+00:04:05,400 --> 00:04:09,940
+Document last, and the video becomes where your thinking happens — errors at full volume, in a confident voice.
+
+51
+00:04:10,480 --> 00:04:13,660
+Skip the script, and a problem you'd have fixed with a keystroke costs a whole re-record.
+
+52
+00:04:14,820 --> 00:04:17,600
+Sound last, and nothing sets the clock, so every length is a guess.
+
+53
+00:04:18,400 --> 00:04:21,780
+All four stages come out of one repository. The link is below this video.
+
+54
+00:04:22,140 --> 00:04:26,300
+Built and verified with Claude. Other models haven't been tested — that's unknown, not broken.
+
+55
+00:04:26,920 --> 00:04:28,320
+Now go and explain the thing you made.

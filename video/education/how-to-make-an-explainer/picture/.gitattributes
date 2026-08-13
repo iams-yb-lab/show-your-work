@@ -1,0 +1,7 @@
+# These bundles are stored byte-exact, not as text.
+#
+# Git's line-ending normalisation would rewrite every LF in a 26 MB generated file, which changes its
+# bytes and therefore its hash — and the whole point of keeping both copies is that they differ by
+# exactly one byte (`captions:true` -> `false`, recorded in ../RENDER-LOG.md). A normalised checkout
+# would make that claim unverifiable and the provenance of the render unprovable.
+*.html -text -diff

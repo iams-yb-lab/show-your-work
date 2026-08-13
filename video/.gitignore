@@ -1,0 +1,8 @@
+# Every generated frame, take, mix and cut, both films -- 22 GB. Roughly 17 GB of PNG frame
+# sequences behind the assembly film, 2.7 GB of voice R&D, ~320 MB of the intro film's takes and
+# TTS cache, and eight MP4s at ~100 MB each. All of it re-renders from the tracked pipeline plus
+# the board, except the handful of files RELEASES.md marks as single-copy.
+#
+# The chosen stills are committed instead, in showoff/assembly/gallery/. Purple was picked: it has the
+# best trace contrast and the cleanest part separation. Red and green stay local only.
+out/

@@ -1,0 +1,53 @@
+{
+  "profile_id": "warm-natural",
+  "profile_version": 1,
+  "purpose": "Warm, welcoming, collaborative technical explanation; not an epic announcer read.",
+  "identity_source": "Synthetic Chatterbox built-in voice; no real-person clone.",
+  "model": "ChatterboxTTS",
+  "chatterbox_package_version": "0.1.7",
+  "sample_rate": 24000,
+  "channels": 1,
+  "prompt_file": "warm_narrator_prompt.wav",
+  "prompt_sha256": "516e8938994d0c0fe22663939b7b7c1497d300674f2d3a45af7ca7a1b41cbb5b",
+  "prompt_duration_seconds": 7.441333333333334,
+  "prompt_selection": {
+    "take": 2,
+    "seed": 1746,
+    "exaggeration": 0.36,
+    "cfg_weight": 0.42,
+    "temperature": 0.8,
+    "word_error_rate": 0.0,
+    "median_f0_hz": 107.52715702943429,
+    "f0_iqr_hz": 24.34440710453724
+  },
+  "contextual_generation_starting_range": {
+    "exaggeration": [0.32, 0.40],
+    "cfg_weight": [0.38, 0.46],
+    "temperature": [0.72, 0.80]
+  },
+  "acoustic_policy": {
+    "generate_continuous_sections": true,
+    "preserve_native_endings": true,
+    "artificial_reverb": false,
+    "echo_taps": false,
+    "room_tone": false,
+    "denoise": false,
+    "gate": false,
+    "compression": false,
+    "exciter": false,
+    "stereo_processing": false,
+    "optional_speech_restoration": "MossFormer2_SR_48K with per-section fallback gates"
+  },
+  "proven_education_v2_eq": {
+    "highpass_hz": 45,
+    "body": {"frequency_hz": 115, "gain_db": 1.7, "q": 0.9},
+    "boxiness": {"frequency_hz": 900, "gain_db": -0.5, "q": 1.1},
+    "presence": {"frequency_hz": 4000, "gain_db": 1.2, "q": 1.0},
+    "air_shelf": {"frequency_hz": 10000, "gain_db": 1.8}
+  },
+  "notes": [
+    "The approved acoustic character is native model output, not an added room effect.",
+    "Generate narration before picture and keep selected paragraphs continuous.",
+    "Film-specific selected takes and seeds live with that film's production record."
+  ]
+}

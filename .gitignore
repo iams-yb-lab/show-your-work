@@ -1,0 +1,23 @@
+# Film output. Frames, takes, mixes and masters go here and never into git.
+video/out/
+
+# Model checkpoints — never under LFS, never tracked.
+checkpoints/
+*.ckpt
+*.safetensors
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code local overrides
+.claude/settings.local.json

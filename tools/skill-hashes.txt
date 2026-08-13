@@ -1,0 +1,8 @@
+# sha256 of every skill file, byte-identical to the source repository.
+# The skills are read-only; a mismatch here means one was edited.
+# Regenerate ONLY after an edit the user authorised with the exact phrase.
+81b65b43ae00363cac2a8d4b1f4bf0a4936c4ca67a297ae572e0028dcb0587a7  .claude/skills/education-video/images.md
+fa7a570e313f1d84b6a8b4a136355f415e0405b710ebf7f08a3d09d6182f92ec  .claude/skills/education-video/interview.md
+99a16be0ad1e7866618390bfe93fb00248bbb6458fa0addbe847e1dbdb47106a  .claude/skills/education-video/SKILL.md
+1b11e1ec4bbf2538fce45b2defe11b3e8982cff0f4f7fba139a63d26173e5f1b  .claude/skills/natural-voice/SKILL.md
+8805cef3fc262996656234949071652d90eb7eb4f5171bfd49fb599e5273aa6a  .claude/skills/showoff-render/SKILL.md

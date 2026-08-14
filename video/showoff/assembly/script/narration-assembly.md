@@ -44,9 +44,9 @@ retired number to survive:
 | 31 chip resistors, 51 ceramic capacitors | the group tally `animate_assembly.py` prints |
 | 64-way connector | the `HARTING_09031646921` footprint's own pin count |
 | 24-bit ADC | AD7124-8 datasheet |
-| ~3 A either direction | the drive envelope in [`review-2026-08-10-drive-stage.md`](../../../../PCB/review-2026-08-10-drive-stage.md) |
+| ~3 A either direction | the drive envelope in `PCB/review-2026-08-10-drive-stage.md` (in the board's own repository) |
 | loop closes locally | firmware ground rule, `CLAUDE.md` |
-| 1 mK p-p over one hour | the project spec in [`../../docs/sources.md`](../../../../docs/sources.md) |
+| 1 mK p-p over one hour | the project spec in `docs/sources.md` (in the board's own repository) |
 
 **Not said, on purpose:** any layer count (unverified), any accuracy figure (the spec is
 *stability*, and saying "accuracy" would misdescribe the whole design), and the word

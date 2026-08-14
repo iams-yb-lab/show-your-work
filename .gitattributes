@@ -15,3 +15,9 @@
 *.wav binary
 *.png binary
 *.mp4 binary
+
+# The Claude Design bundles are stored byte-exact, not as text. Normalisation would rewrite every
+# LF in a 26 MB generated file and change its hash — and the two copies of the explainer bundle
+# differ by exactly one byte (`captions:true` -> `false`), which is the claim that would be lost.
+# The films' picture cannot be re-rendered without these files.
+*.html -text -diff

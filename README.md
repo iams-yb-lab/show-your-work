@@ -60,10 +60,35 @@ skill whose entire content is a broken link.
 ## Verifying
 
 ```bash
-python tools/check_links.py     # every relative link in every markdown file resolves
+python tools/check_links.py
 ```
 
-Run it after moving anything. It exits non-zero on a broken link and prints the file and line.
+Five checks, exit non-zero with the file and line on any failure:
+
+| check | catches |
+|---|---|
+| geometry | a skill that can no longer reach its method |
+| skills | a skill file that was edited — they are read-only, and verified by hash |
+| independence | any absolute path naming another checkout, so this repository never quietly needs one |
+| travel | a link from inside the installable payload to a file that would not travel with it |
+| links | any relative link that does not resolve |
+
+Run it after moving, renaming or adding anything. It is also wired to a PostToolUse hook, so it
+runs on every markdown write.
+
+## Does this need any other repository?
+
+**No.** It was extracted from the project the three films were made for, and everything that named
+that project as a *live* path has been removed — pipeline board defaults, run commands, mux
+targets. `install_skills.py` copies only from here. The independence check keeps it that way.
+
+What remains are **records**: generation settings, an audition log, the delivered Design prompt,
+the raw pipeline log. They name paths on the machine that made them because that is what a record
+is, nothing reads them, and each is declared with its reason in `check_links.py`'s `RECORDS`.
+
+The one thing not in here is the **board** the showoff film was rendered from. That is by design:
+`showoff-render` works on whatever CAD you point it at, and the pipeline scripts now require
+`-Board` instead of defaulting to somebody else's file.
 
 ## The one rule about the skills themselves
 

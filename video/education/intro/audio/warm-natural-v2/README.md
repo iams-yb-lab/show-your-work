@@ -42,18 +42,20 @@ lock it, then time captions and picture to it.
 
 A fresh run refuses to overwrite v2. It writes heavy artifacts only under `video/out/`:
 
+From the repository root, with the venv that has the audio stack in it:
+
 ```powershell
-& 'C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe' `
-  'C:\temperature-controller\video\education\audio\warm-natural-v2\run_pipeline.py'
+& $env:EDITX_PYTHON video\education\intro\audio\warm-natural-v2\run_pipeline.py
 ```
 
 Verify the existing release after a move or toolchain change without replacing it:
 
 ```powershell
-& 'C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe' `
-  'C:\temperature-controller\video\education\audio\warm-natural-v2\run_pipeline.py' `
-  --verify-existing
+& $env:EDITX_PYTHON video\education\intro\audio\warm-natural-v2\run_pipeline.py --verify-existing
 ```
+
+The interpreter comes from `EDITX_PYTHON` rather than a written-out path: the two commands here
+used to name one machine's venv inside one checkout, and were wrong on both counts after a move.
 
 ## Records
 

@@ -32,34 +32,51 @@ different skill. Verified by `tools/check_links.py`, which reads `tools/skill-ha
 
 ## What did not come
 
-**The films.** 110 MB of picture and no method in any of it:
+`video/out/` — 5.1 GB of frames, takes, mixes and masters, gitignored at both ends and
+regenerable. Plus two documents about the source repository rather than about the method:
+`video/MOVE-LOG.md`, which instructs its own retirement once the old layout is gone, and
+`video/RELEASES.md`, an index of cuts that live under `out/`.
 
-| left behind | size |
-|---|---|
-| `education/how-to-make-an-explainer/picture/*.html` (2 bundles) | 54 MB |
-| `education/intro/picture/*.{mp4,html}` | 20 MB |
-| `showoff/assembly/gallery/*.png` (4 stills) | 33 MB |
-| `video/out/` — frames, takes, mixes, masters | 5.1 GB |
+**Everything else tracked under `video/` came, including 107 MB of film media** — the two 26 MB
+Claude Design bundles, the intro film's MP4 and HTML, and the four committed stills.
 
-`education-video`'s interview stage is explicit that a skill travels between repositories, that the
-films it produces are not part of it, and that the same holds for any directory being packaged for
-reuse. This is that directory, so the rule applied to itself.
+That reverses the first pass, which left them on the grounds that films must not accumulate in a
+directory packaged for reuse. That rule assumes the film still has a home. Once the source `video/`
+is deleted this repository is the only home, and the explainer's own render log says **the picture
+cannot be re-rendered without those bundles** — they are an input, not an output. Losing something
+irreplaceable to keep a repository tidy is the wrong trade.
 
-Also left: `video/MOVE-LOG.md`, which instructs its own retirement once the old layout is gone, and
-`video/RELEASES.md`, an index of cuts that stayed behind.
+The rule still holds going forward: **new** films belong to the project using the skill, not here.
 
 ## What was changed on the way in
 
-Nothing in `.claude/skills/`. Outside it, twelve Python files that could not have run here:
+Nothing in `.claude/skills/`. Outside it, every path that named another checkout as a **live** path
+was removed, because the source `video/` tree is being deleted and this repository has to stand on
+its own. `tools/check_links.py` now fails on any that come back.
 
-- **10 × `REPO = Path(r"c:\temperature-controller")`** → a walk-up to the directory holding
-  `video/natural-voice/`. The source repository's own README flagged this as the reason those
-  scripts could not run on its second machine.
-- **2 × `sys.path.insert(0, r"c:\temperature-controller\PCB\render\tools")`** → the same walk-up to
-  `video/engine/`. That path had already died in the source repository's own reorganisation.
+| what | was | now |
+|---|---|---|
+| 10 Python files | a repository root hardcoded to one checkout | walk up to the directory holding `video/natural-voice/` |
+| 2 Python files | `sys.path` into a pre-move `PCB/render/tools` | the same walk-up, to `video/engine/` |
+| `render.ps1`, `animate.ps1`, `animate_v2.ps1` | `-Board` defaulted to one project's `.kicad_pcb` | no default; `throw "pass -Board <path to your .kicad_pcb>"` |
+| `pipeline/mix_final.py` | the picture to mux hardcoded to one render | `SHOWOFF_PICTURE` from the environment |
+| `warm-natural-v2/README.md` | run commands naming one machine's venv in one checkout | `$env:EDITX_PYTHON` and a repo-relative script path |
+| 2 narration scripts | traces linked to the board's review and spec | the same traces, named as text, like the rows beside them |
+
+**Records were left verbatim** and are declared in `check_links.py`'s `RECORDS` — six files: the
+generation settings, the prompt-selection audition record, the delivered Design prompt, and the
+three v2 pipeline reports. They describe what happened on a particular machine on a particular day,
+and nothing reads them. Rewriting a record to look tidy in a new repository falsifies it. The
+allowlist is exactly those six; nothing is listed that does not need to be, because an unnecessary
+entry is a hole.
+
+Sixteen further files mention the source project's name **without depending on it**: fifteen frozen
+scripts write to `%TEMP%\temperature-controller-media\`, a machine-local scratch directory that
+merely borrowed the name, and the assembly film's brief describes its subject in prose. Neither is
+a path into another checkout.
 
 `video/README.md` was rewritten for this repository. Three film READMEs lost a link to the dropped
-`RELEASES.md` and now point here instead.
+`RELEASES.md`.
 
 **Records were left verbatim.** `DESIGN-PROMPT.md`'s absolute paths, `education-v2-generation-settings.json`'s
 provenance, and `VOICE-LOG.md`'s pre-move `PCB/render/` references all describe what actually

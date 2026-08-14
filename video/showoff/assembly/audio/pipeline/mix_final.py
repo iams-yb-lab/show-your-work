@@ -12,7 +12,9 @@ from pathlib import Path
 FF = r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe"
 MEDIA = Path(r"C:\Users\iams1\AppData\Local\Temp\temperature-controller-media")
 CB = MEDIA / (sys.argv[1] if len(sys.argv) > 1 else "chatterbox")
-VIDEO = Path(r"C:\temperature-controller\PCB\render\out\anim\assembly_purple_v2.mp4")
+# The silent picture to mux against. No default: naming one project's render is what made this
+# script unusable anywhere else. Set SHOWOFF_PICTURE to your own file.
+VIDEO = Path(os.environ.get("SHOWOFF_PICTURE", ""))
 SCORE = MEDIA / os.environ.get("SCORE_WAV", "cinematic_score.wav")
 OUT_MP4 = MEDIA / (sys.argv[2] if len(sys.argv) > 2 else "assembly_purple_v2_epic_v3.mp4")
 # optional per-voice-line filter chain (e.g. mic-character EQ), inserted after gain

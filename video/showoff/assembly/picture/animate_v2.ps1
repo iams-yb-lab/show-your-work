@@ -35,7 +35,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string] $Board      = "..\..\..\..\PCB\PCB_new.kicad_pcb",
+    [string] $Board      = "",
     [string] $Variant    = "purple",
     [string] $OutDir     = "out",
     [int]    $Width      = 2560,
@@ -54,6 +54,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
+
+# No default board: this pipeline renders whatever KiCad file you point it at, and a default
+# naming one project's board is how it stopped working the moment it was lifted out of that
+# project. Pass -Board.
+if (-not $Board) { throw "pass -Board <path to your .kicad_pcb>" }
+if (-not (Test-Path $Board)) { throw "no board at $Board" }
 . (Join-Path $PSScriptRoot "tools\find-tools.ps1")
 . (Join-Path $PSScriptRoot "tools\model-swaps.ps1")
 $tools = Find-RenderTools -KicadPython $KicadPython -KicadCli $KicadCli -Blender $Blender

@@ -26,7 +26,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string]   $Board      = "..\..\..\..\PCB\PCB_new.kicad_pcb",
+    [string]   $Board      = "",
     [string]   $OutDir     = "out",
     [string[]] $Variants   = @("red", "purple"),
     [string]   $Shots      = "slide,cinematic,showcase,demo",
@@ -43,6 +43,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
+
+# No default board: this pipeline renders whatever KiCad file you point it at, and a default
+# naming one project's board is how it stopped working the moment it was lifted out of that
+# project. Pass -Board.
+if (-not $Board) { throw "pass -Board <path to your .kicad_pcb>" }
+if (-not (Test-Path $Board)) { throw "no board at $Board" }
 
 # The two machines install KiCad and Blender in different places, so the paths are found
 # rather than hardcoded. Pass -KicadPython/-KicadCli/-Blender to override.
@@ -78,7 +84,6 @@ if ($Draft) {
     Write-Host "draft mode: ${Width}x${Height}, $Samples samples" -ForegroundColor Yellow
 }
 
-if (-not (Test-Path $Board)) { throw "no board at $Board" }
 Write-Host "kicad:   $KicadPython" -ForegroundColor DarkGray
 Write-Host "blender: $Blender" -ForegroundColor DarkGray
 

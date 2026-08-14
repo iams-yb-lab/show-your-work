@@ -29,17 +29,18 @@ a loudness meter is a second answer to the same question.
 
 ## What is here, and what is not
 
-The **method** travelled: documents, logs, tooling, profiles. The **films** did not — no frames, no
-masters, no galleries, no HTML bundles. Two reasons, and the second is the real one:
+Everything the two finished films need to be rebuilt is here: their documents, scripts, logs,
+tooling, and the picture files that cannot be regenerated — the two Claude Design bundles above all,
+which are an **input** to the render, not an output of it. Only `out/` stayed behind: 5.1 GB of
+frames, takes and mixes, gitignored and regenerable.
 
-1. It is 110 MB of output that would never be read again.
-2. `education-video`'s own interview stage says a skill is a procedure that travels between
-   repositories, that the films it produces are not part of it, and that the same applies to any
-   directory being packaged for reuse. This is that directory.
-
-What did travel from each film is its **log** — `RENDER-LOG.md`, `VOICE-LOG.md`, `AUDIO-LOG.md`,
+Each film's **log** is the part that matters most — `RENDER-LOG.md`, `VOICE-LOG.md`, `AUDIO-LOG.md`,
 `EXPERIMENTS.md`. Every rule in the three skills was paid for by something in those files, and a
 rule whose evidence has been left behind is just an assertion.
+
+**A new film does not belong here.** Its document, script, takes and picture belong to the project
+using the skill; `education-video`'s interview stage says so and it applies to this directory. The
+two that are here are the worked examples the skills were written from.
 
 This tree travels as a unit and links only within itself and into `../.claude/skills/`. Nothing
 here may point at a file in the repository root, because the root does not come along.
@@ -56,8 +57,9 @@ REPO = next(p for p in Path(__file__).resolve().parents
 ```
 
 Code written that way does not care which repository it has been lifted into, or which machine it
-is on. The hardcoded `c:\temperature-controller` that this rule replaced is why a batch of scripts
-could not run on the second machine.
+is on. The hardcoded checkout path this rule replaced is why a batch of scripts could not run on
+the project's second machine, and `tools/check_links.py` now fails on any absolute path naming
+another checkout.
 
 ## Frozen records
 

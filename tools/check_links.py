@@ -41,12 +41,30 @@ SKIP_DIRS = {".git", "__pycache__", "out", ".venv", "venv", "node_modules"}
 
 # Links that point at files which were deliberately left in the source repository.
 # key: repo-relative posix path of the linking file -> reason it is allowed to dangle.
-EXTERNAL = {
-    "video/showoff/assembly/script/narration-assembly.md":
-        "traces cite the board's own review and spec, which live in the hardware repository",
-    "video/showoff/assembly/script/narration-assembly-v2.md":
-        "traces cite the board's own review and spec, which live in the hardware repository",
+EXTERNAL: dict[str, str] = {}
+
+# This repository must not need any other one. Nothing may name an absolute path into a different
+# checkout as a *live* path — no default, no fallback, no import. The files below name one inside a
+# record of what happened on a particular machine on a particular day; nothing reads them, and
+# rewriting a record to look tidy in a new repository falsifies it. Everything else must be clean.
+RECORDS = {
+    "video/education/intro/audio/warm-natural-v2/education-v2-generation-settings.json":
+        "provenance: which prompt and which take produced each line. The prompt WAV it names now "
+        "lives at video/natural-voice/profiles/warm-natural/warm_narrator_prompt.wav",
+    "video/natural-voice/profiles/deep-onyx-slow/prompt-selection.json":
+        "the prompt audition record required by the profile contract: every candidate, its "
+        "measurements and where it was written at the time",
+    "video/education/how-to-make-an-explainer/DESIGN-PROMPT.md":
+        "the handoff prompt as it was actually pasted into Claude Design, kept verbatim",
+    "video/education/intro/audio/warm-natural-v2/final-report.json":
+        "generated run report: what the v2 pipeline produced and where it wrote it",
+    "video/education/intro/audio/warm-natural-v2/pipeline-status.json":
+        "generated run report, as above",
+    "video/education/intro/audio/warm-natural-v2/pipeline.log":
+        "the raw console log of the v2 run, kept unedited",
 }
+
+FOREIGN = re.compile(r"[a-zA-Z]:[\\/]{1,2}temperature-controller", re.I)
 
 # The load-bearing relative paths: (file containing the link, link as written in it).
 GEOMETRY = [
@@ -135,6 +153,30 @@ def check_skills(fail, bless=False):
             fail("skills", name, "present but not recorded — run --bless if it was added on purpose")
 
 
+def check_independence(fail):
+    """No live path may name another checkout. This repository stands on its own."""
+    for p in sorted(ROOT.rglob("*")):
+        if not p.is_file():
+            continue
+        r = p.relative_to(ROOT)
+        if any(part in SKIP_DIRS for part in r.parts):
+            continue
+        if p.suffix.lower() in {".wav", ".png", ".mp4", ".pyc", ".zip", ".srt"}:
+            continue
+        try:
+            text = p.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        name = r.as_posix()
+        if name in RECORDS or name == "tools/check_links.py":
+            continue
+        for n, line in enumerate(text.splitlines(), 1):
+            if FOREIGN.search(line):
+                fail("independence", f"{name}:{n}",
+                     "names an absolute path into another checkout — make it relative, take it "
+                     "from the environment, or declare the file a record in RECORDS")
+
+
 def check_travel(fail):
     """Nothing inside the installable payload may link outside it."""
     travels = (".claude/skills/", "video/")
@@ -199,6 +241,7 @@ def main(argv):
 
     check_geometry(fail)
     check_skills(fail)
+    check_independence(fail)
     check_travel(fail)
     check_links(fail)
 
@@ -206,11 +249,11 @@ def main(argv):
     if not failures:
         if not hook_mode:
             n = len(list(markdown_files()))
-            print(f"ok — geometry intact, skills unmodified, payload self-contained, "
-                  f"links resolve ({n} markdown files)")
+            print(f"ok — geometry intact, skills unmodified, no path into another checkout, "
+                  f"payload self-contained, links resolve ({n} markdown files)")
         return 0
 
-    for check in ("geometry", "skills", "travel", "links"):
+    for check in ("geometry", "skills", "independence", "travel", "links"):
         items = [(w, m) for c, w, m in failures if c == check]
         if not items:
             continue

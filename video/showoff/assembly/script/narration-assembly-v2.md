@@ -44,9 +44,9 @@ claim is checkable and the ones that are *not* said are listed too.
 | a hundred and ten parts | the 110 non-DNP placed footprints with models in `out/scene/components_v2.json` — what lands on screen, not the board's full BOM (125 entries, 12 DNP) |
 | sixty-four ways | the `HARTING_09031646921` footprint's own pin count, `C698356-CONN-TH_64P` |
 | twenty-four bits | AD7124-8 datasheet |
-| heat in either direction | MAX1968 topology, [`review-2026-08-10-drive-stage.md`](../../../../PCB/review-2026-08-10-drive-stage.md) |
+| heat in either direction | MAX1968 topology, `PCB/review-2026-08-10-drive-stage.md` (in the board's own repository) |
 | the loop closes on the board | firmware ground rule, `CLAUDE.md` |
-| 1 mK peak to peak, one hour | the stability specification in [`../../docs/sources.md`](../../../../docs/sources.md) |
+| 1 mK peak to peak, one hour | the stability specification in `docs/sources.md` (in the board's own repository) |
 
 **Not said, on purpose:**
 

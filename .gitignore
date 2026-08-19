@@ -21,3 +21,6 @@ Thumbs.db
 
 # Claude Code local overrides
 .claude/settings.local.json
+
+# Temporary session state (handoffs, scratch). Lives on disk until its run ships, never in git.
+tmp-*/

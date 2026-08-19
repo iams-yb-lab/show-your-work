@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How to use the skills</title>
+<!--
+  Master deck — how-to-use-the-skills. 15 slides, 1920×1080, talk deck (spoken over).
+  Headlines are byte-identical to STORYLINE.md (checked by tools/crosscheck.py — never eyeballed).
+  Speaker notes live in <aside class="notes"> and are never rendered; every export derives from here.
+  Icon shapes drawn in the style of Lucide (ISC license, github.com/lucide-icons/lucide).
+  Fonts: Instrument Sans + JetBrains Mono, embedded woff2 (extracted from this repo's intro film picture).
+  Font floor: 28px on the 1080p canvas (GATE 0). No text below it, chrome included.
+-->
+<style>
+/*__FONTS__*/
+:root{
+  --paper:#F5F3EE; --ink:#0f0f11; --teal:#0F766E; --purple:#6D4AC0; --purple-d:#4C3391;
+  --card:#FFFFFF; --line:#D8D3C8; --soft:#6b675e; --tealbg:#E4EFED; --purbg:#EEE9F9;
+  --floor:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#E3DFD6;font-family:'Instrument Sans',-apple-system,sans-serif;color:var(--ink)}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#deck{position:relative;width:1920px;height:1080px;flex:none}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;background:var(--paper);
+  padding:88px 110px 76px;display:none;flex-direction:column;overflow:hidden}
+.slide.current{display:flex}
+.notes{display:none}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:28px;color:var(--teal);letter-spacing:.08em;margin-bottom:18px}
+h1.headline{font-size:58px;line-height:1.16;font-weight:600;max-width:1640px}
+h1.headline .q{color:var(--teal)}
+.body{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.counter{position:absolute;right:44px;bottom:30px;font-family:'JetBrains Mono',monospace;font-size:28px;color:var(--soft)}
+.accent{width:120px;height:10px;background:var(--teal);border-radius:5px;margin-bottom:26px}
+
+/* pipeline pieces */
+.flow{display:flex;align-items:center;gap:22px}
+.step{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:26px 30px;
+  font-size:33px;font-weight:600;text-align:center;box-shadow:6px 6px 0 rgba(15,15,17,.08)}
+.step small{display:block;font-size:28px;font-weight:400;color:var(--soft);margin-top:8px}
+.step.hi{border-color:var(--teal);background:var(--tealbg)}
+.step.pur{border-color:var(--purple-d);background:var(--purbg)}
+.arr{font-size:52px;color:var(--teal);font-weight:600;flex:none}
+.loop{font-size:28px;color:var(--purple-d);margin-top:12px;text-align:center}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:28px;background:var(--tealbg);
+  color:var(--teal);border:2px solid var(--teal);border-radius:999px;padding:6px 20px}
+.caption{font-size:30px;color:var(--soft);text-align:center;margin-top:30px}
+.caption b{color:var(--ink)}
+
+/* chat mock */
+.chat{display:flex;flex-direction:column;gap:26px;width:100%}
+.bub{border-radius:22px;padding:26px 34px;font-size:31px;line-height:1.4;max-width:1300px}
+.bub.you{align-self:flex-end;background:var(--teal);color:#fff;font-weight:600}
+.bub.claude{align-self:flex-start;background:var(--card);border:3px solid var(--line)}
+.bub .who{font-family:'JetBrains Mono',monospace;font-size:28px;opacity:.75;display:block;margin-bottom:10px}
+pre.mono{font-family:'JetBrains Mono',monospace;font-size:28px;line-height:1.5;white-space:pre-wrap}
+/* screenshots: real screen, shown at a scale that keeps their own text above the 28px floor */
+.shotcol{display:flex;flex-direction:column;align-items:center;gap:32px;width:100%}
+/* full-window screenshots: give the capture every pixel of height the canvas can spare */
+.slide.shotslide{padding:56px 110px 44px}
+.shotrow{display:flex;gap:44px;align-items:flex-start;justify-content:center;width:100%}
+.shotrow .shotcap{text-align:left;margin:0 0 12px}
+.shot{display:block;border:3px solid var(--line);border-radius:14px;background:#1F1F1F}
+.shotcap{text-align:left;font-family:'JetBrains Mono',monospace;font-size:28px;color:var(--soft);margin-top:8px}
+pre.mono .tick{color:var(--teal);font-weight:700}
+
+/* proof cards */
+.proofcard{background:var(--ink);color:var(--paper);border-radius:26px;padding:70px 80px;width:1280px;
+  display:flex;flex-direction:column;gap:34px;align-items:flex-start}
+.proofcard .film{font-size:56px;font-weight:700}
+.proofcard .stats{font-family:'JetBrains Mono',monospace;font-size:32px;color:#9BE8DF}
+.linkrow{display:flex;align-items:center;gap:40px;margin-top:6px}
+.yt{font-family:'JetBrains Mono',monospace;font-size:32px;color:var(--teal);background:var(--tealbg);
+  border:2px dashed var(--teal);border-radius:12px;padding:14px 26px}
+.qr{width:200px;height:200px;border:4px dashed var(--line);border-radius:18px;display:flex;align-items:center;
+  justify-content:center;font-size:28px;color:var(--soft);text-align:center;background:var(--card)}
+
+/* terminal */
+.term{background:var(--ink);border-radius:22px;padding:44px 52px;color:#E8E6E1;width:1180px}
+.term .ln{font-family:'JetBrains Mono',monospace;font-size:29px;line-height:1.62;white-space:pre-wrap}
+.term .p{color:#9BE8DF}.term .c{color:#B9A6F2}.term .d{color:#8a877f}
+.sider{display:flex;flex-direction:column;gap:22px}
+.sider .alt{font-size:29px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px 24px;color:var(--soft)}
+.sider .alt b{color:var(--ink)}
+
+.cols{display:flex;gap:60px;align-items:center;justify-content:center;width:100%}
+.stack{display:flex;flex-direction:column;gap:26px;align-items:center}
+a.yt{text-decoration:none;cursor:pointer}
+svg text{font-family:'Instrument Sans',sans-serif}
+svg .mono{font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck">
+
+<!-- ══════════ 1 ══════════ -->
+<section class="slide" id="s1">
+  <div class="kicker">AI VIDEO GENERATION SKILLS</div>
+  <div class="accent"></div>
+  <h1 class="headline">You've finished real work — and now it has to reach people who weren't there.</h1>
+  <div class="body">
+    <svg width="1500" height="560" viewBox="0 0 1500 560">
+      <!-- your finished work: board glyph -->
+      <rect x="70" y="180" width="360" height="220" rx="24" fill="#0F766E"/>
+      <rect x="110" y="220" width="90" height="60" rx="8" fill="#F5F3EE"/>
+      <rect x="230" y="220" width="150" height="36" rx="8" fill="#9BE8DF"/>
+      <rect x="230" y="276" width="110" height="36" rx="8" fill="#9BE8DF"/>
+      <circle cx="140" cy="340" r="16" fill="#F5F3EE"/><circle cx="190" cy="340" r="16" fill="#F5F3EE"/>
+      <text x="250" y="460" font-size="34" font-weight="600" text-anchor="middle" fill="#0f0f11">your finished work</text>
+      <!-- arrows -->
+      <g stroke="#0F766E" stroke-width="7" fill="none" stroke-linecap="round">
+        <path d="M 470 240 C 640 140, 800 120, 960 130"/>
+        <path d="M 470 290 C 660 290, 820 290, 960 290"/>
+        <path d="M 470 340 C 640 440, 800 460, 960 450"/>
+      </g>
+      <!-- reader -->
+      <g transform="translate(1000,70)">
+        <rect x="0" y="0" width="430" height="120" rx="20" fill="#FFFFFF" stroke="#D8D3C8" stroke-width="3"/>
+        <g transform="translate(30,24)" stroke="#0f0f11" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 4 h34 l14 14 v50 h-48 z"/><path d="M48 4 v14 h14"/><path d="M26 36 h24 M26 50 h24"/>
+        </g>
+        <text x="120" y="74" font-size="33" font-weight="600" fill="#0f0f11">a reader</text>
+      </g>
+      <!-- room -->
+      <g transform="translate(1000,230)">
+        <rect x="0" y="0" width="430" height="120" rx="20" fill="#FFFFFF" stroke="#D8D3C8" stroke-width="3"/>
+        <g transform="translate(30,26)" stroke="#0f0f11" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="4" width="60" height="42" rx="4"/><path d="M34 46 v16 M18 62 h32"/>
+        </g>
+        <text x="120" y="74" font-size="33" font-weight="600" fill="#0f0f11">a room</text>
+      </g>
+      <!-- viewer -->
+      <g transform="translate(1000,390)">
+        <rect x="0" y="0" width="430" height="120" rx="20" fill="#FFFFFF" stroke="#D8D3C8" stroke-width="3"/>
+        <g transform="translate(30,24)" stroke="#0f0f11" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="34" cy="34" r="30"/><path d="M26 20 l24 14 -24 14 z" fill="#0f0f11"/>
+        </g>
+        <text x="120" y="74" font-size="33" font-weight="600" fill="#0f0f11">a viewer</text>
+      </g>
+    </svg>
+  </div>
+  <aside class="notes">You know this moment. The design works, the measurements are in, the hard part is done — and now somebody says: can you write that up? Can you present it? Can you make a video? And that part always costs more than it should, because you're starting from a blank page every time. This talk is about not starting from a blank page. Everything I'll show you is one repository you already have access to.</aside>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section class="slide shotslide" id="s2">
+  <div class="kicker">WHERE YOU'RE STANDING · THE PROBLEM</div>
+  <div class="accent"></div>
+  <h1 class="headline">The complaint about AI writing is almost never that it's wrong — it's that nobody can read it.</h1>
+  <div class="body">
+    <div class="shotrow">
+      <div style="width:820px">
+        <div class="shotcap">r/ClaudeCode · 140 up · 90 comments</div>
+        <img class="shot" width="820" src="__ASSET:reddit-unreadable-jargon.png__"
+             alt="Reddit post in r/ClaudeCode titled Opus 5 - unreadable jargon, describing model output as verbose and impenetrable. 140 upvotes, 90 comments.">
+      </div>
+      <div style="width:820px">
+        <div class="shotcap">r/ClaudeCode · 316 up · 238 comments</div>
+        <img class="shot" width="820" src="__ASSET:reddit-word-salad.png__"
+             alt="Reddit post in r/ClaudeCode titled Going back to 4.8 due to Opus 5 word salad, describing long waffly sentences that technically make sense but become impenetrable. 316 upvotes, 238 comments.">
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Before I show you what this repository does, here is the thing it is actually for. These are two posts from the Claude Code community, three weeks old, a few hundred people agreeing between them. Read what they are complaining about. Not that the model got the facts wrong. Not that it failed the task. That the output is unreadable — "word salad", "unreadable jargon", "my brain is melting", "impenetrable if you're working on a few things at once". That is not a model problem you fix by waiting for a better model. It is what raw generated output is: a first draft with no reader in mind, no structure anyone agreed to, and no one having decided what it is for. Every one of those complaints is about a missing process, not a missing capability. So the question this repository answers is not "can it write" — obviously it can. The question is what has to happen between the generation and the person receiving it. The answer turns out to be short, and it is on the next two slides.</aside>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section class="slide" id="s3">
+  <div class="kicker">THE MAP</div>
+  <div class="accent"></div>
+  <h1 class="headline">This repo turns finished work into four deliverables — a report, a deck, an explainer film, a showoff film — one skill each.</h1>
+  <div class="body">
+    <div class="stack" style="gap:30px">
+      <div class="flow" style="gap:30px;align-items:stretch">
+        <div class="step hi" style="width:390px;display:flex;flex-direction:column;justify-content:center">technical-report<small>→ the document that stands alone</small></div>
+        <div class="step hi" style="width:390px;display:flex;flex-direction:column;justify-content:center">slide-deck<small>→ the argument on slides</small></div>
+        <div class="step pur" style="width:390px;display:flex;flex-direction:column;justify-content:center">education-video<small>→ the explainer film</small></div>
+        <div class="step pur" style="width:390px;display:flex;flex-direction:column;justify-content:center">showoff-render<small>→ the cinematic hardware film</small></div>
+      </div>
+      <div style="position:relative;width:1650px;height:126px">
+        <div style="position:absolute;left:1245px;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:14px">
+          <svg width="810" height="44" viewBox="0 0 810 44">
+            <path d="M 8 0 v 16 M 8 16 H 802 M 802 0 v 16 M 405 16 v 26" stroke="#6D4AC0" stroke-width="5" fill="none"/>
+          </svg>
+          <div class="tag" style="border-color:var(--purple-d);color:var(--purple-d);background:var(--purbg);white-space:nowrap">natural-voice — rides along whenever anything speaks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Four things you might need to hand somebody, four skills, and the names say what they do. technical-report writes the document that stands alone. slide-deck builds a presentation — including this one. education-video makes an explainer film, and showoff-render makes the cinematic hardware shot. There's a fifth skill, natural-voice, that you never call directly — it kicks in automatically whenever generated speech is involved, because voice is where video projects die. Getting all of this into your own project is one install step, and I'll show it on the last slide.</aside>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section class="slide" id="s4">
+  <div class="kicker">THE SHARED SHAPE</div>
+  <div class="accent"></div>
+  <h1 class="headline">Every skill runs the same shape: it interviews you, posts a checklist, and only you approve each gate.</h1>
+  <div class="body">
+    <div class="stack" style="gap:40px">
+      <div class="flow">
+        <div class="step" style="text-align:left"><span style="font-family:'JetBrains Mono',monospace;font-size:29px;font-weight:400">- [ ] GATE 0&nbsp;&nbsp;the interview<br>- [ ] GATE 1&nbsp;&nbsp;the source<br>- [ ] GATE 2 … GATE 5</span><small>the plan, posted first</small></div>
+        <div class="arr">→</div>
+        <div class="step">"where do your files go?<br>who is this for?"<small>the interview — it never guesses</small></div>
+        <div class="arr">→</div>
+        <div class="stack" style="gap:10px">
+          <div class="flow" style="gap:16px">
+            <div class="step hi" style="padding:20px 24px">source<br>audited</div>
+            <div class="arr" style="font-size:40px">→</div>
+            <div class="step" style="padding:20px 24px">gate</div>
+            <div class="arr" style="font-size:40px">→</div>
+            <div class="step" style="padding:20px 24px">gate</div>
+            <div class="arr" style="font-size:40px">→</div>
+            <div class="step" style="padding:20px 24px">delivered</div>
+          </div>
+          <div class="loop">⟳ every gate closes only when <b>you</b> say it's good</div>
+        </div>
+      </div>
+      <div class="caption">the first gate is always the same: <b>the source under it — document or CAD — is audited before anything is built on it</b></div>
+    </div>
+  </div>
+  <aside class="notes">Here's the shape, and it's the same in all four skills, so you learn it once. The first thing you see is the plan, as a checklist — before any work happens. Then it interviews you: where do the files go, who is this for, what's the one takeaway, what's the budget. Real questions, and it won't guess when you don't answer. Then it works gate by gate, and here's the important part — a gate closes when you say it's good. Never by itself. And the first real gate is always the same: the source under the thing gets audited. No script against a document that's half-finished, no render against CAD that's missing models. That's what makes the later stages cheap instead of painful.</aside>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section class="slide" id="s5">
+  <div class="kicker">SKILL 1 · TECHNICAL-REPORT</div>
+  <div class="accent"></div>
+  <h1 class="headline">technical-report builds the document that stands alone: evidence → skeleton → sections → cold read.</h1>
+  <div class="body">
+    <div class="stack" style="gap:38px">
+      <div class="flow">
+        <div class="step hi" style="text-align:left"><span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:400">value · unit<br>one home · status</span><small>the evidence map</small></div>
+        <div class="arr">→</div>
+        <div class="step">skeleton<small>the whole report,<br>a few lines per section</small></div>
+        <div class="arr">→</div>
+        <div class="step">sections ✓<small>one at a time,<br>verified before shown</small></div>
+        <div class="arr">→</div>
+        <div class="step pur">cold read<small>a reader with no context<br>plays the verdict back</small></div>
+      </div>
+      <div class="caption">every number wears one status: <b>measured · specified · calculated · assumed</b></div>
+    </div>
+  </div>
+  <aside class="notes">The report skill is built around one contract: the reader has the background and none of the context. They can follow the math; they've never heard of your project. So the order is evidence, skeleton, sections, cold read — and it's not negotiable. Every number gets mapped before any prose exists: its value, its unit, the one file it lives in, and an honest status — measured, specified, calculated, or assumed. Then the skeleton — the whole report at a few lines per section — because structure is cheap to move before prose exists and ruinous after. Sections get written one at a time, verified before you ever see them. And at the end, the document is tested on a reader who genuinely has no context.</aside>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section class="slide" id="s6">
+  <div class="kicker">SKILL 1 · IN PRACTICE</div>
+  <div class="accent"></div>
+  <h1 class="headline">Say "write up this project as a report" and the skill takes over: interview, evidence map, skeleton — no prose until you approve the structure.</h1>
+  <div class="body">
+    <div class="chat" style="max-width:1560px;gap:16px">
+      <div class="bub you" style="padding:18px 30px">write up this project as a report</div>
+      <div class="bub claude" style="padding:20px 30px;max-width:1460px"><span class="who">claude</span><pre class="mono" style="line-height:1.38">- [ ] GATE 0  the interview — audience, subject, evidence, verdict, home
+- [ ] GATE 1  the evidence map — every number, one home, an honest status
+- [ ] GATE 2  the skeleton — the whole report, a few lines per section
+- [ ] GATE 3  the sections — one at a time, verified before shown
+- [ ] GATE 4  the cold read — a reader with no context, then the mechanical pass
+- [ ] GATE 5  the user's read — end to end, then delivery
+
+Ready to begin?</pre></div>
+      <div class="bub claude" style="align-self:flex-end;background:var(--tealbg);border-color:var(--teal);padding:18px 30px"><span class="who">then, the first questions</span>Where does the report live? Who reads it — what may they be assumed to know?</div>
+    </div>
+  </div>
+  <aside class="notes">This is literally what happens. One sentence from you, and the first thing back is the plan as a checklist — you know the whole route before any work starts. Then the interview: where does the report live, who reads it, what has actually been built versus only designed, what must the report not claim. And here's what it refuses to do: it will not write a paragraph of prose until you've approved the skeleton. Because rewriting structure after the prose exists is the expensive way around.</aside>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section class="slide" id="s7">
+  <div class="kicker">SKILL 2 · SLIDE-DECK</div>
+  <div class="accent"></div>
+  <h1 class="headline">slide-deck puts the argument on slides: source → storyline → slide scripts → build → cold pass.</h1>
+  <div class="body">
+    <div class="flow" style="gap:26px">
+      <div class="step">source<small>audited</small></div>
+      <div class="arr">→</div>
+      <div class="step hi" style="text-align:left;max-width:560px"><span style="font-size:29px;font-weight:400;line-height:1.45">work must reach people ▸<br>four skills, one shape ▸<br>documents, then videos ▸<br>proof you can watch ▸<br>one sentence to start</span><small>the storyline — <b>headlines alone must carry the whole argument</b></small></div>
+      <div class="arr">→</div>
+      <div class="step">slide scripts<small>shows · says · trace</small></div>
+      <div class="arr">→</div>
+      <div class="step">build<small>one HTML file</small></div>
+      <div class="arr">→</div>
+      <div class="step pur">cold pass<small>plays the takeaway back</small></div>
+    </div>
+  </div>
+  <aside class="notes">Same discipline, aimed at a room. The deck's argument gets written before any slide exists: one line per slide, and each line is the slide's actual headline, as a full sentence that asserts something. The test is brutal and simple — read only the headlines, top to bottom. If they don't carry the whole argument on their own, the storyline is wrong, and it gets fixed while it's still one line of text per slide. That column in the middle is this deck's own storyline, act by act. Only after you approve that argument do slides get scripted, then built into a single HTML file, and then a viewer with no context has to play the takeaway back.</aside>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section class="slide shotslide" id="s8">
+  <div class="kicker">SKILL 2 · YOU'RE WATCHING IT</div>
+  <div class="accent"></div>
+  <h1 class="headline">Say "make slides about this project" and you get what you're watching — this deck is that run, gate by gate.</h1>
+  <div class="body">
+    <div class="shotcol">
+      <div style="width:1306px">
+        <img class="shot" width="1306" src="__ASSET:deck-run-original.png__"
+             alt="The full editor window at the start of this deck's run: the repository open in the file tree, and in the chat panel the sentence that was typed and the six-gate checklist that came back, every box unticked.">
+        <div class="shotcap">the whole desk — one sentence typed, six gates back, nothing ticked yet</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">I can make the example concrete, because you're inside it. That is my actual screen — the repository in the tree on the left, this deck's run in the panel on the right, unretouched. One sentence went in. What came back was not slides, it was a checklist: six gates, nothing ticked, nothing drawn. This deck was made by the slide-deck skill, and it asked me where the files go, who you are, and what one sentence I want you to leave with. I approved the storyline before a single slide existed — the headline above you was a line in a text file first, in STORYLINE.md, and I can show you that file if you want it. One honest footnote: slide-deck is the youngest of the four — its method was carried from the skills that have delivered films and a report, and this deck is the first deck produced under it. And before I could show it to you, a viewer with no context had to play the argument back.</aside>
+</section>
+
+<!-- ══════════ 9 ══════════ -->
+<section class="slide shotslide" id="s9">
+  <div class="kicker">SKILL 2 · THE SAME RUN, LATER</div>
+  <div class="accent"></div>
+  <h1 class="headline">Every tick is your approval, not the skill's progress — this run stopped at GATE 2 and waited until you said go.</h1>
+  <div class="body">
+    <div class="shotcol">
+      <div style="width:1306px">
+        <img class="shot" width="1306" src="__ASSET:deck-run-gate2-original.png__"
+             alt="The same editor window later in the run: GATE 0 and GATE 1 ticked and naming the files they produced, GATE 2 marked as the current step, gates 3 to 5 still open.">
+        <div class="shotcap">the same desk, further in — two ticked, the third waiting on a human</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Same desk, same run, further in. Two ticks: the interview, and the source audit — and you can see them naming the files they produced. Then it stops at GATE 2, the storyline, and waits, because a gate is not a step the skill takes, it's a decision you make. Worth saying out loud what is on that screen: at this moment the run was proposing twenty-six slides. I cut it — first to a budget of sixteen to eighteen, then again at GATE 3 when I deleted a whole act. What you're watching is sixteen. The gates are what made that cheap. Nothing had been drawn yet, so cutting a third of the deck cost me a sentence, not a rebuild — and that is the entire reason the argument gets approved before the pixels do.</aside>
+</section>
+
+<!-- ══════════ 10 ══════════ -->
+<section class="slide shotslide" id="s10">
+  <div class="kicker">SKILL 2 · THE SAME RUN, DELIVERED</div>
+  <div class="accent"></div>
+  <h1 class="headline">This is the same run closed: six gates ticked, and every artifact it produced named on screen.</h1>
+  <div class="body">
+    <div class="shotcol">
+      <div style="width:1306px">
+        <img class="shot" width="1306" src="__ASSET:deck-run-gate5-original.png__"
+             alt="The same editor window at the end of the run: all six gates ticked, each naming the file it produced, followed by the paths of the deck, the export and the tools, and two closing notes recording what was left imperfect.">
+        <div class="shotcap">the end of the run — six ticks, every file named, faults included</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">And this is the same run, closed. Six ticks. Every gate names the file it produced, so none of it is a claim you have to take on trust — the interview answers, the source audit, the storyline, the scripts, the build, the cold-pass record. Underneath: the deck itself, one self-contained file; the PowerPoint export; and the four tools that made them, because the next edit lands in the template and the chain reruns. Now look at the last paragraph, because it is the part I would have quietly dropped if this were a normal pitch. Two honest closing notes. A cold viewer flagged a numbering problem and I assumed it was wrong; it was right, and the retraction is written into the record. And the slide you saw two slides ago was added after the cold pass, so no fresh viewer has ever seen it — that is a gap in the method as run, and it is on the record instead of buried. That is what I want you to take from this screen. Not that it went perfectly. That when it didn't, the process wrote it down.</aside>
+</section>
+
+<!-- ══════════ 11 ══════════ -->
+<section class="slide" id="s11">
+  <div class="kicker">SKILL 3 · PROOF</div>
+  <div class="accent"></div>
+  <h1 class="headline">Proof you can watch: the how-to-make-an-explainer film — 4 min 30 s, 8 scenes, 55 lines — came out of the workflow on the next two slides.</h1>
+  <div class="body">
+    <div class="cols">
+      <div class="proofcard">
+        <div class="film">How to make an explainer video</div>
+        <div class="stats">4:30 · 8 scenes · 55 lines · 1920×1080 · 30 fps</div>
+        <div class="linkrow"><a class="yt" href="https://www.youtube.com/watch?v=mXi9sxOSgwc" target="_blank" rel="noopener">youtube.com/watch?v=mXi9sxOSgwc</a></div>
+      </div>
+      <a href="https://www.youtube.com/watch?v=mXi9sxOSgwc" target="_blank" rel="noopener" style="text-decoration:none"><div class="qr" style="border:3px solid var(--line);background:#fff"><svg width="180" height="180" viewBox="0 0 37 37"><path d="M2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM5,2H6V3H5zM6,2H7V3H6zM7,2H8V3H7zM8,2H9V3H8zM13,2H14V3H13zM14,2H15V3H14zM16,2H17V3H16zM20,2H21V3H20zM21,2H22V3H21zM22,2H23V3H22zM23,2H24V3H23zM25,2H26V3H25zM28,2H29V3H28zM29,2H30V3H29zM30,2H31V3H30zM31,2H32V3H31zM32,2H33V3H32zM33,2H34V3H33zM34,2H35V3H34zM2,3H3V4H2zM8,3H9V4H8zM12,3H13V4H12zM13,3H14V4H13zM14,3H15V4H14zM17,3H18V4H17zM20,3H21V4H20zM22,3H23V4H22zM23,3H24V4H23zM28,3H29V4H28zM34,3H35V4H34zM2,4H3V5H2zM4,4H5V5H4zM5,4H6V5H5zM6,4H7V5H6zM8,4H9V5H8zM10,4H11V5H10zM11,4H12V5H11zM13,4H14V5H13zM16,4H17V5H16zM17,4H18V5H17zM21,4H22V5H21zM23,4H24V5H23zM24,4H25V5H24zM26,4H27V5H26zM28,4H29V5H28zM30,4H31V5H30zM31,4H32V5H31zM32,4H33V5H32zM34,4H35V5H34zM2,5H3V6H2zM4,5H5V6H4zM5,5H6V6H5zM6,5H7V6H6zM8,5H9V6H8zM10,5H11V6H10zM20,5H21V6H20zM23,5H24V6H23zM25,5H26V6H25zM26,5H27V6H26zM28,5H29V6H28zM30,5H31V6H30zM31,5H32V6H31zM32,5H33V6H32zM34,5H35V6H34zM2,6H3V7H2zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM10,6H11V7H10zM12,6H13V7H12zM14,6H15V7H14zM15,6H16V7H15zM16,6H17V7H16zM17,6H18V7H17zM18,6H19V7H18zM19,6H20V7H19zM22,6H23V7H22zM24,6H25V7H24zM28,6H29V7H28zM30,6H31V7H30zM31,6H32V7H31zM32,6H33V7H32zM34,6H35V7H34zM2,7H3V8H2zM8,7H9V8H8zM10,7H11V8H10zM12,7H13V8H12zM15,7H16V8H15zM16,7H17V8H16zM19,7H20V8H19zM21,7H22V8H21zM24,7H25V8H24zM25,7H26V8H25zM26,7H27V8H26zM28,7H29V8H28zM34,7H35V8H34zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM10,8H11V9H10zM12,8H13V9H12zM14,8H15V9H14zM16,8H17V9H16zM18,8H19V9H18zM20,8H21V9H20zM22,8H23V9H22zM24,8H25V9H24zM26,8H27V9H26zM28,8H29V9H28zM29,8H30V9H29zM30,8H31V9H30zM31,8H32V9H31zM32,8H33V9H32zM33,8H34V9H33zM34,8H35V9H34zM10,9H11V10H10zM12,9H13V10H12zM16,9H17V10H16zM18,9H19V10H18zM21,9H22V10H21zM22,9H23V10H22zM23,9H24V10H23zM24,9H25V10H24zM25,9H26V10H25zM2,10H3V11H2zM4,10H5V11H4zM5,10H6V11H5zM6,10H7V11H6zM7,10H8V11H7zM8,10H9V11H8zM11,10H12V11H11zM12,10H13V11H12zM14,10H15V11H14zM15,10H16V11H15zM16,10H17V11H16zM19,10H20V11H19zM21,10H22V11H21zM24,10H25V11H24zM25,10H26V11H25zM28,10H29V11H28zM29,10H30V11H29zM30,10H31V11H30zM31,10H32V11H31zM32,10H33V11H32zM4,11H5V12H4zM5,11H6V12H5zM6,11H7V12H6zM7,11H8V12H7zM10,11H11V12H10zM11,11H12V12H11zM12,11H13V12H12zM13,11H14V12H13zM15,11H16V12H15zM16,11H17V12H16zM18,11H19V12H18zM19,11H20V12H19zM20,11H21V12H20zM21,11H22V12H21zM22,11H23V12H22zM24,11H25V12H24zM25,11H26V12H25zM28,11H29V12H28zM29,11H30V12H29zM31,11H32V12H31zM32,11H33V12H32zM33,11H34V12H33zM2,12H3V13H2zM4,12H5V13H4zM8,12H9V13H8zM9,12H10V13H9zM10,12H11V13H10zM11,12H12V13H11zM12,12H13V13H12zM13,12H14V13H13zM14,12H15V13H14zM15,12H16V13H15zM16,12H17V13H16zM17,12H18V13H17zM18,12H19V13H18zM19,12H20V13H19zM24,12H25V13H24zM26,12H27V13H26zM27,12H28V13H27zM28,12H29V13H28zM30,12H31V13H30zM32,12H33V13H32zM33,12H34V13H33zM2,13H3V14H2zM4,13H5V14H4zM7,13H8V14H7zM9,13H10V14H9zM13,13H14V14H13zM15,13H16V14H15zM19,13H20V14H19zM20,13H21V14H20zM21,13H22V14H21zM22,13H23V14H22zM25,13H26V14H25zM27,13H28V14H27zM28,13H29V14H28zM30,13H31V14H30zM31,13H32V14H31zM32,13H33V14H32zM33,13H34V14H33zM3,14H4V15H3zM7,14H8V15H7zM8,14H9V15H8zM9,14H10V15H9zM12,14H13V15H12zM14,14H15V15H14zM16,14H17V15H16zM17,14H18V15H17zM18,14H19V15H18zM21,14H22V15H21zM22,14H23V15H22zM23,14H24V15H23zM24,14H25V15H24zM25,14H26V15H25zM26,14H27V15H26zM27,14H28V15H27zM29,14H30V15H29zM31,14H32V15H31zM33,14H34V15H33zM34,14H35V15H34zM2,15H3V16H2zM6,15H7V16H6zM11,15H12V16H11zM12,15H13V16H12zM13,15H14V16H13zM15,15H16V16H15zM17,15H18V16H17zM19,15H20V16H19zM20,15H21V16H20zM23,15H24V16H23zM26,15H27V16H26zM27,15H28V16H27zM33,15H34V16H33zM34,15H35V16H34zM2,16H3V17H2zM8,16H9V17H8zM10,16H11V17H10zM13,16H14V17H13zM16,16H17V17H16zM17,16H18V17H17zM18,16H19V17H18zM22,16H23V17H22zM23,16H24V17H23zM24,16H25V17H24zM27,16H28V17H27zM28,16H29V17H28zM29,16H30V17H29zM32,16H33V17H32zM33,16H34V17H33zM3,17H4V18H3zM4,17H5V18H4zM7,17H8V18H7zM9,17H10V18H9zM10,17H11V18H10zM13,17H14V18H13zM15,17H16V18H15zM16,17H17V18H16zM17,17H18V18H17zM23,17H24V18H23zM24,17H25V18H24zM25,17H26V18H25zM26,17H27V18H26zM27,17H28V18H27zM28,17H29V18H28zM29,17H30V18H29zM30,17H31V18H30zM31,17H32V18H31zM32,17H33V18H32zM2,18H3V19H2zM6,18H7V19H6zM7,18H8V19H7zM8,18H9V19H8zM9,18H10V19H9zM13,18H14V19H13zM14,18H15V19H14zM15,18H16V19H15zM16,18H17V19H16zM17,18H18V19H17zM19,18H20V19H19zM20,18H21V19H20zM24,18H25V19H24zM26,18H27V19H26zM27,18H28V19H27zM29,18H30V19H29zM30,18H31V19H30zM34,18H35V19H34zM4,19H5V20H4zM5,19H6V20H5zM7,19H8V20H7zM11,19H12V20H11zM12,19H13V20H12zM16,19H17V20H16zM18,19H19V20H18zM20,19H21V20H20zM21,19H22V20H21zM23,19H24V20H23zM24,19H25V20H24zM25,19H26V20H25zM26,19H27V20H26zM27,19H28V20H27zM28,19H29V20H28zM29,19H30V20H29zM31,19H32V20H31zM32,19H33V20H32zM34,19H35V20H34zM2,20H3V21H2zM3,20H4V21H3zM4,20H5V21H4zM5,20H6V21H5zM6,20H7V21H6zM7,20H8V21H7zM8,20H9V21H8zM9,20H10V21H9zM11,20H12V21H11zM13,20H14V21H13zM15,20H16V21H15zM17,20H18V21H17zM20,20H21V21H20zM22,20H23V21H22zM23,20H24V21H23zM29,20H30V21H29zM30,20H31V21H30zM32,20H33V21H32zM33,20H34V21H33zM4,21H5V22H4zM6,21H7V22H6zM9,21H10V22H9zM11,21H12V22H11zM13,21H14V22H13zM16,21H17V22H16zM17,21H18V22H17zM18,21H19V22H18zM22,21H23V22H22zM23,21H24V22H23zM24,21H25V22H24zM25,21H26V22H25zM27,21H28V22H27zM28,21H29V22H28zM29,21H30V22H29zM30,21H31V22H30zM31,21H32V22H31zM32,21H33V22H32zM33,21H34V22H33zM2,22H3V23H2zM3,22H4V23H3zM5,22H6V23H5zM7,22H8V23H7zM8,22H9V23H8zM10,22H11V23H10zM13,22H14V23H13zM17,22H18V23H17zM20,22H21V23H20zM23,22H24V23H23zM26,22H27V23H26zM27,22H28V23H27zM30,22H31V23H30zM31,22H32V23H31zM33,22H34V23H33zM34,22H35V23H34zM2,23H3V24H2zM10,23H11V24H10zM11,23H12V24H11zM12,23H13V24H12zM13,23H14V24H13zM14,23H15V24H14zM15,23H16V24H15zM17,23H18V24H17zM18,23H19V24H18zM19,23H20V24H19zM22,23H23V24H22zM23,23H24V24H23zM24,23H25V24H24zM25,23H26V24H25zM28,23H29V24H28zM34,23H35V24H34zM2,24H3V25H2zM4,24H5V25H4zM8,24H9V25H8zM9,24H10V25H9zM12,24H13V25H12zM13,24H14V25H13zM16,24H17V25H16zM19,24H20V25H19zM21,24H22V25H21zM23,24H24V25H23zM24,24H25V25H24zM27,24H28V25H27zM30,24H31V25H30zM31,24H32V25H31zM32,24H33V25H32zM33,24H34V25H33zM2,25H3V26H2zM4,25H5V26H4zM5,25H6V26H5zM9,25H10V26H9zM10,25H11V26H10zM13,25H14V26H13zM15,25H16V26H15zM18,25H19V26H18zM21,25H22V26H21zM22,25H23V26H22zM23,25H24V26H23zM25,25H26V26H25zM27,25H28V26H27zM28,25H29V26H28zM29,25H30V26H29zM32,25H33V26H32zM33,25H34V26H33zM34,25H35V26H34zM2,26H3V27H2zM4,26H5V27H4zM5,26H6V27H5zM6,26H7V27H6zM8,26H9V27H8zM10,26H11V27H10zM11,26H12V27H11zM12,26H13V27H12zM13,26H14V27H13zM18,26H19V27H18zM19,26H20V27H19zM21,26H22V27H21zM24,26H25V27H24zM26,26H27V27H26zM27,26H28V27H27zM28,26H29V27H28zM29,26H30V27H29zM30,26H31V27H30zM31,26H32V27H31zM34,26H35V27H34zM10,27H11V28H10zM11,27H12V28H11zM12,27H13V28H12zM13,27H14V28H13zM15,27H16V28H15zM18,27H19V28H18zM19,27H20V28H19zM21,27H22V28H21zM22,27H23V28H22zM24,27H25V28H24zM25,27H26V28H25zM26,27H27V28H26zM30,27H31V28H30zM32,27H33V28H32zM33,27H34V28H33zM34,27H35V28H34zM2,28H3V29H2zM3,28H4V29H3zM4,28H5V29H4zM5,28H6V29H5zM6,28H7V29H6zM7,28H8V29H7zM8,28H9V29H8zM13,28H14V29H13zM14,28H15V29H14zM16,28H17V29H16zM17,28H18V29H17zM18,28H19V29H18zM19,28H20V29H19zM24,28H25V29H24zM25,28H26V29H25zM26,28H27V29H26zM28,28H29V29H28zM30,28H31V29H30zM32,28H33V29H32zM2,29H3V30H2zM8,29H9V30H8zM10,29H11V30H10zM11,29H12V30H11zM14,29H15V30H14zM16,29H17V30H16zM17,29H18V30H17zM19,29H20V30H19zM20,29H21V30H20zM21,29H22V30H21zM25,29H26V30H25zM26,29H27V30H26zM30,29H31V30H30zM31,29H32V30H31zM32,29H33V30H32zM34,29H35V30H34zM2,30H3V31H2zM4,30H5V31H4zM5,30H6V31H5zM6,30H7V31H6zM8,30H9V31H8zM10,30H11V31H10zM12,30H13V31H12zM13,30H14V31H13zM14,30H15V31H14zM15,30H16V31H15zM17,30H18V31H17zM18,30H19V31H18zM22,30H23V31H22zM23,30H24V31H23zM24,30H25V31H24zM26,30H27V31H26zM27,30H28V31H27zM28,30H29V31H28zM29,30H30V31H29zM30,30H31V31H30zM31,30H32V31H31zM33,30H34V31H33zM2,31H3V32H2zM4,31H5V32H4zM5,31H6V32H5zM6,31H7V32H6zM8,31H9V32H8zM10,31H11V32H10zM13,31H14V32H13zM14,31H15V32H14zM16,31H17V32H16zM17,31H18V32H17zM20,31H21V32H20zM23,31H24V32H23zM25,31H26V32H25zM27,31H28V32H27zM30,31H31V32H30zM34,31H35V32H34zM2,32H3V33H2zM4,32H5V33H4zM5,32H6V33H5zM6,32H7V33H6zM8,32H9V33H8zM10,32H11V33H10zM11,32H12V33H11zM12,32H13V33H12zM13,32H14V33H13zM14,32H15V33H14zM16,32H17V33H16zM17,32H18V33H17zM18,32H19V33H18zM19,32H20V33H19zM22,32H23V33H22zM23,32H24V33H23zM24,32H25V33H24zM25,32H26V33H25zM26,32H27V33H26zM27,32H28V33H27zM28,32H29V33H28zM29,32H30V33H29zM31,32H32V33H31zM32,32H33V33H32zM2,33H3V34H2zM8,33H9V34H8zM12,33H13V34H12zM13,33H14V34H13zM15,33H16V34H15zM17,33H18V34H17zM23,33H24V34H23zM24,33H25V34H24zM25,33H26V34H25zM27,33H28V34H27zM30,33H31V34H30zM31,33H32V34H31zM32,33H33V34H32zM2,34H3V35H2zM3,34H4V35H3zM4,34H5V35H4zM5,34H6V35H5zM6,34H7V35H6zM7,34H8V35H7zM8,34H9V35H8zM10,34H11V35H10zM11,34H12V35H11zM12,34H13V35H12zM15,34H16V35H15zM16,34H17V35H16zM17,34H18V35H17zM19,34H20V35H19zM24,34H25V35H24zM25,34H26V35H25zM26,34H27V35H26zM27,34H28V35H27zM28,34H29V35H28zM29,34H30V35H29zM31,34H32V35H31zM33,34H34V35H33z" fill="#0f0f11"/></svg></div></a>
+    </div>
+  </div>
+  <aside class="notes">This isn't a proposed workflow — this film exists and you can watch it after the talk; the link's on the slide. Four and a half minutes, eight scenes, fifty-five spoken lines, and every one of those lines traces to an audited source document. Its whole artifact trail — the interview answers, the source, the script with its traces, the design prompt, the render log — is sitting in this same repository, so when you run the skill yourself, you have a complete worked example to hold your run against.</aside>
+</section>
+
+<!-- ══════════ 12 ══════════ -->
+<section class="slide" id="s12">
+  <div class="kicker">SKILL 3 · EDUCATION-VIDEO</div>
+  <div class="accent"></div>
+  <h1 class="headline">education-video runs document → script → audio → picture: the narration is recorded first and owns the timing.</h1>
+  <div class="body">
+    <div class="stack" style="gap:36px">
+      <div class="flow">
+        <div class="step">document<small>audited</small></div>
+        <div class="arr">→</div>
+        <div class="step">script<small>every line traces</small></div>
+        <div class="arr">→</div>
+        <div class="step hi" style="transform:translateY(-14px);border-width:4px">AUDIO<small>natural-voice · locked master</small></div>
+        <div class="arr">→</div>
+        <div class="step">picture<small>timed to the master</small></div>
+      </div>
+      <svg width="1300" height="200" viewBox="0 0 1300 200">
+        <g id="wave" transform="translate(60,10)"></g>
+        <g stroke="#6D4AC0" stroke-width="4" fill="none">
+          <path d="M 260 78 v46 M 620 78 v46 M 980 78 v46"/>
+        </g>
+        <text x="260" y="160" font-size="28" text-anchor="middle" fill="#4C3391" class="mono">cue 12.4s</text>
+        <text x="620" y="160" font-size="28" text-anchor="middle" fill="#4C3391" class="mono">cut 31.0s</text>
+        <text x="980" y="160" font-size="28" text-anchor="middle" fill="#4C3391" class="mono">caption</text>
+      </svg>
+      <div class="caption" style="margin-top:0"><s style="color:#b0490f">picture first, narration squeezed in</s> — the expensive way round</div>
+    </div>
+  </div>
+  <aside class="notes">The explainer skill's whole trick is the order. The document is audited first, the script is written against it — every spoken line traces to a line in the source — and then the narration is recorded before any picture exists. The finished audio master is the timing authority: caption timing and picture timing are measured off that file. Do it the other way — build the picture, then squeeze narration into it — and you get sentences cut off mid-breath and a narrator rushing the densest line. And the voice itself goes through the natural-voice skill, which is not optional: two complete soundtracks got thrown away before that method existed.</aside>
+</section>
+
+<!-- ══════════ 13 ══════════ -->
+<section class="slide" id="s13">
+  <div class="kicker">SKILL 3 · IN PRACTICE</div>
+  <div class="accent"></div>
+  <h1 class="headline">Say "make an explainer video" and you approve a script, a soundtrack and an image set — then paste one prompt into Claude Design, which returns the picture.</h1>
+  <div class="body">
+    <div class="stack" style="gap:36px">
+      <div class="bub you" style="align-self:center">make an explainer video about my project</div>
+      <div class="flow" style="gap:20px">
+        <div class="step" style="padding:20px 24px">script<small>traced ✓</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step" style="padding:20px 24px">soundtrack<small>approved under music</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step" style="padding:20px 24px">images<small>licensed ✓</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step hi" style="border-width:5px;font-size:40px;padding:30px 36px">ONE<br>PROMPT<small>works on the first paste</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step pur" style="padding:20px 24px">Claude<br>Design<small>returns an HTML page</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step" style="padding:20px 24px">your render<small>page → .mp4</small></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Here's what you actually approve, in order: the script — words and order, before anything is recorded. Then the soundtrack — and not the dry voice: the combined track, voice over music, because a voice approved dry is not a voice approved under music. Then the image set, gathered and licensed. And then the skill's last deliverable, which surprises people: it's a prompt, not a video. One self-contained message you paste into Claude Design, which designs and returns the picture as a web page that plays the film. You never draw a frame yourself — and rendering that page to an actual video file is the one part that comes back to you, because Claude Design's encoder can't do it alone.</aside>
+</section>
+
+<!-- ══════════ 14 ══════════ -->
+<section class="slide" id="s14">
+  <div class="kicker">SKILL 4 · PROOF</div>
+  <div class="accent"></div>
+  <h1 class="headline">Proof you can watch: the assembly film — 84 seconds at 2560×1440 — approved on the first viewing of draft three.</h1>
+  <div class="body">
+    <div class="cols">
+      <div class="proofcard">
+        <div class="film">The assembly film</div>
+        <div class="stats">84 s · 2520 frames · 2560×1440 · draft 3, first viewing</div>
+        <div class="linkrow"><a class="yt" href="https://www.youtube.com/watch?v=5jy-V41uGpI" target="_blank" rel="noopener">youtube.com/watch?v=5jy-V41uGpI</a></div>
+      </div>
+      <a href="https://www.youtube.com/watch?v=5jy-V41uGpI" target="_blank" rel="noopener" style="text-decoration:none"><div class="qr" style="border:3px solid var(--line);background:#fff"><svg width="180" height="180" viewBox="0 0 37 37"><path d="M2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM5,2H6V3H5zM6,2H7V3H6zM7,2H8V3H7zM8,2H9V3H8zM13,2H14V3H13zM14,2H15V3H14zM16,2H17V3H16zM20,2H21V3H20zM21,2H22V3H21zM22,2H23V3H22zM23,2H24V3H23zM25,2H26V3H25zM28,2H29V3H28zM29,2H30V3H29zM30,2H31V3H30zM31,2H32V3H31zM32,2H33V3H32zM33,2H34V3H33zM34,2H35V3H34zM2,3H3V4H2zM8,3H9V4H8zM13,3H14V4H13zM14,3H15V4H14zM17,3H18V4H17zM20,3H21V4H20zM22,3H23V4H22zM23,3H24V4H23zM28,3H29V4H28zM34,3H35V4H34zM2,4H3V5H2zM4,4H5V5H4zM5,4H6V5H5zM6,4H7V5H6zM8,4H9V5H8zM10,4H11V5H10zM13,4H14V5H13zM16,4H17V5H16zM17,4H18V5H17zM21,4H22V5H21zM23,4H24V5H23zM24,4H25V5H24zM26,4H27V5H26zM28,4H29V5H28zM30,4H31V5H30zM31,4H32V5H31zM32,4H33V5H32zM34,4H35V5H34zM2,5H3V6H2zM4,5H5V6H4zM5,5H6V6H5zM6,5H7V6H6zM8,5H9V6H8zM10,5H11V6H10zM14,5H15V6H14zM20,5H21V6H20zM23,5H24V6H23zM25,5H26V6H25zM26,5H27V6H26zM28,5H29V6H28zM30,5H31V6H30zM31,5H32V6H31zM32,5H33V6H32zM34,5H35V6H34zM2,6H3V7H2zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM10,6H11V7H10zM12,6H13V7H12zM13,6H14V7H13zM15,6H16V7H15zM16,6H17V7H16zM17,6H18V7H17zM18,6H19V7H18zM19,6H20V7H19zM22,6H23V7H22zM24,6H25V7H24zM28,6H29V7H28zM30,6H31V7H30zM31,6H32V7H31zM32,6H33V7H32zM34,6H35V7H34zM2,7H3V8H2zM8,7H9V8H8zM10,7H11V8H10zM12,7H13V8H12zM13,7H14V8H13zM15,7H16V8H15zM16,7H17V8H16zM19,7H20V8H19zM21,7H22V8H21zM24,7H25V8H24zM25,7H26V8H25zM26,7H27V8H26zM28,7H29V8H28zM34,7H35V8H34zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM10,8H11V9H10zM12,8H13V9H12zM14,8H15V9H14zM16,8H17V9H16zM18,8H19V9H18zM20,8H21V9H20zM22,8H23V9H22zM24,8H25V9H24zM26,8H27V9H26zM28,8H29V9H28zM29,8H30V9H29zM30,8H31V9H30zM31,8H32V9H31zM32,8H33V9H32zM33,8H34V9H33zM34,8H35V9H34zM10,9H11V10H10zM12,9H13V10H12zM13,9H14V10H13zM16,9H17V10H16zM18,9H19V10H18zM21,9H22V10H21zM22,9H23V10H22zM23,9H24V10H23zM24,9H25V10H24zM25,9H26V10H25zM2,10H3V11H2zM4,10H5V11H4zM5,10H6V11H5zM6,10H7V11H6zM7,10H8V11H7zM8,10H9V11H8zM11,10H12V11H11zM12,10H13V11H12zM14,10H15V11H14zM15,10H16V11H15zM16,10H17V11H16zM19,10H20V11H19zM21,10H22V11H21zM24,10H25V11H24zM25,10H26V11H25zM28,10H29V11H28zM29,10H30V11H29zM30,10H31V11H30zM31,10H32V11H31zM32,10H33V11H32zM2,11H3V12H2zM4,11H5V12H4zM5,11H6V12H5zM6,11H7V12H6zM7,11H8V12H7zM10,11H11V12H10zM11,11H12V12H11zM12,11H13V12H12zM13,11H14V12H13zM15,11H16V12H15zM16,11H17V12H16zM18,11H19V12H18zM19,11H20V12H19zM20,11H21V12H20zM21,11H22V12H21zM22,11H23V12H22zM24,11H25V12H24zM25,11H26V12H25zM28,11H29V12H28zM29,11H30V12H29zM31,11H32V12H31zM32,11H33V12H32zM34,11H35V12H34zM4,12H5V13H4zM6,12H7V13H6zM8,12H9V13H8zM9,12H10V13H9zM10,12H11V13H10zM12,12H13V13H12zM13,12H14V13H13zM14,12H15V13H14zM15,12H16V13H15zM16,12H17V13H16zM17,12H18V13H17zM18,12H19V13H18zM19,12H20V13H19zM24,12H25V13H24zM26,12H27V13H26zM30,12H31V13H30zM32,12H33V13H32zM33,12H34V13H33zM2,13H3V14H2zM4,13H5V14H4zM6,13H7V14H6zM7,13H8V14H7zM9,13H10V14H9zM13,13H14V14H13zM15,13H16V14H15zM19,13H20V14H19zM20,13H21V14H20zM21,13H22V14H21zM22,13H23V14H22zM25,13H26V14H25zM27,13H28V14H27zM30,13H31V14H30zM31,13H32V14H31zM32,13H33V14H32zM33,13H34V14H33zM7,14H8V15H7zM8,14H9V15H8zM9,14H10V15H9zM11,14H12V15H11zM16,14H17V15H16zM17,14H18V15H17zM18,14H19V15H18zM21,14H22V15H21zM22,14H23V15H22zM23,14H24V15H23zM24,14H25V15H24zM25,14H26V15H25zM26,14H27V15H26zM27,14H28V15H27zM30,14H31V15H30zM31,14H32V15H31zM33,14H34V15H33zM2,15H3V16H2zM6,15H7V16H6zM7,15H8V16H7zM10,15H11V16H10zM11,15H12V16H11zM13,15H14V16H13zM15,15H16V16H15zM17,15H18V16H17zM19,15H20V16H19zM20,15H21V16H20zM23,15H24V16H23zM26,15H27V16H26zM27,15H28V16H27zM28,15H29V16H28zM29,15H30V16H29zM33,15H34V16H33zM34,15H35V16H34zM2,16H3V17H2zM4,16H5V17H4zM5,16H6V17H5zM8,16H9V17H8zM9,16H10V17H9zM10,16H11V17H10zM13,16H14V17H13zM16,16H17V17H16zM17,16H18V17H17zM18,16H19V17H18zM22,16H23V17H22zM23,16H24V17H23zM24,16H25V17H24zM27,16H28V17H27zM28,16H29V17H28zM29,16H30V17H29zM33,16H34V17H33zM3,17H4V18H3zM7,17H8V18H7zM9,17H10V18H9zM13,17H14V18H13zM15,17H16V18H15zM16,17H17V18H16zM17,17H18V18H17zM23,17H24V18H23zM24,17H25V18H24zM26,17H27V18H26zM27,17H28V18H27zM28,17H29V18H28zM31,17H32V18H31zM32,17H33V18H32zM2,18H3V19H2zM4,18H5V19H4zM6,18H7V19H6zM7,18H8V19H7zM8,18H9V19H8zM9,18H10V19H9zM13,18H14V19H13zM14,18H15V19H14zM15,18H16V19H15zM16,18H17V19H16zM17,18H18V19H17zM19,18H20V19H19zM20,18H21V19H20zM24,18H25V19H24zM25,18H26V19H25zM26,18H27V19H26zM27,18H28V19H27zM29,18H30V19H29zM30,18H31V19H30zM31,18H32V19H31zM34,18H35V19H34zM2,19H3V20H2zM4,19H5V20H4zM5,19H6V20H5zM6,19H7V20H6zM7,19H8V20H7zM11,19H12V20H11zM12,19H13V20H12zM15,19H16V20H15zM16,19H17V20H16zM18,19H19V20H18zM20,19H21V20H20zM21,19H22V20H21zM23,19H24V20H23zM24,19H25V20H24zM25,19H26V20H25zM26,19H27V20H26zM27,19H28V20H27zM28,19H29V20H28zM29,19H30V20H29zM31,19H32V20H31zM32,19H33V20H32zM33,19H34V20H33zM34,19H35V20H34zM3,20H4V21H3zM4,20H5V21H4zM5,20H6V21H5zM6,20H7V21H6zM7,20H8V21H7zM8,20H9V21H8zM9,20H10V21H9zM11,20H12V21H11zM13,20H14V21H13zM15,20H16V21H15zM17,20H18V21H17zM20,20H21V21H20zM22,20H23V21H22zM23,20H24V21H23zM27,20H28V21H27zM29,20H30V21H29zM30,20H31V21H30zM32,20H33V21H32zM2,21H3V22H2zM3,21H4V22H3zM4,21H5V22H4zM6,21H7V22H6zM7,21H8V22H7zM9,21H10V22H9zM12,21H13V22H12zM13,21H14V22H13zM17,21H18V22H17zM18,21H19V22H18zM22,21H23V22H22zM23,21H24V22H23zM24,21H25V22H24zM25,21H26V22H25zM27,21H28V22H27zM29,21H30V22H29zM30,21H31V22H30zM31,21H32V22H31zM32,21H33V22H32zM33,21H34V22H33zM3,22H4V23H3zM8,22H9V23H8zM13,22H14V23H13zM14,22H15V23H14zM17,22H18V23H17zM20,22H21V23H20zM23,22H24V23H23zM26,22H27V23H26zM27,22H28V23H27zM30,22H31V23H30zM31,22H32V23H31zM33,22H34V23H33zM34,22H35V23H34zM2,23H3V24H2zM9,23H10V24H9zM10,23H11V24H10zM11,23H12V24H11zM12,23H13V24H12zM14,23H15V24H14zM15,23H16V24H15zM16,23H17V24H16zM17,23H18V24H17zM18,23H19V24H18zM19,23H20V24H19zM22,23H23V24H22zM23,23H24V24H23zM24,23H25V24H24zM29,23H30V24H29zM34,23H35V24H34zM2,24H3V25H2zM4,24H5V25H4zM5,24H6V25H5zM8,24H9V25H8zM10,24H11V25H10zM12,24H13V25H12zM14,24H15V25H14zM16,24H17V25H16zM19,24H20V25H19zM21,24H22V25H21zM23,24H24V25H23zM24,24H25V25H24zM26,24H27V25H26zM27,24H28V25H27zM29,24H30V25H29zM30,24H31V25H30zM31,24H32V25H31zM32,24H33V25H32zM33,24H34V25H33zM2,25H3V26H2zM5,25H6V26H5zM9,25H10V26H9zM14,25H15V26H14zM15,25H16V26H15zM18,25H19V26H18zM21,25H22V26H21zM22,25H23V26H22zM23,25H24V26H23zM26,25H27V26H26zM27,25H28V26H27zM28,25H29V26H28zM32,25H33V26H32zM33,25H34V26H33zM34,25H35V26H34zM2,26H3V27H2zM4,26H5V27H4zM5,26H6V27H5zM6,26H7V27H6zM8,26H9V27H8zM10,26H11V27H10zM11,26H12V27H11zM12,26H13V27H12zM13,26H14V27H13zM18,26H19V27H18zM19,26H20V27H19zM21,26H22V27H21zM24,26H25V27H24zM26,26H27V27H26zM27,26H28V27H27zM28,26H29V27H28zM29,26H30V27H29zM30,26H31V27H30zM34,26H35V27H34zM10,27H11V28H10zM11,27H12V28H11zM12,27H13V28H12zM13,27H14V28H13zM18,27H19V28H18zM19,27H20V28H19zM21,27H22V28H21zM22,27H23V28H22zM24,27H25V28H24zM25,27H26V28H25zM26,27H27V28H26zM30,27H31V28H30zM32,27H33V28H32zM33,27H34V28H33zM34,27H35V28H34zM2,28H3V29H2zM3,28H4V29H3zM4,28H5V29H4zM5,28H6V29H5zM6,28H7V29H6zM7,28H8V29H7zM8,28H9V29H8zM13,28H14V29H13zM14,28H15V29H14zM15,28H16V29H15zM17,28H18V29H17zM18,28H19V29H18zM19,28H20V29H19zM24,28H25V29H24zM25,28H26V29H25zM26,28H27V29H26zM28,28H29V29H28zM30,28H31V29H30zM32,28H33V29H32zM2,29H3V30H2zM8,29H9V30H8zM10,29H11V30H10zM14,29H15V30H14zM15,29H16V30H15zM17,29H18V30H17zM19,29H20V30H19zM20,29H21V30H20zM21,29H22V30H21zM25,29H26V30H25zM26,29H27V30H26zM30,29H31V30H30zM31,29H32V30H31zM32,29H33V30H32zM34,29H35V30H34zM2,30H3V31H2zM4,30H5V31H4zM5,30H6V31H5zM6,30H7V31H6zM8,30H9V31H8zM10,30H11V31H10zM12,30H13V31H12zM13,30H14V31H13zM14,30H15V31H14zM15,30H16V31H15zM17,30H18V31H17zM18,30H19V31H18zM22,30H23V31H22zM23,30H24V31H23zM24,30H25V31H24zM26,30H27V31H26zM27,30H28V31H27zM28,30H29V31H28zM29,30H30V31H29zM30,30H31V31H30zM31,30H32V31H31zM33,30H34V31H33zM2,31H3V32H2zM4,31H5V32H4zM5,31H6V32H5zM6,31H7V32H6zM8,31H9V32H8zM10,31H11V32H10zM12,31H13V32H12zM14,31H15V32H14zM16,31H17V32H16zM17,31H18V32H17zM20,31H21V32H20zM23,31H24V32H23zM25,31H26V32H25zM27,31H28V32H27zM30,31H31V32H30zM31,31H32V32H31zM34,31H35V32H34zM2,32H3V33H2zM4,32H5V33H4zM5,32H6V33H5zM6,32H7V33H6zM8,32H9V33H8zM10,32H11V33H10zM11,32H12V33H11zM12,32H13V33H12zM16,32H17V33H16zM17,32H18V33H17zM18,32H19V33H18zM19,32H20V33H19zM22,32H23V33H22zM23,32H24V33H23zM24,32H25V33H24zM25,32H26V33H25zM26,32H27V33H26zM27,32H28V33H27zM28,32H29V33H28zM29,32H30V33H29zM31,32H32V33H31zM32,32H33V33H32zM2,33H3V34H2zM8,33H9V34H8zM12,33H13V34H12zM13,33H14V34H13zM14,33H15V34H14zM15,33H16V34H15zM17,33H18V34H17zM23,33H24V34H23zM24,33H25V34H24zM25,33H26V34H25zM27,33H28V34H27zM30,33H31V34H30zM31,33H32V34H31zM32,33H33V34H32zM2,34H3V35H2zM3,34H4V35H3zM4,34H5V35H4zM5,34H6V35H5zM6,34H7V35H6zM7,34H8V35H7zM8,34H9V35H8zM10,34H11V35H10zM11,34H12V35H11zM12,34H13V35H12zM15,34H16V35H15zM16,34H17V35H16zM17,34H18V35H17zM19,34H20V35H19zM24,34H25V35H24zM25,34H26V35H25zM26,34H27V35H26zM27,34H28V35H27zM28,34H29V35H28zM29,34H30V35H29zM31,34H32V35H31zM32,34H33V35H32zM33,34H34V35H33z" fill="#0f0f11"/></svg></div></a>
+    </div>
+  </div>
+  <aside class="notes">The showoff skill's proof first, method next — link on the slide. Eighty-four seconds, 2560 by 1440, clean on every check, and approved on the first viewing of the third draft. The honest part of that sentence is 'third draft': draft one and draft two had real faults, humans found them cheaply at low resolution, and the fixes happened before the expensive render. The skill's whole job is making sure the expensive render only happens once. The full story — what each draft got wrong and what it cost — is in the render log, in this repository.</aside>
+</section>
+
+<!-- ══════════ 15 ══════════ -->
+<section class="slide" id="s15">
+  <div class="kicker">SKILL 4 · SHOWOFF-RENDER</div>
+  <div class="accent"></div>
+  <h1 class="headline">showoff-render films hardware: CAD readiness → stills → motion → drafts → frozen final, and nothing renders until the CAD checks pass.</h1>
+  <div class="body">
+    <div class="stack" style="gap:34px">
+      <div class="flow" style="gap:20px">
+        <div class="step hi" style="padding:20px 24px">CAD<br>readiness</div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step" style="padding:20px 24px">stills<small>colour picked<br>at final quality</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step" style="padding:20px 24px">motion<small>tables + a<br>measured price</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step" style="padding:20px 24px">drafts<small>watched,<br>end to end</small></div>
+        <div class="arr" style="font-size:40px">→</div>
+        <div class="step pur" style="padding:20px 24px">frozen<br>final 🔒<small>one camera edit once<br>voided 421 frames</small></div>
+      </div>
+      <div class="flow" style="gap:14px;flex-wrap:wrap;justify-content:center;max-width:1660px">
+        <span class="tag">✓ model on disk</span><span class="tag">✓ not gitignored</span><span class="tag">✓ assembly-complete</span>
+        <span class="tag">✓ colours vs photos</span><span class="tag">✓ instance count</span><span class="tag">✓ DNP parts</span>
+        <span class="tag">✓ revision frozen</span><span class="tag">✓ swaps named</span>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">The showoff skill is the same gate discipline pointed at Blender, and its first gate is the one that saves you real money: nothing renders — not a draft, not a probe frame — until eight checks on the CAD pass. Is every on-camera part actually on disk. Is a model hiding behind gitignore. Do the colours match photographs of the real part — STEP colours lie; a connector shipped near-white when the real one is beige. Is the revision frozen. Each of those checks exists because skipping it once cost real render-hours. And at the far end, the camera freezes before the final render, because a camera edit voids every finished frame — four hundred and twenty-one finished frames went exactly that way once.</aside>
+</section>
+
+<!-- ══════════ 16 ══════════ -->
+<section class="slide" id="s16">
+  <div class="kicker">SKILL 4 · IN PRACTICE</div>
+  <div class="accent"></div>
+  <h1 class="headline">Say "make the board look amazing" and the costs stay honest: render hours are measured from probe frames, and you watch every draft.</h1>
+  <div class="body">
+    <div class="cols" style="gap:70px">
+      <div class="stack" style="gap:18px">
+        <div class="flow" style="gap:14px">
+          <svg width="120" height="90" viewBox="0 0 120 90"><rect x="4" y="4" width="112" height="82" rx="10" fill="#2f6f4f"/><rect x="20" y="22" width="40" height="24" rx="4" fill="#F5F3EE"/></svg>
+          <svg width="120" height="90" viewBox="0 0 120 90"><rect x="4" y="4" width="112" height="82" rx="10" fill="#4C3391"/><rect x="20" y="22" width="40" height="24" rx="4" fill="#F5F3EE"/></svg>
+          <svg width="120" height="90" viewBox="0 0 120 90"><rect x="4" y="4" width="112" height="82" rx="10" fill="#0f0f11"/><rect x="20" y="22" width="40" height="24" rx="4" fill="#F5F3EE"/></svg>
+        </div>
+        <div class="caption" style="margin-top:0">colour picked on stills,<br>before any motion</div>
+      </div>
+      <div class="stack" style="gap:14px">
+        <svg id="costchart" width="560" height="240" viewBox="0 0 560 240"></svg>
+        <div class="caption" style="margin-top:0">hours <b>measured from probe frames</b>,<br>approved against your budget</div>
+      </div>
+      <div class="stack" style="gap:18px">
+        <svg width="360" height="160" viewBox="0 0 360 160">
+          <g fill="none" stroke="#0f0f11" stroke-width="4">
+            <rect x="4" y="10" width="100" height="70" rx="8"/><rect x="130" y="10" width="100" height="70" rx="8"/><rect x="256" y="10" width="100" height="70" rx="8"/>
+          </g>
+          <g stroke="#0F766E" stroke-width="5" fill="none" stroke-linecap="round">
+            <path d="M 145 126 q 35 -32 70 0 q -35 32 -70 0 z"/><circle cx="180" cy="126" r="8" fill="#0F766E"/>
+          </g>
+        </svg>
+        <div class="caption" style="margin-top:0">drafts <b>watched, not scored</b> —<br>every fault that mattered<br>was found by a human</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Three things keep this from eating your week. Colour gets decided on final-quality stills before any motion exists, because it's a lighting decision, and changing it later invalidates everything. Cost gets measured, not guessed: a handful of probe frames at final quality price the whole render — on the assembly film the guess said ten and a half hours and the measurement said sixteen — and you approve those hours against the budget you gave in the interview, before a single draft frame renders. And drafts get watched. Not scored, watched. On the assembly film, every fault that mattered was caught by a human watching a draft, and not one by the automated checks. The checks bound what they measure; your eyes find what's wrong.</aside>
+</section>
+
+<!-- ══════════ 17 ══════════ -->
+<section class="slide" id="s17">
+  <div class="kicker">START</div>
+  <div class="accent"></div>
+  <h1 class="headline">Starting costs one sentence in Claude Code: name the output you want, and the interview takes it from there.</h1>
+  <div class="body">
+    <div class="cols" style="gap:56px;align-items:flex-start">
+      <div class="term">
+        <div class="ln"><span class="d"># once</span></div>
+        <div class="ln"><span class="p">&gt;</span> install the skills from <span class="c">&lt;path to this repo&gt;</span> into my project</div>
+        <div class="ln"><span class="d">  ✓ skills + the video/ tree they depend on — copied, links verified</span></div>
+        <div class="ln">&nbsp;</div>
+        <div class="ln"><span class="d"># every time, in your own project</span></div>
+        <div class="ln"><span class="p">&gt;</span> write up this project as a report</div>
+        <div class="ln"><span class="d">  - [ ] GATE 0  the interview</span></div>
+        <div class="ln"><span class="d">  - [ ] GATE 1  the evidence map …</span></div>
+        <div class="ln">  Ready to begin?</div>
+      </div>
+      <div class="sider">
+        <div class="alt">…or: <b>"make slides about this project"</b></div>
+        <div class="alt">…or: <b>"make an explainer video"</b></div>
+        <div class="alt">…or: <b>"make the board look amazing"</b></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">So here's everything you actually have to do. Once: copy the path of this skills repo, and ask Claude to install it into your project — its installer carries the skills and the method tree they point into, and checks every link on arrival. Don't try to make them global under your home directory; the installer refuses, because the skills would lose the tree they read from. From then on, starting costs one sentence in your own project; the four on screen are lifted from the skills' own trigger lists. You'll get the plan as a checklist, then the interview — and the first question is always where do your files go, because your project's files live in your project, never inside the tooling. Two house rules and I'm done: answer the interview honestly, especially about what's measured versus what's only intended — the deliverable inherits your answers. And the skills themselves are read-only; if a run needs something changed, write it down with your project, don't edit the skill.</aside>
+</section>
+
+<!-- ══════════ 18 ══════════ -->
+<section class="slide" id="s18">
+  <div class="body" style="flex-direction:column;gap:60px;justify-content:center">
+    <div class="accent" style="margin:0"></div>
+    <h1 class="headline" style="font-size:76px;max-width:1520px">Name the output, answer the interview, and the gates carry you to a delivered report, deck, or video.</h1>
+    <div class="flow" style="gap:34px">
+      <span class="tag">technical-report</span><span class="tag">slide-deck</span>
+      <span class="tag">education-video</span><span class="tag">showoff-render</span>
+    </div>
+    <div class="flow" style="gap:34px">
+      <a class="yt" href="https://www.youtube.com/watch?v=mXi9sxOSgwc" target="_blank" rel="noopener">youtube.com/watch?v=mXi9sxOSgwc</a><a class="yt" href="https://www.youtube.com/watch?v=5jy-V41uGpI" target="_blank" rel="noopener">youtube.com/watch?v=5jy-V41uGpI</a>
+    </div>
+  </div>
+  <aside class="notes">That's the whole method in one sentence. Name the output. Answer the interview. Approve the gates. The two films on the links are what came out the other side of exactly this process — nothing on them was hand-animated, and nothing in them says more than its source could defend. Questions.</aside>
+</section>
+
+</div></div>
+<div class="counter" id="counter">1 / 18</div>
+<script>
+// ── deck runtime ──────────────────────────────────────────────
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+function show(n){cur=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,i)=>s.classList.toggle('current',i===cur));
+  document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;}
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);
+  document.getElementById('deck').style.transform='scale('+s+')';}
+addEventListener('resize',fit);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);
+  if(e.key==='Home')show(0); if(e.key==='End')show(slides.length-1);
+  if(e.key==='f'||e.key==='F')document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();});
+addEventListener('click',e=>{if(e.target.closest('a'))return;if(e.clientX>innerWidth/2)show(cur+1);else show(cur-1);});
+
+// ── slide 12: deterministic waveform (no randomness — reproducible renders) ──
+(()=>{const g=document.getElementById('wave');let x=0,bars=[];
+for(let i=0;i<72;i++){const h=26+22*Math.sin(i*0.7)+14*Math.sin(i*2.3)+8*Math.sin(i*5.1);
+bars.push('<rect x="'+(i*16.5)+'" y="'+(64-Math.abs(h))+'" width="9" height="'+(2*Math.abs(h))+'" rx="4" fill="#0F766E"/>');}
+g.innerHTML=bars.join('')+'<rect x="0" y="130" width="1188" height="0"/>';})();
+
+// ── slide 16: cost chart GENERATED FROM THE NUMBERS it plots ──
+// guess 10.5 h vs measured 16.1 h — showoff-render SKILL.md GATE 3 (RENDER-LOG.md)
+(()=>{const data=[{label:'the guess',v:10.5,color:'#B9A6F2'},{label:'measured',v:16.1,color:'#0F766E'}];
+const max=Math.max(...data.map(d=>d.v)),W=380,x0=170;
+const svg=document.getElementById('costchart');let out='';
+data.forEach((d,i)=>{const y=30+i*100,w=W*d.v/max;
+out+='<text x="'+(x0-16)+'" y="'+(y+42)+'" font-size="29" text-anchor="end" fill="#0f0f11">'+d.label+'</text>';
+out+='<rect x="'+x0+'" y="'+y+'" width="'+w+'" height="62" rx="10" fill="'+d.color+'"/>';
+out+='<text x="'+(x0+w-14)+'" y="'+(y+42)+'" font-size="30" font-weight="700" text-anchor="end" fill="#fff" class="mono">'+d.v.toFixed(1)+' h</text>';});
+svg.innerHTML=out;})();
+
+show(0);fit();
+</script>
+</body>
+</html>

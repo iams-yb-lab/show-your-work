@@ -46,9 +46,18 @@ way.
 .claude/skills/     the five skills — three byte-identical to the repository they came from,
                     technical-report and slide-deck born here (see EXPORT-MANIFEST.md)
 video/              the method, the shared tooling and the films' logs — see video/README.md
+presentation/       the how-to-use-the-skills deck: slide-deck's own first evidence, and a
+                    worked example of what a run of these skills produces. Does not install
+proposals/          why the skills were changed, one record per authorized edit
 tools/              install_skills.py, check_links.py
 EXPORT-MANIFEST.md  what was carried out of the source repository, and what was not
 ```
+
+`presentation/` is the one thing here that is an *output* rather than a method, and it earns the
+exception twice over: its subject is this repository, so it has no other project to live in, and
+it is the only evidence `slide-deck` has — that skill was written without a reference deck, and
+this is the deck that tested it. It is not in the install payload, so it costs a target project
+nothing. It is not a precedent for films: those still live in the project they are about.
 
 ## Installing elsewhere
 

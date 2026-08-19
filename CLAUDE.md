@@ -28,6 +28,13 @@ explicitly and it applies to this whole directory.
 What may be added here: a new voice profile under `video/natural-voice/profiles/`, a fix to shared
 tooling in `video/engine/` or `video/picture/`, or a correction to a method document.
 
+`presentation/` is the standing exception, not a loophole. It is the how-to-use-the-skills deck:
+its subject *is* this repository, so there is no project elsewhere for it to live in, and it is
+the only evidence `slide-deck` has. Its home was fixed at that deck's GATE 0 interview, not
+defaulted to. It is outside the install payload, so it never reaches a target project. **Leave it
+where it is** — and do not read it as permission for a second one. Anything about another project
+goes to that project.
+
 ## The geometry is load-bearing
 
 `natural-voice/SKILL.md` reaches its method by `../../../video/natural-voice/README.md`. That is

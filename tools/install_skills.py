@@ -32,7 +32,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# What travels. `video/` goes whole: it is 2.6 MB, and a partial copy is how a link starts dangling.
+# What travels. `video/` goes whole — a partial copy is how a link starts dangling. It is 108 MB,
+# not the 2.6 MB this comment claimed until 2026-08-19: most of it is two 27 MB Claude Design
+# bundles, an 18 MB master and 34 MB of render gallery, i.e. the films' picture, which
+# EXPORT-MANIFEST.md records as unreproducible without these exact files. Installing copies all
+# of it. `presentation/` and `proposals/` are deliberately not here — evidence about this
+# repository, of no use in a target project.
 PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt"]
 
 SKIP_DIRS = {".git", "__pycache__", "out", ".venv", "venv", "node_modules"}

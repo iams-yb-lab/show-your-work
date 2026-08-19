@@ -15,7 +15,40 @@ different skill. Verified by `tools/check_links.py`, which reads `tools/skill-ha
 | `.claude/skills/education-video/interview.md` | `fa7a570e313f1d84` |
 | `.claude/skills/education-video/images.md` | `81b65b43ae00363c` |
 | `.claude/skills/natural-voice/SKILL.md` | `1b11e1ec4bbf2538` |
-| `.claude/skills/showoff-render/SKILL.md` | `8805cef3fc262996` |
+| `.claude/skills/showoff-render/SKILL.md` | `8805cef3fc262996` — superseded, see below |
+
+## Edited after export
+
+On 2026-08-17 the user authorized, with the exact phrase, a rewrite of
+`.claude/skills/showoff-render/SKILL.md`: the run protocol from `education-video` (interview,
+posted checklist, named gates, user-owned approvals) wrapped around the existing rules, which
+carried word-for-word. The design and its rationale are in `proposals/showoff-render-wrapper.md`.
+New hash `8abf7da6eed3dc44`, blessed into `tools/skill-hashes.txt`. **This copy now leads the
+source repository** — the same edit still needs to land at the source, at which point the two are
+byte-identical again.
+
+## Added after export
+
+On 2026-08-18 the user authorized, with the exact phrase, the creation of a fourth skill:
+`.claude/skills/technical-report/SKILL.md` — plain-English technical reports for readers with
+background but no project context, distilled from the source project's design report
+(`docs/design-report-v2.md` there, cited as history, never as a live path). It originates in this
+repository and has no source-repository counterpart to be byte-identical to. The analysis behind
+it, the pipeline rationale and the two-reviewer verification record are in
+[`proposals/technical-report-skill.md`](proposals/technical-report-skill.md). It links to
+nothing — the first skill with no `video/` dependency. Hash `e751dcf302480871`, blessed into
+`tools/skill-hashes.txt`.
+
+On 2026-08-18 the user authorized, with the exact phrase, the creation of a fifth skill:
+`.claude/skills/slide-deck/SKILL.md` — slide decks, spoken over or read alone, built as one
+self-contained HTML master. Like `technical-report` it originates here, and it is the **second
+skill that links to nothing**, so it travels alone. Unlike every other skill in this repository
+it was **not distilled from a produced artifact** — there is no reference deck; it carries the
+three gate-run siblings' protocol and states its slide craft as method rather than measurement,
+and it says so about itself. The proposal, the pipeline rationale and the two-reviewer
+verification record are in [`proposals/slide-deck-skill.md`](proposals/slide-deck-skill.md);
+the first deck it produces is its first evidence, and that evidence stays with the deck. Hash
+`1ecd48bc86bef336`, blessed into `tools/skill-hashes.txt`.
 
 ## What came with them, and why it had to
 

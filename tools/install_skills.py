@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install the three skills, and the tree they point into, in another project.
+"""Install the skills, and the tree they point into, in another project.
 
     python tools/install_skills.py /path/to/project           # install
     python tools/install_skills.py /path/to/project --check   # say what it would do, change nothing

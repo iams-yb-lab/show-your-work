@@ -1,12 +1,15 @@
 # ai_video_generation
 
-Three skills for making video with Claude, and the evidence behind them.
+Five skills — three for making video with Claude, two for the documents a film rests on and the
+room a project gets presented in — and the evidence behind them.
 
 | skill | what it covers |
 |---|---|
 | [`natural-voice`](.claude/skills/natural-voice/SKILL.md) | any generated or synthetic speech — TTS, narration, cloning, dubbing, mixing |
 | [`education-video`](.claude/skills/education-video/SKILL.md) | explainers: document → script → audio → picture, in that order |
 | [`showoff-render`](.claude/skills/showoff-render/SKILL.md) | cinematic 3D renders and assembly animations of hardware |
+| [`technical-report`](.claude/skills/technical-report/SKILL.md) | reports that stand alone: evidence → skeleton → sections → cold read |
+| [`slide-deck`](.claude/skills/slide-deck/SKILL.md) | decks, spoken over or read alone: source → storyline → slides → build → cold pass |
 
 They are already installed. Open a Claude Code session in this directory and they load — project
 skills live at `.claude/skills/<name>/SKILL.md`, which is where these are.
@@ -33,10 +36,15 @@ Move either half without the other and the skills still load, still sound author
 quietly stop being able to tell you the thing they exist to tell you. `tools/check_links.py`
 exists to catch precisely that.
 
+`technical-report` and `slide-deck` are the exceptions: they link to nothing, so those two alone
+would survive traveling without the tree — `install_skills.py` copies the payload whole either
+way.
+
 ## Layout
 
 ```
-.claude/skills/     the three skills, byte-identical to the repository they came from
+.claude/skills/     the five skills — three byte-identical to the repository they came from,
+                    technical-report and slide-deck born here (see EXPORT-MANIFEST.md)
 video/              the method, the shared tooling and the films' logs — see video/README.md
 tools/              install_skills.py, check_links.py
 EXPORT-MANIFEST.md  what was carried out of the source repository, and what was not

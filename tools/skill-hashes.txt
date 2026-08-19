@@ -5,4 +5,6 @@
 fa7a570e313f1d84b6a8b4a136355f415e0405b710ebf7f08a3d09d6182f92ec  .claude/skills/education-video/interview.md
 99a16be0ad1e7866618390bfe93fb00248bbb6458fa0addbe847e1dbdb47106a  .claude/skills/education-video/SKILL.md
 1b11e1ec4bbf2538fce45b2defe11b3e8982cff0f4f7fba139a63d26173e5f1b  .claude/skills/natural-voice/SKILL.md
-8805cef3fc262996656234949071652d90eb7eb4f5171bfd49fb599e5273aa6a  .claude/skills/showoff-render/SKILL.md
+8abf7da6eed3dc44b3d1f0c1feeea6ea23949436ddd655b8e47d994e900ee3dc  .claude/skills/showoff-render/SKILL.md
+1ecd48bc86bef336d612b1aef1055f2ca83723bc2ea976b2e8c0fe9958fc9213  .claude/skills/slide-deck/SKILL.md
+e751dcf3024808718e5cc1a6949e581c352fe132efa87a384f9e5d8d002d172b  .claude/skills/technical-report/SKILL.md

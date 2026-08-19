@@ -1,4 +1,4 @@
-# ai_video_generation
+# show-your-work
 
 Five skills — three for making video with Claude, two for the documents a film rests on and the
 room a project gets presented in — and the evidence behind them.

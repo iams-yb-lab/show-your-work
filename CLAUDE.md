@@ -1,4 +1,4 @@
-# ai_video_generation — how we work
+# show-your-work — how we work
 
 This repository is five skills and the evidence behind them. [`README.md`](README.md) is the map.
 Nothing here is a film; films are made *elsewhere, using* this.

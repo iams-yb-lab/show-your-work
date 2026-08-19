@@ -3,8 +3,12 @@
 Interviewed 2026-08-18. These answers are the deck's contract; GATES 1–5 check against them.
 
 ## Home
-`c:\ai_video_generation_skills\presentation\` — storyline, slide scripts, HTML master,
-exports, cross-check tool and cold-pass record all land here. Never next to the skills.
+`presentation/` at the repository root — storyline, slide scripts, HTML master, exports,
+cross-check tool and cold-pass record all land here. Never next to the skills.
+
+*Agreed at the interview as `c:\ai_video_generation_skills\presentation\`. The repository was
+renamed to `show-your-work` on 2026-08-19, after delivery; the answer itself is unchanged, and
+is written relative to the root now so the next move does not invalidate it.*
 
 ## Mode
 **Talk deck — spoken over.** Sparse slides; the meaning lives in the speaker notes.

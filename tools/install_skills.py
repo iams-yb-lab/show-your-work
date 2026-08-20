@@ -4,6 +4,7 @@
     python tools/install_skills.py /path/to/project           # install
     python tools/install_skills.py /path/to/project --check   # say what it would do, change nothing
     python tools/install_skills.py /path/to/project --force   # overwrite files that differ
+    python tools/install_skills.py /path/to/project --update  # bring an existing install up to date
 
 Why this is not `cp -r .claude/skills`:
 
@@ -20,10 +21,18 @@ identical `video/` tree; it is otherwise the wrong flag.
 Installing into `~/.claude/skills` to make the skills global does not work and is refused: from
 there the link resolves to `~/video/natural-voice/README.md`, which is not a thing.
 
-It also wires the feedback loop into the target, unless you pass --no-feedback-hook: two hooks that
-read `feedback/lessons/<skill>.md` into a run and push what went wrong back here as a pull request.
-That writes two entries into the target's `.claude/settings.json` and says so. Without it the skills
-still work; they just cannot learn from the run, and nothing comes back to the lab.
+It also wires two things into the target's `.claude/settings.json`, and says which:
+
+  the feedback loop (--no-feedback-hook opts out)   reads `feedback/lessons/<skill>.md` into a run
+      and pushes what went wrong back here as a pull request. Without it the skills still work;
+      they just cannot learn from the run, and nothing comes back to the lab.
+
+  the update check (--no-update-hook opts out)      at the start of a session, `video/tools/update.py`
+      asks GitHub whether there is a newer version and installs it. Without it the project keeps the
+      version it was installed with, for as long as it exists, and nobody finds out.
+
+`--update` is the mode that check runs: replace the files that are read-only by contract when they
+differ, add anything missing, leave the project's own edits to `video/` alone and name them.
 """
 
 from __future__ import annotations
@@ -32,6 +41,7 @@ import argparse
 import filecmp
 import hashlib
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -46,7 +56,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # repository, of no use in a target project. `feedback/lessons/` travels because the friction
 # hook reads it back into every run; `feedback/inbox/` does not — that is evidence too.
 PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt",
-           "tools/friction.py", "feedback/lessons"]
+           "tools/friction.py", "tools/update.py", "feedback/lessons"]
 
 # Where each of those lands in the target. `.claude/skills/` and `video/` are forced: a project's
 # skills must sit at its root to be discovered at all, and `natural-voice/SKILL.md` reaches its
@@ -61,6 +71,18 @@ def dest_of(rel: str) -> str:
         if rel.startswith(src):
             return dst + rel[len(src):]
     return rel
+
+# Target-relative paths whose content is not the project's to own: the skills are read-only by
+# rule, the tools and the reviewed lessons are shared machinery, and all three are byte-identical
+# to the checkout by design. So `--update` replaces them when they differ, because a difference
+# there is damage or staleness rather than work. Everything else in video/ is method and record:
+# added when missing, never overwritten without --force.
+CONTRACT = (".claude/skills/", "video/tools/", "video/feedback/lessons/")
+
+
+def is_contract(dest: str) -> bool:
+    return dest.startswith(CONTRACT)
+
 
 SKIP_DIRS = {".git", "__pycache__", "out", ".venv", "venv", "node_modules"}
 
@@ -102,26 +124,54 @@ def refuse_global(target: Path) -> str | None:
 
 
 FRICTION = '${CLAUDE_PROJECT_DIR:-.}/' + dest_of("tools/friction.py")
+UPDATER = '${CLAUDE_PROJECT_DIR:-.}/' + dest_of("tools/update.py")
 
-HOOKS = {
-    "PostToolUse": [{
-        "matcher": "Skill",
-        "hooks": [{"type": "command", "command": f'python3 "{FRICTION}" brief', "timeout": 10,
-                   "statusMessage": "Reading what this skill got wrong before"}],
-    }],
-    "Stop": [{
-        "hooks": [
-            {"type": "command", "command": f'python3 "{FRICTION}" check', "timeout": 10,
-             "statusMessage": "Checking the friction log"},
-            {"type": "command", "command": f'python3 "{FRICTION}" flush', "timeout": 90,
-             "statusMessage": "Sending friction upstream"},
-        ],
-    }],
+# Two independent bits of wiring, each with its own opt-out, each keyed by the script it calls so
+# that --uninstall can find them again. `feedback` carries what a run got wrong back to the lab;
+# `update` pulls the latest skills from GitHub at the start of a session, so a project installed
+# months ago does not quietly go on using the version it was installed with.
+FEATURES = {
+    "feedback": {
+        "script": dest_of("tools/friction.py"),
+        "hooks": {
+            "PostToolUse": [{
+                "matcher": "Skill",
+                "hooks": [{"type": "command", "command": f'python3 "{FRICTION}" brief', "timeout": 10,
+                           "statusMessage": "Reading what this skill got wrong before"}],
+            }],
+            "Stop": [{
+                "hooks": [
+                    {"type": "command", "command": f'python3 "{FRICTION}" check', "timeout": 10,
+                     "statusMessage": "Checking the friction log"},
+                    {"type": "command", "command": f'python3 "{FRICTION}" flush', "timeout": 90,
+                     "statusMessage": "Sending friction upstream"},
+                ],
+            }],
+        },
+    },
+    "update": {
+        "script": dest_of("tools/update.py"),
+        # Not on `compact`: that is a session continuing, and changing the skills under a run in
+        # progress is worse than being a day behind.
+        "hooks": {
+            "SessionStart": [{
+                "matcher": "startup|resume|clear",
+                "hooks": [{"type": "command", "command": f'python3 "{UPDATER}" hook', "timeout": 180,
+                           "statusMessage": "Checking GitHub for a newer version of the skills"}],
+            }],
+        },
+    },
 }
 
-# So a session in *any* project can find the clone to push from. A pointer on this machine, not a
-# path written into a file — this repository must never name another checkout as a live path.
-HOME_TXT = Path.home() / ".claude" / "skill-friction" / "home.txt"
+# Both scripts are ours, so --uninstall can recognise its own wiring by filename.
+OURS = ("friction.py", "update.py")
+
+# So a session in *any* project can find the clone to push from, and to update from. A pointer on
+# this machine, not a path written into a file — this repository must never name another checkout as
+# a live path. FRICTION_STATE moves it, as it does for friction.py and update.py, so an install can
+# be exercised end to end without touching the real pointer.
+HOME_TXT = (Path(os.environ.get("FRICTION_STATE")
+                 or Path.home() / ".claude" / "skill-friction").expanduser() / "home.txt")
 
 
 def commands_in(settings: dict, event: str) -> set[str]:
@@ -129,9 +179,11 @@ def commands_in(settings: dict, event: str) -> set[str]:
             for h in group.get("hooks", [])}
 
 
-def wire_feedback(target: Path, check: bool) -> list[str]:
-    """Merge the two friction hooks into the target's settings. Idempotent, and it reports."""
+def wire(target: Path, features: tuple[str, ...], check: bool) -> list[str]:
+    """Merge the hooks for each named feature into the target's settings. Idempotent, and reported."""
     did = []
+    if not features:
+        return did
     f = target / ".claude" / "settings.json"
     settings = {}
     if f.is_file():
@@ -141,21 +193,23 @@ def wire_feedback(target: Path, check: bool) -> list[str]:
             return [f"! {f} is not valid JSON — not touching it. Wire the hooks by hand."]
 
     allow = settings.setdefault("permissions", {}).setdefault("allow", [])
-    where = dest_of("tools/friction.py")   # the path a session in the target will type
-    for rule in (f"Bash(python3 {where}:*)", f"Bash(python {where}:*)"):
-        if rule not in allow:
-            allow.append(rule)
-            did.append(f"permission: {rule}")
+    for key in features:
+        where = FEATURES[key]["script"]    # the path a session in the target will type
+        for rule in (f"Bash(python3 {where}:*)", f"Bash(python {where}:*)"):
+            if rule not in allow:
+                allow.append(rule)
+                did.append(f"permission: {rule}")
 
     hooks = settings.setdefault("hooks", {})
-    for event, groups in HOOKS.items():
-        have = commands_in(settings, event)
-        for group in groups:
-            fresh = [h for h in group["hooks"] if h["command"] not in have]
-            if not fresh:
-                continue
-            hooks.setdefault(event, []).append({**group, "hooks": fresh})
-            did.extend(f"{event}: {h['command']}" for h in fresh)
+    for key in features:
+        for event, groups in FEATURES[key]["hooks"].items():
+            for group in groups:
+                have = commands_in(settings, event)
+                fresh = [h for h in group["hooks"] if h["command"] not in have]
+                if not fresh:
+                    continue
+                hooks.setdefault(event, []).append({**group, "hooks": fresh})
+                did.extend(f"{event}: {h['command']}" for h in fresh)
 
     if did and not check:
         f.parent.mkdir(parents=True, exist_ok=True)
@@ -196,16 +250,28 @@ From the show-your-work checkout:
 That deletes only the files it installed, leaves anything you edited, unwires the hooks it added,
 and tells you what it left behind. `--uninstall --check` shows you first.
 
+## Staying current
+
+A session started in this project checks GitHub for a newer version of the skills and installs it,
+through `video/tools/update.py`. It fast-forwards only, never touches your own files in here, and
+says nothing when there is nothing to do. `SHOW_YOUR_WORK_UPDATE=off` in the environment stops it on
+this machine; removing its SessionStart hook from `.claude/settings.json` stops it for the project.
+
 ## The two directories inside
 
     tools/       check_links.py verifies the skills can still reach their method; friction.py
-                 records what a run got wrong and sends it back as a pull request
+                 records what a run got wrong and sends it back as a pull request; update.py
+                 keeps this copy of the skills level with GitHub
     feedback/    lessons from earlier runs, read at the start of each run of a skill
 """
 
 
-def unwire_feedback(target: Path, check: bool) -> list[str]:
-    """Take the friction hooks and permissions back out. The inverse of wire_feedback."""
+def ours(command: str) -> bool:
+    return any(name in command for name in OURS)
+
+
+def unwire(target: Path, check: bool) -> list[str]:
+    """Take our hooks and permissions back out. The inverse of wire."""
     did = []
     f = target / ".claude" / "settings.json"
     if not f.is_file():
@@ -213,19 +279,19 @@ def unwire_feedback(target: Path, check: bool) -> list[str]:
     try:
         settings = json.loads(f.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
-        return [f"! {f} is not valid JSON — remove the friction hooks by hand"]
+        return [f"! {f} is not valid JSON — remove our hooks by hand"]
 
     allow = settings.get("permissions", {}).get("allow", [])
-    for rule in [r for r in allow if "friction.py" in r]:
+    for rule in [r for r in allow if ours(r)]:
         allow.remove(rule)
         did.append(f"permission removed: {rule}")
 
     for event, groups in list(settings.get("hooks", {}).items()):
         keep_groups = []
         for group in groups:
-            kept = [h for h in group.get("hooks", []) if "friction.py" not in h.get("command", "")]
+            kept = [h for h in group.get("hooks", []) if not ours(h.get("command", ""))]
             did.extend(f"{event} hook removed: {h['command']}"
-                       for h in group.get("hooks", []) if "friction.py" in h.get("command", ""))
+                       for h in group.get("hooks", []) if ours(h.get("command", "")))
             if kept:
                 keep_groups.append({**group, "hooks": kept})
         if keep_groups:
@@ -275,8 +341,8 @@ def uninstall(target: Path, check: bool) -> int:
             print(f"  {r}")
         if len(kept) > 15:
             print(f"  … and {len(kept) - 15} more")
-    if (lines := unwire_feedback(target, check)):
-        print("\nfeedback loop:")
+    if (lines := unwire(target, check)):
+        print("\nhooks:")
         for line in lines:
             print(f"  {line}")
     if check:
@@ -289,6 +355,13 @@ def main(argv=None):
     ap.add_argument("target", help="project root to install into")
     ap.add_argument("--check", action="store_true", help="report only; change nothing")
     ap.add_argument("--force", action="store_true", help="overwrite files whose content differs")
+    ap.add_argument("--update", action="store_true",
+                    help="bring an existing install up to date: replace the read-only files that "
+                         "differ (skills, tools, lessons), add anything missing, and leave the "
+                         "project's own edits to video/ alone. What update.py runs.")
+    ap.add_argument("--no-update-hook", action="store_true",
+                    help="do not wire the SessionStart update check into the target. The skills "
+                         "work; they just stay at the version installed today, forever")
     ap.add_argument("--no-feedback-hook", action="store_true",
                     help="do not wire the friction hooks into the target. The skills work; they "
                          "just stop learning, and nothing comes back to the lab")
@@ -336,27 +409,43 @@ def main(argv=None):
     print(f"  same:    {len(same)}")
     print(f"  differ:  {len(differ)}")
 
-    if differ:
-        print("\nAlready present and different:")
-        for _, r in differ[:15]:
+    # --force overwrites everything that differs; --update only the files that are ours by
+    # contract. Both leave a target's own work in video/ where it is.
+    overwrite = differ if a.force else [d for d in differ if a.update and is_contract(d[1])]
+    leave = [d for d in differ if d not in overwrite]
+
+    if overwrite:
+        print(f"\nStale, and will be replaced ({len(overwrite)}) — read-only by contract:")
+        for _, r in overwrite[:10]:
             print(f"  {r}")
-        if len(differ) > 15:
-            print(f"  … and {len(differ) - 15} more")
-        if not a.force:
+        if len(overwrite) > 10:
+            print(f"  … and {len(overwrite) - 10} more")
+    if leave:
+        print(f"\nAlready present and different ({len(leave)}):")
+        for _, r in leave[:15]:
+            print(f"  {r}")
+        if len(leave) > 15:
+            print(f"  … and {len(leave) - 15} more")
+        if not (a.force or a.update):
             print("\nNothing written. Look at these, then re-run with --force to overwrite them.")
             return 1
+        print("  left alone — method and records are the project's. --force overwrites them.")
+
+    features = tuple(k for k in FEATURES if not getattr(a, f"no_{k}_hook"))
 
     if a.check:
-        if not a.no_feedback_hook:
-            did = wire_feedback(target, check=True)
-            print("\nfeedback loop would be wired into the target:")
+        if a.update:
+            print(f"\nupdate: {len(new) + len(overwrite)} file(s) stale, {len(leave)} left alone")
+        if features:
+            did = wire(target, features, check=True)
+            print("\nhooks would be wired into the target:")
             for line in did or ["  (already wired)"]:
                 print(f"  {line}")
         print("\n--check: nothing written.")
         return 0
 
     written = 0
-    for src, r in new + (differ if a.force else []):
+    for src, r in new + overwrite:
         dst = target / r
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
@@ -389,16 +478,19 @@ def main(argv=None):
         return 1
     print("verified — skills byte-identical, geometry intact.")
 
-    if not a.no_feedback_hook:
-        did = wire_feedback(target, a.check)
+    if features:
+        did = wire(target, features, a.check)
         if did:
-            print("\nfeedback loop wired into the target:")
+            print("\nhooks wired into the target:")
             for line in did:
                 print(f"  {line}")
             print("  Runs of these skills now read feedback/lessons/ and send what went wrong\n"
-                  "  back as a pull request. --no-feedback-hook opts out.")
+                  "  back as a pull request, and a session here starts by checking GitHub for a\n"
+                  "  newer version. --no-feedback-hook and --no-update-hook opt out.")
         else:
-            print("\nfeedback loop: already wired.")
+            print("\nhooks: already wired.")
+    if a.update:
+        print(f"update: {written} file(s) refreshed, {len(leave)} left alone")
     if not a.skills_only:
         print("Run this in the target to check everything:\n"
               f"  python {dest_of('tools/check_links.py')}")

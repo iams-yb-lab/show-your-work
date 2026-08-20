@@ -19,11 +19,26 @@
       "Bash(git remote:*)",
       "Bash(python tools/check_links.py:*)",
       "Bash(python tools/install_skills.py:*)",
+      "Bash(python3 tools/update.py:*)",
+      "Bash(python tools/update.py:*)",
       "Bash(python3 tools/friction.py:*)",
       "Bash(python tools/friction.py:*)"
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/tools/update.py\" hook",
+            "timeout": 180,
+            "statusMessage": "Checking GitHub for a newer version of the skills"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",

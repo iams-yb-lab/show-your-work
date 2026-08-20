@@ -51,7 +51,7 @@ presentation/       the how-to-use-the-skills deck: slide-deck's own first evide
 proposals/          why the skills were changed, one record per authorized edit
 feedback/           what the skills got wrong in real runs. lessons/ is reviewed and travels
                     with the skills; inbox/ is raw, per-machine, and stays here
-tools/              install_skills.py, check_links.py, friction.py
+tools/              install_skills.py, check_links.py, friction.py, update.py
 EXPORT-MANIFEST.md  what was carried out of the source repository, and what was not
 ```
 
@@ -86,10 +86,12 @@ python tools/install_skills.py /path/to/other/project
 ```
 
 It copies the skills **and** the tree they depend on, preserving the relative geometry above, so
-every link resolves in the target. It also wires the two friction hooks into the target's
-`.claude/settings.json`, and says so — `--no-feedback-hook` opts out, at the cost of that project's
-runs teaching nobody anything. `--check` shows what it would do; `--skills-only` is available
-and is the wrong choice unless you know why.
+every link resolves in the target. It also wires two things into the target's
+`.claude/settings.json`, and says which: the two friction hooks — `--no-feedback-hook` opts out, at
+the cost of that project's runs teaching nobody anything — and the session-start update check,
+which `--no-update-hook` opts out of, at the cost of that project never seeing a newer version.
+`--check` shows what it would do; `--update` brings an install that is already there up to date;
+`--skills-only` is available and is the wrong choice unless you know why.
 
 **A target project gains two directories, not four.** `.claude/skills/` and `video/` are forced —
 a project's skills must sit at its root to be found at all, and `natural-voice/SKILL.md` reaches its
@@ -99,7 +101,7 @@ Everything else is installed *inside* `video/`:
 ```
 <target>/.claude/skills/        the five skills
 <target>/video/                 the method and the tooling they read
-        video/tools/            check_links.py, friction.py, skill-hashes.txt
+        video/tools/            check_links.py, friction.py, update.py, skill-hashes.txt
         video/feedback/lessons/ what earlier runs got wrong
         video/WHAT-IS-THIS.md   what this tree is, and that deleting it breaks the skills silently
 ```
@@ -121,6 +123,36 @@ Installing to `~/.claude/skills/` — the usual way to make a skill global — *
 these** and the installer will refuse it. From there, `../../../video/natural-voice/README.md`
 resolves to `~/video/natural-voice/README.md`, which does not exist, and `natural-voice` becomes a
 skill whose entire content is a broken link.
+
+## Staying up to date
+
+A session that starts here, or in any project the skills were installed into, asks GitHub whether
+there is a newer version and installs it before you type anything.
+
+```bash
+python tools/update.py check    # what it would do, changing nothing
+python tools/update.py apply    # do it now
+```
+
+It is deliberately narrow:
+
+- **Fast-forward only.** A checkout that has diverged, or where the merge would overwrite
+  something, is reported and left exactly as it is — never merged, never rebased, never stashed.
+- **In a project it re-installs from the checkout on this machine**, the one `install_skills.py`
+  left a pointer to. The files that are read-only by contract — the skills, `video/tools/`,
+  `video/feedback/lessons/` — are replaced when they differ, because a difference there is
+  staleness or damage. Anything else in `video/` that the project has edited is left alone and
+  named. With no checkout on the machine it says that, rather than looking successful.
+- **After an update it runs `check_links.py` on what landed**, so a version that arrives broken
+  says so at the start of the session instead of three gates later.
+- **It says nothing when there is nothing to say.** A session that was already current starts
+  silently; it speaks up when it changed something, and when it could not.
+- **It never asks, and it cannot fail a session.** No prompt, every path exits 0. Offline long
+  enough and it tells you once that this copy may be behind.
+
+`SHOW_YOUR_WORK_UPDATE=off` in the environment stops it on one machine.
+`install_skills.py --no-update-hook` never wires it into a target — which means that project keeps
+the version it was installed with for as long as it exists, so pass it on purpose.
 
 ## Verifying
 

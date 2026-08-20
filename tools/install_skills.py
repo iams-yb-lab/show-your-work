@@ -19,6 +19,11 @@ identical `video/` tree; it is otherwise the wrong flag.
 
 Installing into `~/.claude/skills` to make the skills global does not work and is refused: from
 there the link resolves to `~/video/natural-voice/README.md`, which is not a thing.
+
+It also wires the feedback loop into the target, unless you pass --no-feedback-hook: two hooks that
+read `feedback/lessons/<skill>.md` into a run and push what went wrong back here as a pull request.
+That writes two entries into the target's `.claude/settings.json` and says so. Without it the skills
+still work; they just cannot learn from the run, and nothing comes back to the lab.
 """
 
 from __future__ import annotations
@@ -26,6 +31,7 @@ from __future__ import annotations
 import argparse
 import filecmp
 import hashlib
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -37,8 +43,10 @@ ROOT = Path(__file__).resolve().parent.parent
 # bundles, an 18 MB master and 34 MB of render gallery, i.e. the films' picture, which
 # EXPORT-MANIFEST.md records as unreproducible without these exact files. Installing copies all
 # of it. `presentation/` and `proposals/` are deliberately not here — evidence about this
-# repository, of no use in a target project.
-PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt"]
+# repository, of no use in a target project. `feedback/lessons/` travels because the friction
+# hook reads it back into every run; `feedback/inbox/` does not — that is evidence too.
+PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt",
+           "tools/friction.py", "feedback/lessons"]
 
 SKIP_DIRS = {".git", "__pycache__", "out", ".venv", "venv", "node_modules"}
 
@@ -79,11 +87,81 @@ def refuse_global(target: Path) -> str | None:
     return None
 
 
+FRICTION = '${CLAUDE_PROJECT_DIR:-.}/tools/friction.py'
+
+HOOKS = {
+    "PostToolUse": [{
+        "matcher": "Skill",
+        "hooks": [{"type": "command", "command": f'python3 "{FRICTION}" brief', "timeout": 10,
+                   "statusMessage": "Reading what this skill got wrong before"}],
+    }],
+    "Stop": [{
+        "hooks": [
+            {"type": "command", "command": f'python3 "{FRICTION}" check', "timeout": 10,
+             "statusMessage": "Checking the friction log"},
+            {"type": "command", "command": f'python3 "{FRICTION}" flush', "timeout": 90,
+             "statusMessage": "Sending friction upstream"},
+        ],
+    }],
+}
+
+# So a session in *any* project can find the clone to push from. A pointer on this machine, not a
+# path written into a file — this repository must never name another checkout as a live path.
+HOME_TXT = Path.home() / ".claude" / "skill-friction" / "home.txt"
+
+
+def commands_in(settings: dict, event: str) -> set[str]:
+    return {h.get("command", "") for group in settings.get("hooks", {}).get(event, [])
+            for h in group.get("hooks", [])}
+
+
+def wire_feedback(target: Path, check: bool) -> list[str]:
+    """Merge the two friction hooks into the target's settings. Idempotent, and it reports."""
+    did = []
+    f = target / ".claude" / "settings.json"
+    settings = {}
+    if f.is_file():
+        try:
+            settings = json.loads(f.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return [f"! {f} is not valid JSON — not touching it. Wire the hooks by hand."]
+
+    allow = settings.setdefault("permissions", {}).setdefault("allow", [])
+    for rule in ("Bash(python3 tools/friction.py:*)", "Bash(python tools/friction.py:*)"):
+        if rule not in allow:
+            allow.append(rule)
+            did.append(f"permission: {rule}")
+
+    hooks = settings.setdefault("hooks", {})
+    for event, groups in HOOKS.items():
+        have = commands_in(settings, event)
+        for group in groups:
+            fresh = [h for h in group["hooks"] if h["command"] not in have]
+            if not fresh:
+                continue
+            hooks.setdefault(event, []).append({**group, "hooks": fresh})
+            did.extend(f"{event}: {h['command']}" for h in fresh)
+
+    if did and not check:
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    if not HOME_TXT.is_file() or HOME_TXT.read_text(encoding="utf-8").strip() != str(ROOT):
+        did.append(f"pointer: {HOME_TXT} -> {ROOT}")
+        if not check:
+            HOME_TXT.parent.mkdir(parents=True, exist_ok=True)
+            HOME_TXT.write_text(str(ROOT), encoding="utf-8")
+    return did
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("target", help="project root to install into")
     ap.add_argument("--check", action="store_true", help="report only; change nothing")
     ap.add_argument("--force", action="store_true", help="overwrite files whose content differs")
+    ap.add_argument("--no-feedback-hook", action="store_true",
+                    help="do not wire the friction hooks into the target. The skills work; they "
+                         "just stop learning, and nothing comes back to the lab")
     ap.add_argument("--skills-only", action="store_true",
                     help="copy .claude/skills only — leaves natural-voice unable to reach its method "
                          "unless the target already has an identical video/ tree")
@@ -135,6 +213,11 @@ def main(argv=None):
             return 1
 
     if a.check:
+        if not a.no_feedback_hook:
+            did = wire_feedback(target, check=True)
+            print("\nfeedback loop would be wired into the target:")
+            for line in did or ["  (already wired)"]:
+                print(f"  {line}")
         print("\n--check: nothing written.")
         return 0
 
@@ -162,6 +245,17 @@ def main(argv=None):
     if not ok:
         return 1
     print("verified — skills byte-identical, geometry intact.")
+
+    if not a.no_feedback_hook:
+        did = wire_feedback(target, a.check)
+        if did:
+            print("\nfeedback loop wired into the target:")
+            for line in did:
+                print(f"  {line}")
+            print("  Runs of these skills now read feedback/lessons/ and send what went wrong\n"
+                  "  back as a pull request. --no-feedback-hook opts out.")
+        else:
+            print("\nfeedback loop: already wired.")
     if not a.skills_only:
         print(f"Run this in the target to check everything:\n  python tools/check_links.py")
     return 0

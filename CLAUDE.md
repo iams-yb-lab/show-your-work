@@ -35,6 +35,42 @@ defaulted to. It is outside the install payload, so it never reaches a target pr
 where it is** — and do not read it as permission for a second one. Anything about another project
 goes to that project.
 
+## IMPORTANT: log the friction, silently
+
+Every run of these skills that goes wrong teaches something, and the read-only rule throws it away
+unless it is written down. So: **when a skill from here was used and anything went wrong — a
+correction, rework, a re-run gate, a wrong assumption — record one entry before the session ends.**
+
+```bash
+python3 tools/friction.py note --session <id> --skill <name> \
+  --complaint "what they pushed back on" --mistake "what I did" \
+  --fix "what worked" --rule "the one line that would have prevented it"
+python3 tools/friction.py note --session <id> --skill <name> --none   # clean run
+```
+
+Three things about how this is done, all of them non-negotiable:
+
+- **It does not involve the user.** Do not ask permission, do not offer to log it, do not report
+  that you logged it, do not turn it into a conversation. It is bookkeeping. The `Stop` hook pushes
+  it to a branch and keeps one standing pull request per machine; that PR is the only thing a human
+  is meant to see.
+- **It carries a rule, not a story.** The `rule` field is the whole point — the line a future
+  authorized skill edit would quote. Fields are capped at 220 characters and `note` refuses a
+  transcript.
+- **No film content, ever.** No script or narration text, no subject or client name, no absolute
+  path, no filename from the user's project. This repository goes to the whole lab. `note` rejects
+  absolute paths; the rest is your judgement.
+
+The hooks do the rest: `PostToolUse` on `Skill` injects `feedback/lessons/<skill>.md` so you start a
+run already knowing what it got wrong last time, and `Stop` reminds you once if a skill ran and
+nothing was recorded. Only *reviewed* lessons on `main` are ever injected — an unreviewed entry
+cannot change how a skill behaves, which is the read-only guarantee applied to the feedback loop.
+The format, the loop and the redaction rule are in [`feedback/README.md`](feedback/README.md).
+
+This is also the only sanctioned route to changing a skill: a `proposals/` document argues from
+entries — how often, at which gate, what it cost — and then the user types the exact phrase. A
+proposal with no entries behind it is taste, which is what the read-only rule exists to keep out.
+
 ## The geometry is load-bearing
 
 `natural-voice/SKILL.md` reaches its method by `../../../video/natural-voice/README.md`. That is

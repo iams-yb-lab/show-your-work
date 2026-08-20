@@ -14,10 +14,10 @@ Three checks, in order of how badly they hurt when they fail:
   skills     the three skills are read-only and were copied byte-identical. A hash mismatch means
              something edited one, which is the failure this repository most wants to notice.
 
-  travel     `video/` and `.claude/skills/` are what `install_skills.py` copies into another
-             project. A link from inside them to a file in the repository root resolves fine here
-             and breaks the moment it is installed anywhere else — a bug that is invisible until
-             someone else has it.
+  travel     `video/`, `.claude/skills/` and `feedback/lessons/` are what `install_skills.py`
+             copies into another project. A link from inside them to a file in the repository root
+             resolves fine here and breaks the moment it is installed anywhere else — a bug that
+             is invisible until someone else has it.
 
   links      every relative link in every markdown file points at something that exists.
 
@@ -179,7 +179,7 @@ def check_independence(fail):
 
 def check_travel(fail):
     """Nothing inside the installable payload may link outside it."""
-    travels = (".claude/skills/", "video/")
+    travels = (".claude/skills/", "video/", "feedback/lessons/")
     for p in markdown_files():
         name = rel(p)
         if not name.startswith(travels) or name in EXTERNAL:
@@ -195,7 +195,7 @@ def check_travel(fail):
                 except ValueError:
                     fail("travel", f"{name}:{n}", f"{target} escapes the repository")
                     continue
-                if not d.startswith((".claude/skills", "video")):
+                if not d.startswith((".claude/skills", "video", "feedback/lessons")):
                     fail("travel", f"{name}:{n}",
                          f"{target} points at {d}, which install_skills.py does not copy")
 

@@ -49,7 +49,9 @@ video/              the method, the shared tooling and the films' logs — see v
 presentation/       the how-to-use-the-skills deck: slide-deck's own first evidence, and a
                     worked example of what a run of these skills produces. Does not install
 proposals/          why the skills were changed, one record per authorized edit
-tools/              install_skills.py, check_links.py
+feedback/           what the skills got wrong in real runs. lessons/ is reviewed and travels
+                    with the skills; inbox/ is raw, per-machine, and stays here
+tools/              install_skills.py, check_links.py, friction.py
 EXPORT-MANIFEST.md  what was carried out of the source repository, and what was not
 ```
 
@@ -59,6 +61,24 @@ it is the only evidence `slide-deck` has — that skill was written without a re
 this is the deck that tested it. It is not in the install payload, so it costs a target project
 nothing. It is not a precedent for films: those still live in the project they are about.
 
+## How the skills improve
+
+They are read-only, so they do not improve by being edited mid-run. They improve because runs are
+recorded. A `PostToolUse` hook on `Skill` reads `feedback/lessons/<skill>.md` into the start of a
+run; when something goes wrong, Claude records one capped entry, silently; the `Stop` hook pushes it
+to `friction/<hostname>` and keeps one standing pull request per machine. You review the PR, fold
+what is worth keeping into `feedback/lessons/`, and the next run everywhere starts knowing it.
+
+```bash
+python tools/friction.py compact          # inbox entries -> reviewed lessons, at merge
+python tools/friction.py flush --check    # what this machine would send, changing nothing
+```
+
+Nothing unreviewed is ever read back, no user is ever prompted, and no hook can fail a turn — the
+buffer just waits for the next session. `feedback/README.md` has the format and the redaction rule:
+entries carry a rule, never film content. Repeated entries are what a `proposals/` document argues
+from when a skill genuinely needs to change.
+
 ## Installing elsewhere
 
 ```bash
@@ -66,7 +86,9 @@ python tools/install_skills.py /path/to/other/project
 ```
 
 It copies the skills **and** the tree they depend on, preserving the relative geometry above, so
-every link resolves in the target. `--check` shows what it would do; `--skills-only` is available
+every link resolves in the target. It also wires the two friction hooks into the target's
+`.claude/settings.json`, and says so — `--no-feedback-hook` opts out, at the cost of that project's
+runs teaching nobody anything. `--check` shows what it would do; `--skills-only` is available
 and is the wrong choice unless you know why.
 
 Installing to `~/.claude/skills/` — the usual way to make a skill global — **does not work for

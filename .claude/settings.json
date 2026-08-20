@@ -18,7 +18,9 @@
       "Bash(git branch:*)",
       "Bash(git remote:*)",
       "Bash(python tools/check_links.py:*)",
-      "Bash(python tools/install_skills.py:*)"
+      "Bash(python tools/install_skills.py:*)",
+      "Bash(python3 tools/friction.py:*)",
+      "Bash(python tools/friction.py:*)"
     ]
   },
   "hooks": {

@@ -91,6 +91,32 @@ every link resolves in the target. It also wires the two friction hooks into the
 runs teaching nobody anything. `--check` shows what it would do; `--skills-only` is available
 and is the wrong choice unless you know why.
 
+**A target project gains two directories, not four.** `.claude/skills/` and `video/` are forced —
+a project's skills must sit at its root to be found at all, and `natural-voice/SKILL.md` reaches its
+method by `../../../video/natural-voice/README.md`, which is read-only and so cannot be redirected.
+Everything else is installed *inside* `video/`:
+
+```
+<target>/.claude/skills/        the five skills
+<target>/video/                 the method and the tooling they read
+        video/tools/            check_links.py, friction.py, skill-hashes.txt
+        video/feedback/lessons/ what earlier runs got wrong
+        video/WHAT-IS-THIS.md   what this tree is, and that deleting it breaks the skills silently
+```
+
+Nothing is ever written to a target's own `tools/`, so an install cannot collide with a directory
+the project already has. Installing everything into one subfolder instead does not work: skills
+nested below the project root are not discovered, and the skills would load as nothing at all.
+
+To take it back out:
+
+```bash
+python tools/install_skills.py /path/to/project --uninstall
+```
+
+It removes only the files it installed, leaves anything edited since and names it, unwires the hooks
+it added, and prunes the directories it created. `--uninstall --check` shows you first.
+
 Installing to `~/.claude/skills/` — the usual way to make a skill global — **does not work for
 these** and the installer will refuse it. From there, `../../../video/natural-voice/README.md`
 resolves to `~/video/natural-voice/README.md`, which does not exist, and `natural-voice` becomes a

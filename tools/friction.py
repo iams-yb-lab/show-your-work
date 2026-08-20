@@ -101,11 +101,25 @@ def git(repo: Path, *args, env=None, stdin=None):
         return False, ""
 
 
+# Where lessons sit relative to the tree root. In this repository, `feedback/lessons/`. In a project
+# the skills were installed into, under `video/` — so an install adds one directory to that project's
+# root instead of scattering three across it.
+LESSON_HOMES = (("feedback", "lessons"), ("video", "feedback", "lessons"))
+
+
+def lessons_in(base: Path | None) -> Path | None:
+    for parts in LESSON_HOMES:
+        d = base.joinpath(*parts) if base else None
+        if d and d.is_dir():
+            return d
+    return None
+
+
 def home_checkout() -> Path | None:
     """The clone of this repository on this machine, if one is known and still looks right."""
     for cand in (Path(HOME_TXT.read_text(encoding="utf-8").strip())
                  if HOME_TXT.is_file() else None, REPO):
-        if cand and (cand / "feedback" / "lessons").is_dir() and (cand / ".claude" / "skills").is_dir():
+        if cand and lessons_in(cand) and (cand / ".claude" / "skills").is_dir():
             return cand
     return None
 
@@ -113,8 +127,8 @@ def home_checkout() -> Path | None:
 def lessons_dir() -> Path | None:
     """Reviewed lessons: the home checkout first, because those are current; then the payload copy."""
     for base in (home_checkout(), REPO):
-        if base and (base / "feedback" / "lessons").is_dir():
-            return base / "feedback" / "lessons"
+        if (d := lessons_in(base)):
+            return d
     return None
 
 
@@ -131,8 +145,9 @@ def how_to_call(cwd: str | None) -> str:
     committed permission rule could match it and the user would get a prompt — the one thing this
     whole mechanism is not allowed to do."""
     for base in (Path(cwd) if cwd else None, REPO):
-        if base and (base / "tools" / "friction.py").is_file():
-            return "python3 tools/friction.py"
+        for rel in ("tools/friction.py", "video/tools/friction.py"):
+            if base and (base / rel).is_file():
+                return f"python3 {rel}"
     return f"python3 {Path(__file__).resolve()}"
 
 
@@ -399,7 +414,8 @@ def open_pr(repo: Path, branch: str, h: str) -> None:
 
 def parse_inbox(repo: Path) -> list[dict]:
     found = []
-    for p in sorted((repo / "feedback" / "inbox").glob("*.md")):
+    inbox = (lessons_in(repo) or repo).parent / "inbox"
+    for p in sorted(inbox.glob("*.md")):
         text = p.read_text(encoding="utf-8")
         for m in ENTRY_RE.finditer(text):
             e = {"date": m.group("date"), "skill": m.group("skill"),
@@ -424,7 +440,10 @@ def cmd_compact(a) -> int:
     if not repo:
         print("no checkout found", file=sys.stderr)
         return 2
-    ldir = repo / "feedback" / "lessons"
+    ldir = lessons_in(repo)
+    if not ldir:
+        print("no feedback/lessons/ directory found", file=sys.stderr)
+        return 2
     entries = parse_inbox(repo)
     if not entries:
         print("no inbox entries to fold in")

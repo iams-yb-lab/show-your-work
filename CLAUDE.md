@@ -3,6 +3,33 @@
 This repository is five skills and the evidence behind them. [`README.md`](README.md) is the map.
 Nothing here is a film; films are made *elsewhere, using* this.
 
+## IMPORTANT: the shape of every reply
+
+Three sections, these names, this order, whenever you report work. Written for a tired reader.
+
+**Done** — what I can now see is true, one bullet per result, including whether it was saved and
+pushed. **Caveats** — unfinished work, limits, side effects; "None." when there are none. **Need
+from you** — one action or decision; "Nothing." when there is none, or "Nothing now. Later: <the
+decision>" when it is not needed yet. Then stop.
+
+- **20 words per bullet, one idea each.** No limit on how many bullets: the cap is on how much you
+  say about a thing, never on how many things you say. Offer detail, never supply it unasked.
+- **Completeness beats brevity.** Leaving a point out to keep a reply short is the one mistake I
+  cannot spot from the outside. When the two conflict, the length rule loses and the point stays.
+- **Ordinary English.** No invented words, no metaphors, no internals unless they change what I do.
+- **Never narrate** your reasoning, your testing, or what you tried first. The commit message is for
+  that, and `feedback/inbox/` is for what went wrong on the way.
+- **Never say "nothing" and then add an exception.** Anything I must decide goes under *Need from
+  you* and nowhere else.
+- **Keep a problem I have now apart from maintenance I might want later.**
+- **Sources survive in plain English** — "the render log from the showoff film", never a bare path.
+- **Never put a proposal about this system in chat.** A skill change, the tooling, the checks and
+  these rules go to `proposals/`, with the friction entries that would settle them.
+
+**This governs reporting work; it does not govern answering a question.** Asked what a skill does or
+where something stands, I want the whole picture — unfinished, unverified and awkward included. A
+missing fact costs me far more than a long answer does.
+
 ## IMPORTANT: the skills are read-only
 
 `.claude/skills/**` is not yours to edit. Not a wording tweak, not one more bullet, not "while I

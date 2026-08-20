@@ -33,7 +33,10 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+# Walk up to the tree that holds the method (video/README.md), so this file works whether it
+# sits in <repo>/tools/ or, once installed, in <target>/video/tools/.
+ROOT = next((q for q in Path(__file__).resolve().parents
+             if (q / "video" / "natural-voice").is_dir()), Path(__file__).resolve().parent.parent)
 SKILLS = ROOT / ".claude" / "skills"
 HASHES = Path(__file__).resolve().parent / "skill-hashes.txt"
 

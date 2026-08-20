@@ -48,6 +48,20 @@ ROOT = Path(__file__).resolve().parent.parent
 PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt",
            "tools/friction.py", "feedback/lessons"]
 
+# Where each of those lands in the target. `.claude/skills/` and `video/` are forced: a project's
+# skills must sit at its root to be discovered at all, and `natural-voice/SKILL.md` reaches its
+# method by ../../../video/natural-voice/README.md, which is read-only. Everything else goes inside
+# video/, so an install adds ONE directory to the project instead of three, and never merges into a
+# `tools/` the project already has. Both tools find their root by walking up, so either layout works.
+REMAP = {"tools/": "video/tools/", "feedback/lessons": "video/feedback/lessons"}
+
+
+def dest_of(rel: str) -> str:
+    for src, dst in REMAP.items():
+        if rel.startswith(src):
+            return dst + rel[len(src):]
+    return rel
+
 SKIP_DIRS = {".git", "__pycache__", "out", ".venv", "venv", "node_modules"}
 
 
@@ -56,11 +70,11 @@ def sha(p: Path) -> str:
 
 
 def payload_files():
-    """Every file that travels, as (source path, repo-relative posix path)."""
+    """Every file that travels, as (source path, repo-relative posix, target-relative posix)."""
     for item in PAYLOAD:
         src = ROOT / item
         if src.is_file():
-            yield src, item
+            yield src, item, dest_of(item)
             continue
         if not src.is_dir():
             print(f"! missing from this repository: {item}", file=sys.stderr)
@@ -71,7 +85,7 @@ def payload_files():
             r = p.relative_to(ROOT)
             if any(part in SKIP_DIRS for part in r.parts):
                 continue
-            yield p, r.as_posix()
+            yield p, r.as_posix(), dest_of(r.as_posix())
 
 
 def refuse_global(target: Path) -> str | None:
@@ -87,7 +101,7 @@ def refuse_global(target: Path) -> str | None:
     return None
 
 
-FRICTION = '${CLAUDE_PROJECT_DIR:-.}/tools/friction.py'
+FRICTION = '${CLAUDE_PROJECT_DIR:-.}/' + dest_of("tools/friction.py")
 
 HOOKS = {
     "PostToolUse": [{
@@ -127,7 +141,8 @@ def wire_feedback(target: Path, check: bool) -> list[str]:
             return [f"! {f} is not valid JSON — not touching it. Wire the hooks by hand."]
 
     allow = settings.setdefault("permissions", {}).setdefault("allow", [])
-    for rule in ("Bash(python3 tools/friction.py:*)", "Bash(python tools/friction.py:*)"):
+    where = dest_of("tools/friction.py")   # the path a session in the target will type
+    for rule in (f"Bash(python3 {where}:*)", f"Bash(python {where}:*)"):
         if rule not in allow:
             allow.append(rule)
             did.append(f"permission: {rule}")
@@ -154,6 +169,121 @@ def wire_feedback(target: Path, check: bool) -> list[str]:
     return did
 
 
+MARKER = "video/WHAT-IS-THIS.md"
+
+MARKER_TEXT = """\
+# What this directory is, and what happens if you delete it
+
+`video/` was not written by this project. It was installed by `show-your-work`, which is a set of
+skills for making explainer videos, cinematic renders, technical reports and slide decks with
+Claude. It holds the method those skills read, the shared audio and picture tooling they run, and
+`tools/` and `feedback/` inside it.
+
+**Deleting it breaks the skills, silently.** `natural-voice/SKILL.md` is a short document whose whole
+content is a relative link to `natural-voice/README.md` in here. Remove this tree and that skill
+still loads, still announces itself as the authority on generated speech, and can no longer reach a
+word of what it knows. Nothing will tell you.
+
+It sits at the project root, and cannot be moved, because that link is fixed and the skills are
+read-only.
+
+## Removing it properly
+
+From the show-your-work checkout:
+
+    python tools/install_skills.py /path/to/this/project --uninstall
+
+That deletes only the files it installed, leaves anything you edited, unwires the hooks it added,
+and tells you what it left behind. `--uninstall --check` shows you first.
+
+## The two directories inside
+
+    tools/       check_links.py verifies the skills can still reach their method; friction.py
+                 records what a run got wrong and sends it back as a pull request
+    feedback/    lessons from earlier runs, read at the start of each run of a skill
+"""
+
+
+def unwire_feedback(target: Path, check: bool) -> list[str]:
+    """Take the friction hooks and permissions back out. The inverse of wire_feedback."""
+    did = []
+    f = target / ".claude" / "settings.json"
+    if not f.is_file():
+        return did
+    try:
+        settings = json.loads(f.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return [f"! {f} is not valid JSON — remove the friction hooks by hand"]
+
+    allow = settings.get("permissions", {}).get("allow", [])
+    for rule in [r for r in allow if "friction.py" in r]:
+        allow.remove(rule)
+        did.append(f"permission removed: {rule}")
+
+    for event, groups in list(settings.get("hooks", {}).items()):
+        keep_groups = []
+        for group in groups:
+            kept = [h for h in group.get("hooks", []) if "friction.py" not in h.get("command", "")]
+            did.extend(f"{event} hook removed: {h['command']}"
+                       for h in group.get("hooks", []) if "friction.py" in h.get("command", ""))
+            if kept:
+                keep_groups.append({**group, "hooks": kept})
+        if keep_groups:
+            settings["hooks"][event] = keep_groups
+        else:
+            del settings["hooks"][event]
+
+    if did and not check:
+        f.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return did
+
+
+def uninstall(target: Path, check: bool) -> int:
+    """Remove exactly what was installed. Anything edited since is left alone and reported."""
+    removed, kept, absent = [], [], 0
+    for src, _, dest in payload_files():
+        dst = target / dest
+        if not dst.is_file():
+            absent += 1
+        elif filecmp.cmp(src, dst, shallow=False):
+            removed.append(dest)
+            if not check:
+                dst.unlink()
+        else:
+            kept.append(dest)
+
+    marker = target / MARKER
+    if marker.is_file():
+        removed.append(MARKER)
+        if not check:
+            marker.unlink()
+
+    if not check:   # prune the directories we created, deepest first, only if now empty
+        for d in sorted({(target / r).parent for r in removed}, key=lambda q: -len(q.parts)):
+            while d != target and d.is_dir() and not any(d.iterdir()):
+                d.rmdir()
+                d = d.parent
+
+    verb = "would remove" if check else "removed"
+    print(f"target:   {target}")
+    print(f"{verb}: {len(removed)} file(s)")
+    if absent:
+        print(f"absent:   {absent} file(s) were not there")
+    if kept:
+        print(f"\nleft in place — these differ from what was installed, so they are yours now:")
+        for r in kept[:15]:
+            print(f"  {r}")
+        if len(kept) > 15:
+            print(f"  … and {len(kept) - 15} more")
+    if (lines := unwire_feedback(target, check)):
+        print("\nfeedback loop:")
+        for line in lines:
+            print(f"  {line}")
+    if check:
+        print("\n--check: nothing removed.")
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("target", help="project root to install into")
@@ -162,6 +292,8 @@ def main(argv=None):
     ap.add_argument("--no-feedback-hook", action="store_true",
                     help="do not wire the friction hooks into the target. The skills work; they "
                          "just stop learning, and nothing comes back to the lab")
+    ap.add_argument("--uninstall", action="store_true",
+                    help="remove what was installed, leave anything you edited, unwire the hooks")
     ap.add_argument("--skills-only", action="store_true",
                     help="copy .claude/skills only — leaves natural-voice unable to reach its method "
                          "unless the target already has an identical video/ tree")
@@ -174,6 +306,8 @@ def main(argv=None):
     if (why := refuse_global(target)):
         print(f"Refusing: {why}", file=sys.stderr)
         return 2
+    if a.uninstall:
+        return uninstall(target, a.check)
     if not target.exists():
         if a.check:
             print(f"note: {target} does not exist; it would be created")
@@ -182,19 +316,19 @@ def main(argv=None):
 
     payload = list(payload_files())
     if a.skills_only:
-        payload = [(s, r) for s, r in payload if r.startswith(".claude/skills")]
+        payload = [(s, r, d) for s, r, d in payload if r.startswith(".claude/skills")]
         print("! --skills-only: video/ is not being copied. natural-voice will only work if the\n"
               "  target already has this repository's video/ tree at its root.\n")
 
     new, same, differ = [], [], []
-    for src, r in payload:
-        dst = target / r
+    for src, r, dest in payload:
+        dst = target / dest
         if not dst.exists():
-            new.append((src, r))
+            new.append((src, dest))
         elif filecmp.cmp(src, dst, shallow=False):
-            same.append(r)
+            same.append(dest)
         else:
-            differ.append((src, r))
+            differ.append((src, dest))
 
     print(f"target:    {target}")
     print(f"payload:   {len(payload)} files")
@@ -227,7 +361,16 @@ def main(argv=None):
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
         written += 1
+    marker = target / MARKER
+    if not marker.is_file():
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(MARKER_TEXT, encoding="utf-8")
+        written += 1
     print(f"\nwrote {written} file(s)")
+    print(f"added to {target.name}/: " + ", ".join(sorted(
+        {d.split("/")[0] + "/" for _, _, d in payload})) +
+        f"\n  everything but .claude/ and video/ lives inside video/, so this project gains one\n"
+        f"  directory, not three. {MARKER} says what it is and how to remove it.")
 
     # Verify in the target, using the copy of the checker that just landed there.
     ok = True
@@ -237,9 +380,9 @@ def main(argv=None):
         if not f.exists() or not (f.parent / link).resolve().exists():
             print(f"! {where} cannot reach {link}", file=sys.stderr)
             ok = False
-    for src, r in payload:
-        if r.startswith(".claude/skills") and sha(src) != sha(target / r):
-            print(f"! {r} did not copy byte-identical", file=sys.stderr)
+    for src, r, dest in payload:
+        if r.startswith(".claude/skills") and sha(src) != sha(target / dest):
+            print(f"! {dest} did not copy byte-identical", file=sys.stderr)
             ok = False
 
     if not ok:
@@ -257,7 +400,8 @@ def main(argv=None):
         else:
             print("\nfeedback loop: already wired.")
     if not a.skills_only:
-        print(f"Run this in the target to check everything:\n  python tools/check_links.py")
+        print("Run this in the target to check everything:\n"
+              f"  python {dest_of('tools/check_links.py')}")
     return 0
 
 

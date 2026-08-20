@@ -35,6 +35,17 @@
             "statusMessage": "Checking links and skill integrity"
           }
         ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/tools/friction.py\" brief",
+            "timeout": 10,
+            "statusMessage": "Reading what this skill got wrong before"
+          }
+        ]
       }
     ],
     "Stop": [
@@ -42,10 +53,22 @@
         "hooks": [
           {
             "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/tools/friction.py\" check",
+            "timeout": 10,
+            "statusMessage": "Checking the friction log"
+          },
+          {
+            "type": "command",
             "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/git-autosync.sh\" || true",
             "shell": "bash",
             "timeout": 60,
             "statusMessage": "Syncing to git..."
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/tools/friction.py\" flush",
+            "timeout": 90,
+            "statusMessage": "Sending friction upstream"
           }
         ]
       }

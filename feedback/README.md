@@ -37,6 +37,10 @@ never injected into a run.
 
 One inbox file per machine, so two people's entries never conflict in the same PR.
 
+`inbox/` is the ledger, not a queue: `compact` counts `seen N×` by reading it, which makes it a pure
+function of what is recorded there. Fold entries in, leave them where they are, and running compact
+twice changes nothing.
+
 ## The entry
 
 ```

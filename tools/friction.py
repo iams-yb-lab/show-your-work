@@ -189,10 +189,12 @@ def cmd_brief(_a) -> int:
     d = lessons_dir()
     f = d / f"{skill}.md" if d else None
     if f and f.is_file():
-        body = f.read_text(encoding="utf-8")
-        if re.search(r"^- \*\*", body, re.M):   # header only == nothing reviewed yet
-            parts.append(f"Lessons already paid for in earlier runs of {skill} — do not repeat "
-                         f"these:\n\n{body.strip()}")
+        # Only the entry lines. The file's header explains the format to a human reading the repo;
+        # paying for it on every run of every skill is exactly the waste this is meant to reduce.
+        lessons = [l for l in f.read_text(encoding="utf-8").splitlines() if l.startswith("- **")]
+        if lessons:
+            parts.append(f"Earlier runs of {skill} already paid for these — do not repeat them:\n"
+                         + "\n".join(lessons))
     parts.append(BRIEF_TAIL.format(script=how_to_call(hook.get("cwd")), sid=sid, skill=skill))
 
     out_json({"hookSpecificOutput": {"hookEventName": "PostToolUse",
@@ -411,6 +413,13 @@ def parse_inbox(repo: Path) -> list[dict]:
 
 
 def cmd_compact(a) -> int:
+    """Fold the inbox into the lessons files.
+
+    A pure function of the inbox, deliberately: `seen N×` is counted from the entries, never
+    incremented from whatever the lessons file already said. Run it twice and you get the same
+    answer. That is why folded entries are NOT deleted — the inbox is the ledger the counts come
+    from, and deleting it would quietly demote a lesson that keeps being learned.
+    """
     repo = home_checkout() or REPO
     if not repo:
         print("no checkout found", file=sys.stderr)
@@ -421,49 +430,46 @@ def cmd_compact(a) -> int:
         print("no inbox entries to fold in")
         return 0
 
+    agg: dict[str, dict[str, dict]] = {}
+    for e in entries:
+        rule = e.get("rule", "").strip()
+        if not rule:
+            continue
+        key = re.sub(r"\W+", "", rule.lower())[:60]
+        slot = agg.setdefault(e["skill"], {}).setdefault(
+            key, {"count": 0, "rule": rule, "date": "", "mistake": "", "gate": ""})
+        slot["count"] += 1
+        if e.get("date", "") >= slot["date"]:      # the newest occurrence describes it
+            slot.update(date=e.get("date", ""), rule=rule,
+                        mistake=e.get("mistake", "").rstrip("."), gate=e.get("gate", ""))
+
     changed = []
-    for skill in sorted({e["skill"] for e in entries}):
+    for skill, rules in sorted(agg.items()):
         f = ldir / f"{skill}.md"
         if not f.is_file():
             print(f"! no lessons file for {skill} — is it one of ours?", file=sys.stderr)
             continue
         text = f.read_text(encoding="utf-8")
-        head, _, _ = text.partition("\n- **")
-        lines = [l for l in text.splitlines() if l.startswith("- **")]
-        index = {}
-        for l in lines:
-            key = re.sub(r"\W+", "", (re.match(r"- \*\*(.*?)\*\*", l) or re.match(r"(.*)", l))
-                         .group(1).lower())[:60]
-            index[key] = l
+        head = "\n".join(l for l in text.partition("\n- **")[0].splitlines()
+                          if not l.startswith("*(no reviewed lessons yet")).rstrip()
 
-        for e in (x for x in entries if x["skill"] == skill):
-            rule = e.get("rule", "").strip()
-            if not rule:
-                continue
-            key = re.sub(r"\W+", "", rule.lower())[:60]
-            prior = index.get(key)
-            seen = 1
-            if prior:
-                m = re.search(r"seen (\d+)×", prior)
-                seen = int(m.group(1)) + 1 if m else 2
-            mistake = e.get("mistake", "").rstrip(".")
-            gate = f" ({e['gate']})" if e.get("gate") else ""
-            index[key] = (f"- **{rule}** — otherwise: {mistake}{gate}. "
-                          f"*(seen {seen}×, last {e['date']})*")
+        lines = [f"- **{r['rule']}** — otherwise: {r['mistake']}"
+                 f"{f' ({r["gate"]})' if r['gate'] else ''}. "
+                 f"*(seen {r['count']}×, last {r['date']})*"
+                 for r in sorted(rules.values(), key=lambda r: (-r["count"], r["rule"]))]
 
-        merged = sorted(index.values(),
-                        key=lambda l: (-int((re.search(r'seen (\d+)×', l) or [0, 1])[1]), l))
-        body = head.rstrip() + "\n\n" + "\n".join(merged) + "\n"
+        body = head + "\n\n" + "\n".join(lines) + "\n"
         if len(body.encode("utf-8")) > LESSON_CAP_BYTES:
             keep, size = [], len(head.encode("utf-8")) + 2
-            for l in merged:
+            for l in lines:
                 size += len(l.encode("utf-8")) + 1
                 if size > LESSON_CAP_BYTES:
                     break
                 keep.append(l)
             print(f"! {skill}: over the {LESSON_CAP_BYTES}B read-back cap — kept the "
-                  f"{len(keep)} most-seen of {len(merged)}", file=sys.stderr)
-            body = head.rstrip() + "\n\n" + "\n".join(keep) + "\n"
+                  f"{len(keep)} most-seen of {len(lines)}. Retire one by hand or shorten a rule.",
+                  file=sys.stderr)
+            body = head + "\n\n" + "\n".join(keep) + "\n"
         if body != text:
             changed.append(f.relative_to(repo).as_posix())
             if not a.check:
@@ -471,9 +477,6 @@ def cmd_compact(a) -> int:
 
     verb = "would update" if a.check else "updated"
     print(f"{verb}: {', '.join(changed) if changed else 'nothing'}")
-    if changed and not a.check:
-        print("The inbox entries stay as the record. Delete them in the same commit if they are "
-              "fully folded in.")
     return 0
 
 

@@ -58,7 +58,14 @@ Tuning turned out to matter more than the idea:
 | rule | findings on 15 slides | verdict |
 |---|---|---|
 | symmetric 12 px | **54** | unusable — nearly all were two-line labels in blocks that read perfectly well |
-| per-axis: 12 px sideways / 3 px vertical inside a block, 8 px from a stroke | **8** | every one real |
+| per-axis: inside its own block 12 px sideways / 3 px vertical; from a stroke 8 px sideways / 4 px vertical | **8** | every one real |
+
+**Four constants, not three** — the two axes differ for the block inset *and* for the stroke
+clearance. `CLEAR_X` 8 / `CLEAR_Y` 4 / `INSET_X` 12 / `INSET_Y` 3, all overridable through
+`window.MECHCHECK`. The authoritative list, with the reasoning, is in
+[`assets/slide-deck-gate4/README.md`](assets/slide-deck-gate4/README.md); the values live at the
+top of [`assets/slide-deck-gate4/mechcheck.js`](assets/slide-deck-gate4/mechcheck.js). Quote them
+from there rather than restating them, which is how this table came to name only three.
 
 The eight, after tuning — and the author had flagged only two of these slides:
 

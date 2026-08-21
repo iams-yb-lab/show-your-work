@@ -1,7 +1,10 @@
 # Proposal: every change to this repository arrives as a pull request, admins included
 
-**Status: PROPOSED 2026-08-21.** Nothing applied. Raised because the intended rule — everyone
-opens a pull request, the merge is decided together — is not what the repository does today.
+**Status: PARTLY APPLIED 2026-08-21.** The user decided the rule that same day: everyone,
+admins included, opens a pull request, and the merge is decided together. Step 2 below is done —
+`git-autosync.sh` now refuses to push the default branch, and `CLAUDE.md` states the rule. Step 1
+(a GitHub ruleset) is blocked on the org plan and step 3 (a fork flow for non-collaborators) is not
+needed while everyone working here has write access. This document remains as the rationale.
 
 ## What happens today
 

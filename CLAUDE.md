@@ -98,6 +98,24 @@ This is also the only sanctioned route to changing a skill: a `proposals/` docum
 entries — how often, at which gate, what it cost — and then the user types the exact phrase. A
 proposal with no entries behind it is taste, which is what the read-only rule exists to keep out.
 
+## IMPORTANT: every change arrives as a pull request
+
+Nothing is pushed to `main`. Not by me, not by an admin, not by a session that only fixed a typo.
+Work happens on a branch, the branch becomes a pull request, and the merge is decided by the people
+reviewing it together. **There is no bypass, because the rule exists to bind the people who could
+grant themselves one.**
+
+GitHub is not what enforces this. The repository is private on a free org plan, where rulesets and
+branch protection are unavailable, so the enforcement is `.claude/hooks/git-autosync.sh`: on the
+default branch it pushes nothing and tells you the three commands that turn your commits into a
+branch. On any other branch it behaves as it always did.
+
+So: **branch before the first commit of a session.** Landing commits on `main` is not a disaster —
+they simply sit there until someone moves them — but it is a step you then have to undo by hand.
+
+The friction loop already worked this way and is unchanged: `friction/<host>` and one standing pull
+request per machine, never a direct push.
+
 ## The geometry is load-bearing
 
 `natural-voice/SKILL.md` reaches its method by `../../../video/natural-voice/README.md`. That is

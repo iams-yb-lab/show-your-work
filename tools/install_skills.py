@@ -55,15 +55,20 @@ ROOT = Path(__file__).resolve().parent.parent
 # of it. `presentation/` and `proposals/` are deliberately not here — evidence about this
 # repository, of no use in a target project. `feedback/lessons/` travels because the friction
 # hook reads it back into every run; `feedback/inbox/` does not — that is evidence too.
+# `LICENSE` travels because it has to: PolyForm's Notices section requires that anyone who gets
+# any part of the software also gets the terms, and an install is exactly that. `ACCEPTABLE-USE.md`
+# does not travel — it is the lab's stated position, not a licence term, and it links into
+# `feedback/`, which would break the payload-self-contained check.
 PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt",
-           "tools/friction.py", "tools/update.py", "feedback/lessons"]
+           "tools/friction.py", "tools/update.py", "feedback/lessons", "LICENSE"]
 
 # Where each of those lands in the target. `.claude/skills/` and `video/` are forced: a project's
 # skills must sit at its root to be discovered at all, and `natural-voice/SKILL.md` reaches its
 # method by ../../../video/natural-voice/README.md, which is read-only. Everything else goes inside
 # video/, so an install adds ONE directory to the project instead of three, and never merges into a
 # `tools/` the project already has. Both tools find their root by walking up, so either layout works.
-REMAP = {"tools/": "video/tools/", "feedback/lessons": "video/feedback/lessons"}
+REMAP = {"tools/": "video/tools/", "feedback/lessons": "video/feedback/lessons",
+         "LICENSE": "video/LICENSE"}
 
 
 def dest_of(rel: str) -> str:
@@ -77,7 +82,7 @@ def dest_of(rel: str) -> str:
 # to the checkout by design. So `--update` replaces them when they differ, because a difference
 # there is damage or staleness rather than work. Everything else in video/ is method and record:
 # added when missing, never overwritten without --force.
-CONTRACT = (".claude/skills/", "video/tools/", "video/feedback/lessons/")
+CONTRACT = (".claude/skills/", "video/tools/", "video/feedback/lessons/", "video/LICENSE")
 
 
 def is_contract(dest: str) -> bool:

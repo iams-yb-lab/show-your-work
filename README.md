@@ -53,6 +53,8 @@ feedback/           what the skills got wrong in real runs. lessons/ is reviewed
                     with the skills; inbox/ is raw, per-machine, and stays here
 tools/              install_skills.py, check_links.py, friction.py, update.py
 EXPORT-MANIFEST.md  what was carried out of the source repository, and what was not
+LICENSE             PolyForm Noncommercial 1.0.0. Travels with an install; see Licence below
+ACCEPTABLE-USE.md   what the lab asks of you beyond the licence. Does not install
 ```
 
 `presentation/` is the one thing here that is an *output* rather than a method, and it earns the
@@ -186,6 +188,27 @@ is, nothing reads them, and each is declared with its reason in `check_links.py`
 The one thing not in here is the **board** the showoff film was rendered from. That is by design:
 `showoff-render` works on whatever CAD you point it at, and the pipeline scripts now require
 `-Board` instead of defaulting to somebody else's file.
+
+## Licence
+
+[PolyForm Noncommercial 1.0.0](LICENSE). Copyright 2026 Institute of Atomic and Molecular
+Sciences, Academia Sinica.
+
+Use it, change it, build on it, pass it on — for any **noncommercial** purpose. The licence names
+educational institutions, public research organizations and government institutions explicitly, and
+covers them *regardless of how their work is funded*, so another lab can pick these skills up
+without checking with anyone. Commercial use is the one thing it does not grant; ask the lab.
+
+This is a **source-available** licence, not an open-source one. That is deliberate, and it is the
+reason GitHub will not show an SPDX badge for it.
+
+`LICENSE` is part of the install payload and lands at `video/LICENSE` in a target project, because
+the licence requires that anyone who receives any part of this also receives the terms.
+
+Separately, [`ACCEPTABLE-USE.md`](ACCEPTABLE-USE.md) is what the lab **asks** of you — about cloned
+voices, generated footage presented as record, and the honesty rules the skills are built around.
+It is a stated position and not a condition of the licence; nothing in it binds you and all of it
+is meant.
 
 ## The one rule about the skills themselves
 

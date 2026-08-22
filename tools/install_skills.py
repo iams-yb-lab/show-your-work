@@ -6,20 +6,26 @@
     python tools/install_skills.py /path/to/project --force   # overwrite files that differ
     python tools/install_skills.py /path/to/project --update  # bring an existing install up to date
 
-Why this is not `cp -r .claude/skills`:
+Why this is not `cp -r` of the instruction files alone:
 
 `natural-voice/SKILL.md` is a short document whose content is a relative link to the method —
-`../../../video/natural-voice/README.md`. Copy the skill alone and it still loads, still announces
-itself as the authority on generated speech, and can no longer reach a word of what it knows. So
-the skill and the tree travel together, at the same relative offset:
+`method/README.md`. Copy the instruction file alone and it still loads, still announces itself as
+the authority on generated speech, and can no longer reach a word of what it knows. Since the
+layout change of 2026-08-22 everything a skill owns sits inside that skill's own directory:
 
-    <target>/.claude/skills/natural-voice/SKILL.md  ──►  <target>/video/natural-voice/README.md
+    <target>/.claude/skills/natural-voice/SKILL.md  ──►  method/README.md
+                                                    ──►  ../_shared/audio/voice_chain.py
 
-That is the whole design. `--skills-only` exists for the case where the target already has an
-identical `video/` tree; it is otherwise the wrong flag.
+So a target gains exactly one directory, `.claude/skills/`, with the shared tooling and the
+machinery inside it at `_shared/`. `--skills-only` copies the instruction files and nothing else;
+it is for the case where the target already has identical methods and `_shared/`, and is otherwise
+the wrong flag.
 
-Installing into `~/.claude/skills` to make the skills global does not work and is refused: from
-there the link resolves to `~/video/natural-voice/README.md`, which is not a thing.
+Installing into `~/.claude/skills` is refused: this installer creates `.claude/skills` itself, so
+give it the project root. Installing to `$HOME` is also refused. Under the old layout that would
+have put a `video/` tree in the home folder and could not work at all; under this one it would land
+the skills in `~/.claude/skills/` and the links would resolve, which makes a global install newly
+possible but untested. It stays refused until someone tries it on purpose.
 
 It also wires two things into the target's `.claude/settings.json`, and says which:
 
@@ -27,12 +33,14 @@ It also wires two things into the target's `.claude/settings.json`, and says whi
       and pushes what went wrong back here as a pull request. Without it the skills still work;
       they just cannot learn from the run, and nothing comes back to the lab.
 
-  the update check (--no-update-hook opts out)      at the start of a session, `video/tools/update.py`
+  the update check (--no-update-hook opts out)      at the start of a session, `update.py` under
+      `.claude/skills/_shared/tools/`
       asks GitHub whether there is a newer version and installs it. Without it the project keeps the
       version it was installed with, for as long as it exists, and nobody finds out.
 
 `--update` is the mode that check runs: replace the files that are read-only by contract when they
-differ, add anything missing, leave the project's own edits to `video/` alone and name them.
+differ, add anything missing, leave the project's own edits to the methods and examples alone
+and name them.
 """
 
 from __future__ import annotations
@@ -48,27 +56,29 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# What travels. `video/` goes whole — a partial copy is how a link starts dangling. It is 108 MB,
-# not the 2.6 MB this comment claimed until 2026-08-19: most of it is two 27 MB Claude Design
-# bundles, an 18 MB master and 34 MB of render gallery, i.e. the films' picture, which
-# EXPORT-MANIFEST.md records as unreproducible without these exact files. Installing copies all
-# of it. `presentation/` and `proposals/` are deliberately not here — evidence about this
-# repository, of no use in a target project. `feedback/lessons/` travels because the friction
+# What travels: `.claude/skills/` whole — a partial copy is how a link starts dangling — plus the
+# machinery, remapped inside it. About 16 MB, down from 108 MB before 2026-08-22, when the heavy
+# film media left for `references/`: two 27 MB Claude Design bundles, an 18 MB master and 33 MB of
+# render gallery, none of which any skill ever opened. What stays under `examples/` is the films'
+# documents, scripts and logs, which is what a worked example is for.
+#
+# `references/` and `proposals/` are deliberately not here — set-aside media and evidence about
+# this repository, of no use in a target project. `feedback/lessons/` travels because the friction
 # hook reads it back into every run; `feedback/inbox/` does not — that is evidence too.
 # `LICENSE` travels because it has to: PolyForm's Notices section requires that anyone who gets
 # any part of the software also gets the terms, and an install is exactly that. `ACCEPTABLE-USE.md`
 # does not travel — it is the lab's stated position, not a licence term, and it links into
 # `feedback/`, which would break the payload-self-contained check.
-PAYLOAD = [".claude/skills", "video", "tools/check_links.py", "tools/skill-hashes.txt",
+PAYLOAD = [".claude/skills", "tools/check_links.py", "tools/skill-hashes.txt",
            "tools/friction.py", "tools/update.py", "feedback/lessons", "LICENSE"]
 
-# Where each of those lands in the target. `.claude/skills/` and `video/` are forced: a project's
-# skills must sit at its root to be discovered at all, and `natural-voice/SKILL.md` reaches its
-# method by ../../../video/natural-voice/README.md, which is read-only. Everything else goes inside
-# video/, so an install adds ONE directory to the project instead of three, and never merges into a
-# `tools/` the project already has. Both tools find their root by walking up, so either layout works.
-REMAP = {"tools/": "video/tools/", "feedback/lessons": "video/feedback/lessons",
-         "LICENSE": "video/LICENSE"}
+# Where each of those lands in the target. `.claude/skills/` is forced: a project's skills must sit
+# at its root to be discovered at all. Everything else goes inside `_shared/` there, so an install
+# adds ONE directory to the project and never merges into a `tools/` the project already owns. Both
+# tools find their root by walking up, so either layout works.
+REMAP = {"tools/": ".claude/skills/_shared/tools/",
+         "feedback/lessons": ".claude/skills/_shared/feedback/lessons",
+         "LICENSE": ".claude/skills/_shared/LICENSE"}
 
 
 def dest_of(rel: str) -> str:
@@ -77,16 +87,25 @@ def dest_of(rel: str) -> str:
             return dst + rel[len(src):]
     return rel
 
-# Target-relative paths whose content is not the project's to own: the skills are read-only by
-# rule, the tools and the reviewed lessons are shared machinery, and all three are byte-identical
-# to the checkout by design. So `--update` replaces them when they differ, because a difference
-# there is damage or staleness rather than work. Everything else in video/ is method and record:
-# added when missing, never overwritten without --force.
-CONTRACT = (".claude/skills/", "video/tools/", "video/feedback/lessons/", "video/LICENSE")
+# What is not the project's to own: the skill instruction files are read-only by rule, and
+# everything in `_shared/` is machinery — the tools, the reviewed lessons, the shared audio and
+# checks. All are byte-identical to the checkout by design, so `--update` replaces them when they
+# differ, because a difference there is damage or staleness rather than work.
+#
+# Deliberately NOT included: a skill's `method/`, `examples/` and `profiles/`. Those are method and
+# record, and since the 2026-08-22 layout change they live under `.claude/skills/` too — so a blunt
+# prefix on that directory would claim ownership of a project's own correction to a worked example.
+# They are added when missing and never overwritten without --force.
+CONTRACT = (".claude/skills/_shared/",)
 
 
 def is_contract(dest: str) -> bool:
-    return dest.startswith(CONTRACT)
+    if dest.startswith(CONTRACT):
+        return True
+    # A skill's instruction files: any .md directly inside .claude/skills/<skill>/, no deeper.
+    parts = dest.split("/")
+    return (len(parts) == 4 and parts[0] == ".claude" and parts[1] == "skills"
+            and parts[3].endswith(".md"))
 
 
 SKIP_DIRS = {".git", "__pycache__", "out", ".venv", "venv", "node_modules"}
@@ -119,12 +138,14 @@ def refuse_global(target: Path) -> str | None:
     """Global skill directories cannot host these skills. Say so rather than half-installing."""
     parts = [q.lower() for q in target.parts]
     if ".claude" in parts and "skills" in parts:
-        return ("that is a skills directory, not a project root. These skills reach their method by\n"
-                "  ../../../video/natural-voice/README.md, which only resolves when they sit inside a\n"
-                "  project that also has video/. Give me the project root instead.")
+        return ("that is a skills directory, not a project root. This installer creates\n"
+                "  .claude/skills/ itself, so pointing it at one would nest a second copy inside the\n"
+                "  first. Give me the project root instead.")
     if target == Path.home() or (target / ".claude").resolve() == (Path.home() / ".claude").resolve():
-        return ("installing to the home directory would put video/ in your home folder. Give me a\n"
-                "  project root instead.")
+        return ("installing to the home directory would land the skills in ~/.claude/skills/, the\n"
+                "  global skill directory. Since the 2026-08-22 layout change the links would\n"
+                "  actually resolve there, so this may well work — but it has never been tried, and\n"
+                "  a half-working global install is worse than none. Give me a project root.")
     return None
 
 
@@ -228,23 +249,23 @@ def wire(target: Path, features: tuple[str, ...], check: bool) -> list[str]:
     return did
 
 
-MARKER = "video/WHAT-IS-THIS.md"
+MARKER = ".claude/skills/_shared/WHAT-IS-THIS.md"
 
 MARKER_TEXT = """\
 # What this directory is, and what happens if you delete it
 
-`video/` was not written by this project. It was installed by `show-your-work`, which is a set of
+`_shared/` was not written by this project. It was installed by `show-your-work`, which is a set of
 skills for making explainer videos, cinematic renders, technical reports and slide decks with
-Claude. It holds the method those skills read, the shared audio and picture tooling they run, and
-`tools/` and `feedback/` inside it.
+Claude. It holds the shared audio and check tooling those skills run, plus `tools/` and `feedback/`
+inside it.
 
-**Deleting it breaks the skills, silently.** `natural-voice/SKILL.md` is a short document whose whole
-content is a relative link to `natural-voice/README.md` in here. Remove this tree and that skill
-still loads, still announces itself as the authority on generated speech, and can no longer reach a
-word of what it knows. Nothing will tell you.
+**Deleting it breaks the skills, silently.** `natural-voice`'s method links `_shared/audio/`
+directly, and the skills are read-only, so the link cannot be redirected. Remove this directory and
+that skill still loads, still announces itself as the authority on generated speech, and can no
+longer reach part of what it knows. Nothing will tell you.
 
-It sits at the project root, and cannot be moved, because that link is fixed and the skills are
-read-only.
+The skills themselves are the sibling directories beside this one. Each holds its own instructions,
+its method and its worked examples.
 
 ## Removing it properly
 
@@ -258,7 +279,7 @@ and tells you what it left behind. `--uninstall --check` shows you first.
 ## Staying current
 
 A session started in this project checks GitHub for a newer version of the skills and installs it,
-through `video/tools/update.py`. It fast-forwards only, never touches your own files in here, and
+through `tools/update.py` in here. It fast-forwards only, never touches your own files in here, and
 says nothing when there is nothing to do. `SHOW_YOUR_WORK_UPDATE=off` in the environment stops it on
 this machine; removing its SessionStart hook from `.claude/settings.json` stops it for the project.
 
@@ -363,7 +384,8 @@ def main(argv=None):
     ap.add_argument("--update", action="store_true",
                     help="bring an existing install up to date: replace the read-only files that "
                          "differ (skills, tools, lessons), add anything missing, and leave the "
-                         "project's own edits to video/ alone. What update.py runs.")
+                         "project's own edits to the methods and examples alone. What "
+                         "update.py runs.")
     ap.add_argument("--no-update-hook", action="store_true",
                     help="do not wire the SessionStart update check into the target. The skills "
                          "work; they just stay at the version installed today, forever")
@@ -373,8 +395,9 @@ def main(argv=None):
     ap.add_argument("--uninstall", action="store_true",
                     help="remove what was installed, leave anything you edited, unwire the hooks")
     ap.add_argument("--skills-only", action="store_true",
-                    help="copy .claude/skills only — leaves natural-voice unable to reach its method "
-                         "unless the target already has an identical video/ tree")
+                    help="copy the skill instruction files only — leaves natural-voice unable to "
+                         "reach its method unless the target already has identical method/ and "
+                         "_shared/ trees")
     a = ap.parse_args(argv)
 
     target = Path(a.target).expanduser().resolve()
@@ -394,9 +417,10 @@ def main(argv=None):
 
     payload = list(payload_files())
     if a.skills_only:
-        payload = [(s, r, d) for s, r, d in payload if r.startswith(".claude/skills")]
-        print("! --skills-only: video/ is not being copied. natural-voice will only work if the\n"
-              "  target already has this repository's video/ tree at its root.\n")
+        payload = [(s, r, d) for s, r, d in payload
+                   if is_contract(d) and not d.startswith(".claude/skills/_shared/")]
+        print("! --skills-only: the methods, examples and _shared/ are not being copied.\n"
+              "  natural-voice will only work if the target already has them.\n")
 
     new, same, differ = [], [], []
     for src, r, dest in payload:
@@ -415,7 +439,7 @@ def main(argv=None):
     print(f"  differ:  {len(differ)}")
 
     # --force overwrites everything that differs; --update only the files that are ours by
-    # contract. Both leave a target's own work in video/ where it is.
+    # contract. Both leave a target's own work in the methods and examples where it is.
     overwrite = differ if a.force else [d for d in differ if a.update and is_contract(d[1])]
     leave = [d for d in differ if d not in overwrite]
 
@@ -463,19 +487,23 @@ def main(argv=None):
     print(f"\nwrote {written} file(s)")
     print(f"added to {target.name}/: " + ", ".join(sorted(
         {d.split("/")[0] + "/" for _, _, d in payload})) +
-        f"\n  everything but .claude/ and video/ lives inside video/, so this project gains one\n"
-        f"  directory, not three. {MARKER} says what it is and how to remove it.")
+        f"\n  the tools and the lessons live inside .claude/skills/_shared/, so this project gains\n"
+        f"  one directory. {MARKER} says what it is and how to remove it.")
 
     # Verify in the target, using the copy of the checker that just landed there.
     ok = True
-    for where, link in [(".claude/skills/natural-voice/SKILL.md", "../../../video/natural-voice/README.md"),
+    for where, link in [(".claude/skills/natural-voice/SKILL.md", "method/README.md"),
+                        (".claude/skills/natural-voice/method/README.md",
+                         "../../_shared/audio/voice_chain.py"),
                         (".claude/skills/education-video/SKILL.md", "interview.md")]:
         f = target / where
         if not f.exists() or not (f.parent / link).resolve().exists():
             print(f"! {where} cannot reach {link}", file=sys.stderr)
             ok = False
+    # Only the files that are ours by contract: a method or example the project has corrected is
+    # allowed to differ, and reporting that as a failed copy would be wrong.
     for src, r, dest in payload:
-        if r.startswith(".claude/skills") and sha(src) != sha(target / dest):
+        if is_contract(dest) and (target / dest).exists() and sha(src) != sha(target / dest):
             print(f"! {dest} did not copy byte-identical", file=sys.stderr)
             ok = False
 

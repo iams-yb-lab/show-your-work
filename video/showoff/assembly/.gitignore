@@ -1,4 +1,0 @@
-# This film's generated media is not under this directory -- it is in `video/out/showoff/`,
-# ignored by `video/.gitignore`, which explains what is in there and why. The output tree was
-# left flat when this film moved into `assembly/`, so it does not mirror this one; see
-# `../../MOVE-LOG.md`. Nothing to ignore here; the tracked stills are in gallery/.

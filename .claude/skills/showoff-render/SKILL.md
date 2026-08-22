@@ -9,7 +9,7 @@ This works. `assembly_purple_v2.mp4` — 84 s, 2520 frames, 2560×1440 — came 
 every check, approved on the first viewing of the third draft. It took twelve stages and three
 drafts to get there and most of the cost was avoidable. This is the route without the cost.
 
-The full arc, with numbers and citations, is in `video/showoff/assembly/RENDER-LOG.md`. Read it if you
+The full arc, with numbers and citations, is in `showoff-render/examples/assembly/RENDER-LOG.md`. Read it if you
 want the evidence for any rule below.
 
 This film is the visuals. **The picture is the product and it ships silent**; audio, if it ever

@@ -151,3 +151,66 @@ Honest limits, so nobody discovers them mid-task:
   Those links dangle on purpose and are registered in `check_links.py`'s `EXTERNAL` list.
 - Several scripts extend `PATH` with this machine's ffmpeg install. Left alone: changing a path
   that works on the machine the export was made on trades a real capability for a tidier file.
+
+## The layout changed on 2026-08-22: one folder per skill
+
+The `video/` tree described throughout the sections above **no longer exists**. Everything a skill
+owns now sits inside that skill's own folder under `.claude/skills/`, and only what more than one
+skill calls is shared, at `_shared/`. The argument, and every path rewritten, is in
+[`proposals/one-folder-per-skill.md`](proposals/one-folder-per-skill.md); the current map is
+[`MAP.md`](MAP.md). Read the tables above as history: they record what came out of
+`temperature-controller` and where it landed *then*.
+
+| then | now |
+|---|---|
+| `video/engine/` | `.claude/skills/_shared/audio/` |
+| `video/natural-voice/{README,EXPERIMENTS,audio_audit}` | `.claude/skills/natural-voice/method/` |
+| `video/natural-voice/profiles/` | `.claude/skills/natural-voice/profiles/` |
+| `video/picture/` | `.claude/skills/education-video/method/` |
+| `video/education/` | `.claude/skills/education-video/examples/` |
+| `video/showoff/` | `.claude/skills/showoff-render/examples/` |
+| `presentation/` | `.claude/skills/slide-deck/examples/presentation/` |
+| `video/README.md` | `.claude/skills/_shared/README.md`, rewritten |
+
+Three skill files were edited, authorised by the user typing the exact phrase. Seven paths in all:
+five markdown links and two of the same paths repeated as display text, which `check_links.py`
+matches on the target only and so cannot see. New hashes:
+
+| file | sha256 |
+|---|---|
+| `.claude/skills/natural-voice/SKILL.md` | `f6b8b08fd2c9b83c702e226f91ddc3f0dac768821f9af32be1a8cca295c3f60d` |
+| `.claude/skills/education-video/SKILL.md` | `615f8d021584040cae33c4eb006a27202e3fc1b4c347b139cb38394080273e65` |
+| `.claude/skills/showoff-render/SKILL.md` | `ff6df3c1ca528e0c9fcad32031b3f65cb0c4b0b99f441be89731292a267499e5` |
+
+`slide-deck` and `technical-report` contain no paths, were not touched, and their hashes are
+unchanged from the entries above.
+
+### What left the payload
+
+Installing was 108 MB and is now 15.8 MB. The difference is media that no skill ever opened, moved
+to `references/`, which does not install: the two 26 MB explainer bundles and the four 8 MB assembly
+stills. Neither can be re-made — the explainer has no MP4 at all, and the board the stills came from
+never travelled — so both are kept, out of the way. See
+[`references/README.md`](references/README.md).
+
+One file was deleted rather than moved: `Temperature Controller Intro 1080p.mp4`, 18 MB, the intro
+film's silent master. Unlike the rest it is reproducible from the HTML bundle beside it. That was
+checked, not assumed: re-rendering its first 90 frames with `export_html_video.py` and comparing
+against the original recovered from git gave SSIM 0.9978 and PSNR 43.4 dB. Playwright, a chromium
+and an ffmpeg were installed into a temporary environment to do it; none of the three is present on
+this machine otherwise.
+
+### Two checks that had to change with the layout
+
+- `check_skills` hashed every `.md` under `.claude/skills/`. Left alone, the move would have put
+  about fifty method and example documents under the read-only rule, so a correction to a worked
+  example would have reported as tampering. It now hashes `SKILL.md` and any `.md` directly beside
+  it: seven files, the same seven as before.
+- `.gitattributes` marked `.claude/skills/**` as `-text -diff`. Left alone, every script and
+  document in the repository would have become undiffable. Narrowed to `.claude/skills/*/*.md`.
+
+### One thing this manifest claimed that was already wrong
+
+The note above about the two `narration-assembly*.md` files being "registered in
+`check_links.py`'s EXTERNAL list" is stale — `EXTERNAL` is empty and was empty before this change.
+The files are fine; the claim about how was not.

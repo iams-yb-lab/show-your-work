@@ -37,7 +37,7 @@ one, so **never ask where the picture comes from or who makes it**: it is decide
 GATE 0 question. Ask what the picture should *look like*; never who draws it.
 
 **It is HTML, and the tool that turns it into frames is already here** —
-[`video/picture/README.md`](../../../video/picture/README.md) documents it: a page that answers a seek
+[`education-video/method/README.md`](method/README.md) documents it: a page that answers a seek
 with the frame at that instant, stepped frame by frame into ffmpeg. Not Blender, not a 3D scene, not
 screen capture — mechanism animation and hardware beauty shots are `showoff-render`'s job, and that
 boundary has not moved.
@@ -191,7 +191,7 @@ were licensed** — the picture draws type, diagrams, charts and motion, and nev
 **Check it mechanically before rendering anything long.** Nothing may extend past the canvas, no visible
 text may fall below the film's font floor, the same seek twice must give the same pixels, and the scene
 table must sum to the page's own duration.
-[`composition_check.py`](../../../video/picture/composition_check.py) is that check, and it writes the
+[`composition_check.py`](method/composition_check.py) is that check, and it writes the
 contact sheet the next rule asks for.
 
 **Probe, then a contact sheet, never a single frame.** Sixty frames cost seconds where the full pass
@@ -230,7 +230,7 @@ delivered MP4, and its duration against the master. The picture is `round(durati
 is legitimately up to half a frame shorter than the audio; anything past one frame means the
 composition's duration and the master disagree, which is a GATE 5 defect and not a rounding one.
 
-[`deliver_film.py`](../../../video/picture/deliver_film.py) does the mux, the disposition and the
+[`deliver_film.py`](method/deliver_film.py) does the mux, the disposition and the
 verification in one pass. **It has never been run on a finished film** — the first run is the one that
 proves it, so read what it prints instead of trusting that it worked.
 

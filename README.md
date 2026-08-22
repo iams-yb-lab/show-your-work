@@ -20,7 +20,7 @@ To use them somewhere else, see [Installing elsewhere](#installing-elsewhere) â€
 ## Why the `video/` tree comes with them
 
 `natural-voice/SKILL.md` is a short document that says *the method is somewhere else, go and read
-it*. That somewhere is [`video/natural-voice/README.md`](video/natural-voice/README.md), reached by
+it*. That somewhere is [`video/natural-voice/README.md`](.claude/skills/natural-voice/method/README.md), reached by
 a relative link. Two more skills cite evidence the same way.
 
 So the skills are not the three folders under `.claude/`. They are those folders **plus the tree

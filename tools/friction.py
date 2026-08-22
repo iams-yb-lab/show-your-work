@@ -45,9 +45,10 @@ import tempfile
 from datetime import date
 from pathlib import Path
 
-# Do not anchor on the checkout — video/README.md. Walk up to the tree that holds the method.
+# Do not anchor on the checkout — .claude/skills/_shared/README.md. Walk up to the tree that holds
+# the skills.
 REPO = next((p for p in Path(__file__).resolve().parents
-             if (p / "video" / "natural-voice").is_dir()), None)
+             if (p / ".claude" / "skills" / "natural-voice").is_dir()), None)
 
 # Machine-local, and overridable so the whole push path can be exercised against a scratch
 # clone without touching the real buffer or opening a real pull request.
@@ -102,9 +103,13 @@ def git(repo: Path, *args, env=None, stdin=None):
 
 
 # Where lessons sit relative to the tree root. In this repository, `feedback/lessons/`. In a project
-# the skills were installed into, under `video/` — so an install adds one directory to that project's
-# root instead of scattering three across it.
-LESSON_HOMES = (("feedback", "lessons"), ("video", "feedback", "lessons"))
+# the skills were installed into, inside `.claude/skills/_shared/` — so an install adds one directory
+# to that project instead of scattering several across it. The `video/` form is kept so a project
+# installed before the 2026-08-22 layout change still finds its lessons rather than silently
+# reporting none.
+LESSON_HOMES = (("feedback", "lessons"),
+                (".claude", "skills", "_shared", "feedback", "lessons"),
+                ("video", "feedback", "lessons"))
 
 
 def lessons_in(base: Path | None) -> Path | None:
@@ -145,7 +150,8 @@ def how_to_call(cwd: str | None) -> str:
     committed permission rule could match it and the user would get a prompt — the one thing this
     whole mechanism is not allowed to do."""
     for base in (Path(cwd) if cwd else None, REPO):
-        for rel in ("tools/friction.py", "video/tools/friction.py"):
+        for rel in ("tools/friction.py", ".claude/skills/_shared/tools/friction.py",
+                    "video/tools/friction.py"):
             if base and (base / rel).is_file():
                 return f"python3 {rel}"
     return f"python3 {Path(__file__).resolve()}"

@@ -5,13 +5,13 @@ description: Load automatically whenever generated or synthetic speech is involv
 
 # Natural voice
 
-**The method is [`video/natural-voice/README.md`](../../../video/natural-voice/README.md). Read it
+**The method is [`natural-voice/method/README.md`](method/README.md). Read it
 in full and follow it exactly.**
 
 That document was written by Codex after everything this repository tried had been rejected, and it is
 the only voice approach here that has ever been accepted. **Do not reword it, summarise it back into
 your own phrasing, "improve" it, or substitute your judgement for it.** Its companion
-[`EXPERIMENTS.md`](../../../video/natural-voice/EXPERIMENTS.md) records what is already ruled out.
+[`EXPERIMENTS.md`](method/EXPERIMENTS.md) records what is already ruled out.
 
 This skill exists to make sure you know that **every attempt you made at this failed**, and why — so
 you do not propose any of them again.
@@ -189,7 +189,7 @@ comparison has more than one variable in it, say so before the verdict, not afte
 ## Reusing the approved voice
 
 The warm narrator identity is a real, reusable asset:
-[`video/natural-voice/profiles/warm-natural/`](../../../video/natural-voice/profiles/warm-natural/) —
+[`natural-voice/profiles/warm-natural/`](profiles/warm-natural/) —
 prompt WAV, prompt hash, selection record, generation ranges and reproduction script.
 
 Never overwrite a profile. A changed prompt, model, or material conditioning change is a new

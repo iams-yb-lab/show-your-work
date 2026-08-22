@@ -11,9 +11,9 @@ different skill. Verified by `tools/check_links.py`, which reads `tools/skill-ha
 
 | file | sha256 (first 16) |
 |---|---|
-| `.claude/skills/education-video/SKILL.md` | `99a16be0ad1e7866` |
-| `.claude/skills/education-video/interview.md` | `fa7a570e313f1d84` |
-| `.claude/skills/education-video/images.md` | `81b65b43ae00363c` |
+| `.claude/skills/education-video/SKILL.md` | `99a16be0ad1e7866` — superseded, see below |
+| `.claude/skills/education-video/interview.md` | `fa7a570e313f1d84` — superseded, see below |
+| `.claude/skills/education-video/images.md` | `81b65b43ae00363c` — superseded, see below |
 | `.claude/skills/natural-voice/SKILL.md` | `1b11e1ec4bbf2538` |
 | `.claude/skills/showoff-render/SKILL.md` | `8805cef3fc262996` — superseded, see below |
 
@@ -26,6 +26,25 @@ carried word-for-word. The design and its rationale are in `proposals/showoff-re
 New hash `8abf7da6eed3dc44`, blessed into `tools/skill-hashes.txt`. **This copy now leads the
 source repository** — the same edit still needs to land at the source, at which point the two are
 byte-identical again.
+
+On 2026-08-22 the user authorized, with the exact phrase, a change to all three
+`education-video` files: **the Claude Design handoff is gone.** GATE 5 was one prompt the user pasted
+into Claude Design, which returned an HTML bundle we rendered; it is now the picture itself — one
+self-contained HTML composition we author and the user approves silent — and a new GATE 6 renders it,
+muxes the approved mix, attaches the captions as a subtitle track the viewer switches on, and hands
+over the film. Six gates where there were five. The order `document → script → audio → picture` and
+GATE 0 through GATE 4 are untouched; `interview.md` loses two Claude Design references and gains one
+settled question, and `images.md` loses one. New hashes `85d0e2f11842b63f` (SKILL.md),
+`31fd7a97d918746e` (interview.md) and `9b30e8b1da0d596c` (images.md), blessed into
+`tools/skill-hashes.txt`. **These copies now lead the source repository**, as `showoff-render` already
+does. The rationale, the evidence it argues from and what it deliberately leaves alone are in
+[`proposals/education-video-self-delivered-film.md`](proposals/education-video-self-delivered-film.md).
+
+Two tools were added to `video/picture/` for the new gates: `composition_check.py` (the GATE 5 check —
+export contract, canvas size, offline, determinism, overflow, font floor, contact sheet) and
+`deliver_film.py` (the GATE 6 mux, the switchable subtitle track and its verification). Both travel
+with the payload; neither has been run on a real film. `tools/check_links.py` now treats the skill's
+links to all three as load-bearing, so moving one breaks the check rather than the film.
 
 ## Added after export
 
@@ -56,7 +75,7 @@ the first deck it produces is its first evidence, and that evidence stays with t
 |---|---|
 | `video/natural-voice/` | `natural-voice/SKILL.md` links to `README.md` here for the method itself, to `EXPERIMENTS.md` for what is ruled out, and to `profiles/warm-natural/` for the approved voice identity. Without this directory the skill is a broken link |
 | `video/engine/` | the shared audio: BS.1770-4 loudness, true-peak limiting, the voice chain. `voice_chain.py` is linked by name from the method as a failed approach not to repeat |
-| `video/picture/` | the HTML-bundle-to-video exporter. `education-video` GATE 5 ends in a bundle and says rendering it is the assistant's job — this is what does it |
+| `video/picture/` | the picture tooling: the HTML-to-video exporter, the composition check and the film mux. `education-video` builds the composition at GATE 5 and delivers the film at GATE 6 — these three are what do it |
 | `video/showoff/assembly/RENDER-LOG.md` | showoff-render says "the full arc, with numbers and citations, is in" this file |
 | `video/showoff/assembly/audio/VOICE-LOG.md` | the method links to it for the rejected room-tone experiment and its verdict |
 | `video/showoff/assembly/{picture,script,audio}/` | the Blender + KiCad pipeline and the audio R&D: showoff-render's reference implementation and the record behind natural-voice's fourteen rejected attempts |

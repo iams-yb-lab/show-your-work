@@ -8,7 +8,7 @@ Everything the three skills dereference lives here. The skills are in
 
 ```
 engine/         the shared audio: dsp, mix_audio, voice_chain, narrate, check_score
-picture/        the HTML-bundle-to-video exporter
+picture/        the HTML-to-video exporter, the composition check and the film mux
 natural-voice/  the audio-first natural-speech method, its profiles and experiments
 showoff/
   assembly/     the Blender + KiCad pipeline, and the film's logs

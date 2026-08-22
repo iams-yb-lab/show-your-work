@@ -1,7 +1,14 @@
 # Picture — the shared HTML-to-video exporter
 
-`engine/` is the shared sound; this is the shared picture. One tool so far, and it is the only thing in
-this tree that can turn a Claude Design bundle into a video file.
+`engine/` is the shared sound; this is the shared picture. Three tools, in the order a film meets them:
+`composition_check.py` passes or fails the composition, `export_html_video.py` turns it into frames, and
+`deliver_film.py` muxes the frames, the approved mix and a switchable subtitle track into the film.
+
+The composition used to come back from Claude Design as a bundle. Since 2026-08-22 `education-video`
+authors it here instead — the reason is written up in the source repository's
+`proposals/education-video-self-delivered-film.md`, which does not travel with this tree.
+The exporter does not care which: it renders any page that honours its seek protocol, and the two
+Claude Design bundles in `../education/` still render exactly as they did.
 
 ## Provenance
 
@@ -44,3 +51,61 @@ python export_html_video.py "<bundle>.html" "<out>.mp4" --width 1920 --height 10
 - **Captions:** a bundle may burn its captions into the frames. `window.TWEAK_DEFAULTS` is plaintext and
   host-rewritable, so flipping `"captions":true` to `false` on a copy of the bundle turns them off; the
   same trick reaches the accent colour. Verify by re-rendering one frame and looking at it.
+
+## `composition_check.py` — what a composition has to get right
+
+Run it before any long render. It fails on: no export root, a root whose box is not the authored size,
+a missing or disagreeing duration attribute, anything fetched at render time, a non-deterministic seek,
+an element overflowing the canvas, text under the film's font floor, or a page error — each checked at
+every sampled instant, because a composition's contents are a function of time and t=0 proves nothing.
+
+**The determinism check is the one that earns its keep.** It seeks to an instant, screenshots, comes
+back to it out of order and demands the same pixels. A composition driven by a CSS animation or a
+`requestAnimationFrame` clock looks perfect in a browser and renders as a smear, and this is the only
+thing that catches it before the frames are on disk.
+
+Its overflow and font-floor checks are adapted from `../../presentation/tools/render_check.py`, where
+they were first proved on this repository's own deck. That deck is per-slide; this is per-instant.
+
+```bash
+python composition_check.py film.html --width 1920 --height 1080 \
+    --expect-duration 270.349 --font-floor 28 --contact-sheet out/sheet
+```
+
+`--contact-sheet` writes the sampled frames and, if ffmpeg is on PATH, tiles them into one
+`contact-sheet.png`. **Look at the sheet, never a single frame** — a lone frame can land between one
+beat clearing and the next building, which on the intro film read as a broken scene and nearly bought a
+false defect report.
+
+## `deliver_film.py` — the mux, and the subtitle track that stays off
+
+Takes the silent render, the mix approved at GATE 3 and the `.srt`, and writes the delivered MP4:
+video stream copied, audio to AAC, captions as a `mov_text` track. Then it checks its own work — the
+video stream's MD5 before and after, the track extracted back out and diffed against the sidecar, the
+picture/audio duration gap against one frame — and exits non-zero rather than handing over a file that
+merely looks finished.
+
+**ffmpeg cannot switch an MP4 subtitle track off, and it does not say so.** `-disposition:s:0 0`,
+`-disposition:s:0 -default` and `-default_mode passthrough` all produce a `tkhd` with flags `0x000003`
+on ffmpeg 7.0 — ENABLED plus IN_MOVIE — so the track comes up burned-on-looking in QuickTime and the
+command that was supposed to prevent it reports success. What works is clearing bit 0 of the subtitle
+track's `tkhd` flags in the finished file: **one byte, inside a fixed-size box**, no offset moves, the
+media data untouched, and `ffprobe` then reports `disposition:default=0`. `switch_subtitles_off()` does
+exactly that and nothing else.
+
+```bash
+python deliver_film.py --picture silent.mp4 --audio mix.wav \
+    --subtitles captions.srt --output film.mp4 --fps 30
+```
+
+## What has been run, and on what
+
+Both tools were written on 2026-08-22 against a synthetic three-second composition — a moving dot, a
+clock caption, a deliberately broken twin — on macOS with a pip-installed static ffmpeg 7.0 and system
+Chrome. Every check was made to fire on purpose and then to pass: the failing twin returned a wrong
+duration, 11px text, an element 160px past the canvas, a CSS animation and a missing image, and all
+five were reported. The subtitle byte patch was verified by reading the track back out of the finished
+file and by the video stream's MD5 being unchanged.
+
+**Neither has been run on a real film.** The intro film predates both. Read what they print on the
+first real pass rather than trusting the exit code.

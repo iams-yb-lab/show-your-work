@@ -8,8 +8,15 @@
 
 * text=auto eol=lf
 
-# The skills are copied byte-identical and verified by hash. Never normalise, never diff.
-.claude/skills/** -text -diff
+# The skill instruction files are copied byte-identical and verified by hash. Never normalise,
+# never diff. This is deliberately narrow: it matches SKILL.md and any sibling .md directly beside
+# it, and nothing deeper. Since the 2026-08-22 layout change everything a skill owns lives under
+# .claude/skills/ too — methods, examples, profiles, shared tools — and that is ordinary source
+# which has to stay readable in a diff.
+.claude/skills/*/*.md -text -diff
+
+# _shared/ holds no SKILL.md, so it is not a skill and its documents are not hash-verified.
+.claude/skills/_shared/*.md text diff
 
 # Binary assets: the voice prompt WAVs are immutable conditioning identities.
 *.wav binary

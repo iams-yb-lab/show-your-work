@@ -132,7 +132,8 @@ list at the top of the script, with a reason — not silently.
 ## Paths in new code
 
 **Do not anchor on the checkout.** Walk up to the directory holding `video/natural-voice/` and take
-every path from there; the expression is in [`video/README.md`](video/README.md). A hardcoded
+every path from there; the expression is in
+[`.claude/skills/_shared/README.md`](.claude/skills/_shared/README.md). A hardcoded
 checkout path is why a batch of scripts in the source repository could not run on the second
 machine.
 

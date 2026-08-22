@@ -42,10 +42,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-# Do not anchor on the checkout: walk up to the tree that holds the method. Works whether this file
-# sits in <checkout>/tools/ or, once installed, in <project>/video/tools/.
+# Do not anchor on the checkout: walk up to the tree that holds the skills. Works whether this file
+# sits in <checkout>/tools/ or, once installed, in <project>/.claude/skills/_shared/tools/.
 ROOT = next((p for p in Path(__file__).resolve().parents
-             if (p / "video" / "natural-voice").is_dir()), None)
+             if (p / ".claude" / "skills" / "natural-voice").is_dir()), None)
 
 # Machine-local state, shared with friction.py because home.txt — the pointer to the checkout — is
 # already there and both halves need it. Overridable so the whole path can be exercised on a
@@ -176,7 +176,8 @@ def sync(repo: Path, apply: bool) -> tuple[str, str, int]:
 
 def verify(repo: Path) -> str:
     """Run the checker that travelled with the update. A pull that lands broken must not be quiet."""
-    for rel in ("tools/check_links.py", "video/tools/check_links.py"):
+    for rel in ("tools/check_links.py", ".claude/skills/_shared/tools/check_links.py",
+                "video/tools/check_links.py"):
         script = repo / rel
         if not script.is_file():
             continue
@@ -218,7 +219,8 @@ def run(apply: bool, budget: int = 900) -> tuple[list[str], list[str]]:
     """Do the update. Returns (notable lines, quiet lines) — the hook prints the first list only."""
     notable, quiet = [], []
     if ROOT is None:
-        return notable, ["not inside a tree that holds video/natural-voice/ — nothing to update"]
+        return notable, ["not inside a tree that holds .claude/skills/natural-voice/ — "
+                         "nothing to update"]
 
     here_is_checkout = is_checkout(ROOT)
     clone = ROOT if here_is_checkout else home_checkout()
@@ -265,7 +267,8 @@ def run(apply: bool, budget: int = 900) -> tuple[list[str], list[str]]:
         # The installer's own summary line: "update: N file(s) refreshed|stale, M left alone".
         counts = [int(w) for w in line.split() if w.isdigit()]
         count, left = (counts + [0, 0])[:2]
-        also = (f" {left} file(s) in video/ differ from the method and were left alone — "
+        also = (f" {left} method or example file(s) differ from the checkout and were left "
+                f"alone — "
                 f"run the installer with --force to replace those too.") if left else ""
         if count and apply:
             notable.append(f"Refreshed {count} installed file(s) in this project from the "

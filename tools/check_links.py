@@ -14,10 +14,10 @@ Three checks, in order of how badly they hurt when they fail:
   skills     the three skills are read-only and were copied byte-identical. A hash mismatch means
              something edited one, which is the failure this repository most wants to notice.
 
-  travel     `video/`, `.claude/skills/` and `feedback/lessons/` are what `install_skills.py`
-             copies into another project. A link from inside them to a file in the repository root
-             resolves fine here and breaks the moment it is installed anywhere else — a bug that
-             is invisible until someone else has it.
+  travel     `.claude/skills/` and `feedback/lessons/` are what `install_skills.py` copies into
+             another project. A link from inside them to a file the installer leaves behind —
+             `references/`, `proposals/`, the repository root — resolves fine here and breaks the
+             moment it is installed anywhere else, a bug invisible until someone else has it.
 
   links      every relative link in every markdown file points at something that exists.
 
@@ -33,10 +33,11 @@ import re
 import sys
 from pathlib import Path
 
-# Walk up to the tree that holds the method (video/README.md), so this file works whether it
-# sits in <repo>/tools/ or, once installed, in <target>/video/tools/.
+# Walk up to the tree that holds the skills, so this file works whether it sits in <repo>/tools/
+# or, once installed, in <target>/.claude/skills/_shared/tools/.
 ROOT = next((q for q in Path(__file__).resolve().parents
-             if (q / "video" / "natural-voice").is_dir()), Path(__file__).resolve().parent.parent)
+             if (q / ".claude" / "skills" / "natural-voice").is_dir()),
+            Path(__file__).resolve().parent.parent)
 SKILLS = ROOT / ".claude" / "skills"
 HASHES = Path(__file__).resolve().parent / "skill-hashes.txt"
 
@@ -51,42 +52,51 @@ EXTERNAL: dict[str, str] = {}
 # record of what happened on a particular machine on a particular day; nothing reads them, and
 # rewriting a record to look tidy in a new repository falsifies it. Everything else must be clean.
 RECORDS = {
-    "video/education/intro/audio/warm-natural-v2/education-v2-generation-settings.json":
+    "EV/examples/intro/audio/warm-natural-v2/education-v2-generation-settings.json":
         "provenance: which prompt and which take produced each line. The prompt WAV it names now "
-        "lives at video/natural-voice/profiles/warm-natural/warm_narrator_prompt.wav",
-    "video/natural-voice/profiles/deep-onyx-slow/prompt-selection.json":
+        "lives at .claude/skills/natural-voice/profiles/warm-natural/warm_narrator_prompt.wav",
+    "NV/profiles/deep-onyx-slow/prompt-selection.json":
         "the prompt audition record required by the profile contract: every candidate, its "
         "measurements and where it was written at the time",
-    "video/education/how-to-make-an-explainer/DESIGN-PROMPT.md":
+    "EV/examples/how-to-make-an-explainer/DESIGN-PROMPT.md":
         "the handoff prompt as it was actually pasted into Claude Design, kept verbatim",
-    "video/education/intro/audio/warm-natural-v2/final-report.json":
+    "EV/examples/intro/audio/warm-natural-v2/final-report.json":
         "generated run report: what the v2 pipeline produced and where it wrote it",
-    "video/education/intro/audio/warm-natural-v2/pipeline-status.json":
+    "EV/examples/intro/audio/warm-natural-v2/pipeline-status.json":
         "generated run report, as above",
-    "video/education/intro/audio/warm-natural-v2/pipeline.log":
+    "EV/examples/intro/audio/warm-natural-v2/pipeline.log":
         "the raw console log of the v2 run, kept unedited",
 }
+
+# The two long prefixes above, spelled once. RECORDS keys are written with them so the table stays
+# readable at the width the rest of this file is written to.
+RECORDS = {k.replace("EV/", ".claude/skills/education-video/")
+            .replace("NV/", ".claude/skills/natural-voice/"): v
+           for k, v in RECORDS.items()}
 
 FOREIGN = re.compile(r"[a-zA-Z]:[\\/]{1,2}temperature-controller", re.I)
 
 # The load-bearing relative paths: (file containing the link, link as written in it).
 GEOMETRY = [
-    (".claude/skills/natural-voice/SKILL.md", "../../../video/natural-voice/README.md"),
-    (".claude/skills/natural-voice/SKILL.md", "../../../video/natural-voice/EXPERIMENTS.md"),
-    (".claude/skills/natural-voice/SKILL.md", "../../../video/natural-voice/profiles/warm-natural/"),
+    (".claude/skills/natural-voice/SKILL.md", "method/README.md"),
+    (".claude/skills/natural-voice/SKILL.md", "method/EXPERIMENTS.md"),
+    (".claude/skills/natural-voice/SKILL.md", "profiles/warm-natural/"),
     (".claude/skills/education-video/SKILL.md", "interview.md"),
     (".claude/skills/education-video/SKILL.md", "images.md"),
-    (".claude/skills/education-video/SKILL.md", "../../../video/picture/README.md"),
-    (".claude/skills/education-video/SKILL.md", "../../../video/picture/composition_check.py"),
-    (".claude/skills/education-video/SKILL.md", "../../../video/picture/deliver_film.py"),
-    ("video/natural-voice/README.md", "../engine/voice_chain.py"),
-    ("video/natural-voice/README.md", "../showoff/assembly/audio/VOICE-LOG.md"),
-    ("video/natural-voice/README.md", "profiles/warm-natural/"),
+    (".claude/skills/education-video/SKILL.md", "method/README.md"),
+    (".claude/skills/education-video/SKILL.md", "method/composition_check.py"),
+    (".claude/skills/education-video/SKILL.md", "method/deliver_film.py"),
+    (".claude/skills/natural-voice/method/README.md", "../../_shared/audio/voice_chain.py"),
+    (".claude/skills/natural-voice/method/README.md",
+     "../../showoff-render/examples/assembly/audio/VOICE-LOG.md"),
+    (".claude/skills/natural-voice/method/README.md", "../profiles/warm-natural/"),
 ]
 
-# Cited by showoff-render as its evidence base, in prose rather than as a markdown link.
+# Cited in prose rather than as a markdown link: (skill, the text as written, where it must resolve).
+# Both halves are checked — the citation can rot by the file moving or by the sentence being reworded.
 CITED = [
-    ("showoff-render", "video/showoff/assembly/RENDER-LOG.md"),
+    ("showoff-render", "showoff-render/examples/assembly/RENDER-LOG.md",
+     ".claude/skills/showoff-render/examples/assembly/RENDER-LOG.md"),
 ]
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -123,15 +133,32 @@ def check_geometry(fail):
             continue
         if not (src.parent / link).resolve().exists():
             fail("geometry", where, f"{link} does not resolve — the skill cannot reach its method")
-    for skill, path in CITED:
+    for skill, cited, path in CITED:
+        carrier = ROOT / ".claude" / "skills" / skill / "SKILL.md"
         if not (ROOT / path).exists():
-            fail("geometry", f".claude/skills/{skill}/SKILL.md",
-                 f"cites {path}, which is not here — the rule has lost its evidence")
+            fail("geometry", rel(carrier),
+                 f"cites {cited}, which is not here — the rule has lost its evidence")
+        elif carrier.exists() and cited not in carrier.read_text(encoding="utf-8"):
+            fail("geometry", rel(carrier),
+                 f"no longer says {cited!r} — the evidence exists but nothing points at it")
+
+
+def skill_files():
+    """The instruction files only: SKILL.md and any .md directly beside it.
+
+    Deliberately shallow. Since the layout change of 2026-08-22 a skill's method, examples and
+    profiles live under its own directory as well, and those are ordinary source. Hashing them
+    would make every worked example read-only and make a correction to one look like tampering,
+    which is not what the read-only rule is for. A directory without a SKILL.md is not a skill,
+    so _shared/ is skipped.
+    """
+    for d in sorted(SKILLS.iterdir()):
+        if d.is_dir() and (d / "SKILL.md").exists():
+            yield from sorted(d.glob("*.md"))
 
 
 def check_skills(fail, bless=False):
-    live = {rel(p): hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in sorted(SKILLS.rglob("*.md"))}
+    live = {rel(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in skill_files()}
     if bless:
         HASHES.write_text(
             "# sha256 of every skill file, byte-identical to the source repository.\n"
@@ -185,7 +212,7 @@ def check_independence(fail):
 
 def check_travel(fail):
     """Nothing inside the installable payload may link outside it."""
-    travels = (".claude/skills/", "video/", "feedback/lessons/")
+    travels = (".claude/skills/", "feedback/lessons/")
     for p in markdown_files():
         name = rel(p)
         if not name.startswith(travels) or name in EXTERNAL:
@@ -201,7 +228,7 @@ def check_travel(fail):
                 except ValueError:
                     fail("travel", f"{name}:{n}", f"{target} escapes the repository")
                     continue
-                if not d.startswith((".claude/skills", "video", "feedback/lessons")):
+                if not d.startswith((".claude/skills", "feedback/lessons")):
                     fail("travel", f"{name}:{n}",
                          f"{target} points at {d}, which install_skills.py does not copy")
 

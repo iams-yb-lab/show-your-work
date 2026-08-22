@@ -5,46 +5,28 @@ For every slide: (1) no visible element extends past the 1920x1080 canvas;
 (2) no visible text renders below the GATE 0 floor (28px computed);
 (3) a 1920x1080 PNG is written for the pixel-faithful PowerPoint export.
 Exits non-zero on any violation. Needs the default python (Playwright).
+
+Checks (1) and (2) come from _shared/checks/composition.py, which education-video runs too.
+Speaker notes are excluded by `skip=".notes"` as they always were. One behaviour change came
+with the merge: elements at opacity 0 are now skipped as well as display:none and
+visibility:hidden ones, because an invisible element overflowing is not a defect anyone sees.
 """
 import os, sys
+from pathlib import Path
+
+# The overflow and font-floor checks are shared with education-video, in
+# _shared/checks/composition.py. This file owns the per-slide loop, the screenshots and the
+# link map; it does not own a second opinion on what "too small" means.
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "_shared" / "checks"))
+from composition import FONT_FLOOR, BOX_TOL  # noqa: E402
+from composition import problems as composition_problems  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRES = os.path.dirname(HERE)
 MASTER = os.path.join(PRES, "how-to-use-the-skills.html")
 OUTDIR = os.path.join(PRES, "exports", "slides")
-FLOOR = 28.0
-TOL = 1.0  # px
-
-JS_CHECK = """
-() => {
-  const slide = document.querySelector('.slide.current');
-  const problems = [];
-  const sr = slide.getBoundingClientRect();
-  for (const el of slide.querySelectorAll('*')) {
-    const cs = getComputedStyle(el);
-    if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-    if (el.closest('.notes')) continue;
-    const r = el.getBoundingClientRect();
-    if (r.width === 0 && r.height === 0) continue;
-    if (r.left < sr.left - %(tol)f || r.right > sr.right + %(tol)f ||
-        r.top < sr.top - %(tol)f || r.bottom > sr.bottom + %(tol)f) {
-      problems.push('overflow: <' + el.tagName.toLowerCase() +
-        (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : '') +
-        '> ' + JSON.stringify({l: Math.round(r.left - sr.left), r: Math.round(r.right - sr.left),
-                               t: Math.round(r.top - sr.top), b: Math.round(r.bottom - sr.top)}));
-    }
-    const hasText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
-    if (hasText) {
-      const fs = parseFloat(cs.fontSize);
-      if (fs < %(floor)f - 0.01) {
-        problems.push('font ' + fs.toFixed(1) + 'px in <' + el.tagName.toLowerCase() + '> "' +
-                      el.textContent.trim().slice(0, 40) + '"');
-      }
-    }
-  }
-  return problems;
-}
-""" % {"tol": TOL, "floor": FLOOR}
+FLOOR = FONT_FLOOR
+TOL = BOX_TOL
 
 def main():
     import json
@@ -60,7 +42,8 @@ def main():
         for i in range(n):
             page.evaluate("(i) => show(i)", i)
             page.wait_for_timeout(120)
-            probs = page.evaluate(JS_CHECK)
+            probs = composition_problems(page, ".slide.current", TOL, FLOOR,
+                                         skip=".notes")
             for msg in probs:
                 fails.append("slide %d: %s" % (i + 1, msg))
             page.screenshot(path=os.path.join(OUTDIR, "slide-%02d.png" % (i + 1)))

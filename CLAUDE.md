@@ -1,6 +1,7 @@
 # show-your-work — how we work
 
-This repository is five skills and the evidence behind them. [`README.md`](README.md) is the map.
+This repository is five skills and the evidence behind them. [`MAP.md`](MAP.md) says which files
+belong to which skill; [`README.md`](README.md) is the front door.
 Nothing here is a film; films are made *elsewhere, using* this.
 
 ## IMPORTANT: the shape of every reply
@@ -52,15 +53,17 @@ tooling. When someone uses a skill from this repository, **ask where the film's 
 default to putting them next to the skill.** `education-video`'s interview stage says this
 explicitly and it applies to this whole directory.
 
-What may be added here: a new voice profile under `video/natural-voice/profiles/`, a fix to shared
-tooling in `video/engine/` or `video/picture/`, or a correction to a method document.
+What may be added here: a new voice profile under `natural-voice/profiles/`, a fix to shared
+tooling in `_shared/`, a fix to a skill's own `method/`, or a correction to a method document.
 
-`presentation/` is the standing exception, not a loophole. It is the how-to-use-the-skills deck:
-its subject *is* this repository, so there is no project elsewhere for it to live in, and it is
-the only evidence `slide-deck` has. Its home was fixed at that deck's GATE 0 interview, not
-defaulted to. It is outside the install payload, so it never reaches a target project. **Leave it
-where it is** — and do not read it as permission for a second one. Anything about another project
-goes to that project.
+`slide-deck/examples/presentation/` is the standing exception, not a loophole. It is the
+how-to-use-the-skills deck: its subject *is* this repository, so there is no project elsewhere for
+it to live in, and it is the only evidence `slide-deck` has. Its home was fixed at that deck's
+GATE 0 interview, not defaulted to. **Leave it where it is** — and do not read it as permission for
+a second one. Anything about another project goes to that project.
+
+`examples/` is worked examples, not a parking space. Two films and one deck are there because the
+skills were written from them. A new one does not go there.
 
 ## IMPORTANT: log the friction, silently
 
@@ -118,8 +121,15 @@ request per machine, never a direct push.
 
 ## The geometry is load-bearing
 
-`natural-voice/SKILL.md` reaches its method by `../../../video/natural-voice/README.md`. That is
-why `video/` sits beside `.claude/`, and why the two halves never travel separately.
+Everything a skill owns is inside that skill's folder, so a skill and its method never travel
+separately. `natural-voice/SKILL.md` reaches its method by `method/README.md`, and that method
+reaches the shared engine by `../../_shared/audio/voice_chain.py`. Five such links are load-bearing
+and listed in [`MAP.md`](MAP.md); `GEOMETRY` in `tools/check_links.py` is what enforces them.
+
+A link out of `.claude/skills/` is the failure to watch for: it resolves here and breaks the moment
+someone installs the skills, because the installer copies that directory and nothing else. The
+`travel` check exists for exactly that, which is why `references/` and `proposals/` can only ever
+be named in prose from inside a skill, never linked.
 
 ```bash
 python tools/check_links.py
@@ -131,11 +141,13 @@ list at the top of the script, with a reason — not silently.
 
 ## Paths in new code
 
-**Do not anchor on the checkout.** Walk up to the directory holding `video/natural-voice/` and take
-every path from there; the expression is in
+**Do not anchor on the checkout, and never count directories.** Walk up to the directory holding
+`.claude/skills/natural-voice/` — or, from inside the skills, to the one holding `_shared/` and
+`natural-voice/` — and take every path from there; the expression is in
 [`.claude/skills/_shared/README.md`](.claude/skills/_shared/README.md). A hardcoded
 checkout path is why a batch of scripts in the source repository could not run on the second
-machine.
+machine. A `parents[4]` is the same bug wearing a different hat: two files carried one through the
+2026-08-22 move and went on resolving to a real directory that was the wrong one.
 
 ## Honest results only
 

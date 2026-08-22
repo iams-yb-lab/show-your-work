@@ -1,4 +1,7 @@
-# This film's generated media is not under this directory -- it is in `video/out/showoff/`,
-# ignored by `video/.gitignore`, which explains what is in there and why. The output tree was
-# left flat when this film moved into `assembly/`, so it does not mirror this one; see
-# `../../MOVE-LOG.md`. Nothing to ignore here; the tracked stills are in gallery/.
+# This film's generated media is not under this directory -- it is in `out/showoff/` at the
+# repository root, ignored by the top-level `.gitignore`. The output tree was left flat when this
+# film moved into `assembly/`, so it does not mirror this one.
+#
+# The four chosen stills used to be tracked here in `gallery/`; on 2026-08-22 they moved to
+# `references/assembly-gallery/`, which does not install. Purple was picked for trace contrast and
+# part separation; red and green were never committed. Nothing to ignore here.

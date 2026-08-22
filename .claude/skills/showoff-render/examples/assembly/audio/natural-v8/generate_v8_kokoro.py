@@ -4,7 +4,7 @@ Selected by ear: Kokoro-82M `am_onyx` at speed 0.78, generating directly. No
 cloning. The 3B EditX model that produced v7.2 is not in this pipeline; the
 listener ranked its raw prompt above every clone of that prompt.
 
-`video/natural-voice/README.md`, followed in order:
+`natural-voice/method/README.md`, followed in order:
 
   3. generate complete sections, several seeded takes each
   4. transcribe every take, reject wrong words before judging style
@@ -17,7 +17,7 @@ so releases and breaths were destroyed upstream of everything and the raw was
 never kept. Nothing here trims. The lexical span is measured so the mix can
 place a line by subtracting its lead-in instead of cutting it away.
 
-Run in `%TEMP%\sr-venv`. Writes `video/out/showoff/natural-v8/kokoro_takes/`.
+Run in `%TEMP%\sr-venv`. Writes `out/showoff/natural-v8/kokoro_takes/`.
 """
 import difflib
 import hashlib
@@ -38,7 +38,7 @@ import librosa
 import soundfile as sf
 
 # Anchored by walking up to the directory that holds the video tree, so this
-# file works in any checkout it is lifted into. See video/README.md.
+# file works in any checkout it is lifted into. See _shared/README.md.
 REPO = next(p for p in Path(__file__).resolve().parents
             if (p / ".claude" / "skills" / "natural-voice").is_dir())
 ROOT = REPO / "out" / "showoff" / "natural-v8"

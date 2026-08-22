@@ -5,7 +5,7 @@ The v7.2 narrator is Step-Audio-EditX cloning `onyx_prompt.wav` — Kokoro
 pace: eight fresh line-1 takes all came back too fast, because the clone
 inherits the prompt's pace. v7.2 fixed that downstream with `atempo=0.90/0.93`.
 
-`video/natural-voice/README.md` puts the fix upstream, in the performance. So
+`natural-voice/method/README.md` puts the fix upstream, in the performance. So
 this generates slower candidates of the SAME passage in the SAME voice — one
 variable, per the EXPERIMENTS.md protocol — and measures each one the way the
 method's prompt-selection section requires.
@@ -14,7 +14,7 @@ Nothing here picks a winner by measurement alone. Pitch and pace are
 consistency measurements, not quality scores; the student's ears decide.
 
 Run in `%TEMP%\sr-venv` (kokoro + torch). Writes to
-`video/out/showoff/natural-v8/prompts/`.
+`out/showoff/natural-v8/prompts/`.
 """
 import hashlib
 import json
@@ -34,7 +34,7 @@ import soundfile as sf
 import torch
 
 # Anchored by walking up to the directory that holds the video tree, so this
-# file works in any checkout it is lifted into. See video/README.md.
+# file works in any checkout it is lifted into. See _shared/README.md.
 REPO = next(p for p in Path(__file__).resolve().parents
             if (p / ".claude" / "skills" / "natural-voice").is_dir())
 OUT = REPO / "out" / "showoff" / "natural-v8" / "prompts"

@@ -8,8 +8,8 @@ start new narration here. Its siblings — `intro_cues.py`, `intro_score.py`, `i
 
 Speak the intro film's narration, one WAV per line, timed to the cut.
 
-    python video/education/audio/intro_narrate.py --cues video/out/education/audio/cues.json \
-        --out video/out/education/audio/vo
+    python education-video/examples/intro/audio/intro_narrate.py --cues out/education/audio/cues.json \
+        --out out/education/audio/vo
 
 The lines and their timecodes come from `voiceover-script.md` via `intro_cues.py`; nothing is
 copied here. Each line becomes `vo_<frame>.wav`, 48 kHz mono, whose first sample is the first

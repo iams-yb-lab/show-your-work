@@ -37,7 +37,12 @@ def skills_root(start: Path) -> Path:
 
 SKILLS = skills_root(Path(__file__).resolve())
 REFERENCE_SCRIPT = SKILLS / "education-video/examples/intro/script/voiceover-script.md"
-REFERENCE_MEDIA = SKILLS / "education-video/examples/intro/picture/Temperature Controller Intro 1080p.mp4"
+# The intro film's silent master was deleted on 2026-08-22 — it is a render of the HTML
+# bundle beside it, remade by education-video/method/export_html_video.py into out/.
+# Render it there first, or pass --reference-media, before asking this script for the
+# reference film's duration.
+REFERENCE_MEDIA = (SKILLS.parents[1] / "out/education/picture"
+                   / "Temperature Controller Intro 1080p.mp4")
 TRIAL_SCRIPT_GIT = "3bebc07:video/education/how-to-explain-your-work/script/voiceover-script.md"
 
 SCENE = re.compile(r"^##\s+(.+?)\s*\((\d+:\d+\.\d+)\s*[–-]\s*(\d+:\d+\.\d+)\)")

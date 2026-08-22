@@ -1,7 +1,7 @@
 # Vendor STEP → Blender, with colours — the verified route
 
 When the subject of a showoff render is a vendor STEP assembly (no KiCad board, so the
-pcb2blender route in `../showoff/assembly/picture/README.md` does not apply), this is the
+pcb2blender route in `showoff-render/examples/assembly/picture/README.md` does not apply), this is the
 conversion and inspection chain that works. Every step below was run and verified on
 Windows 11 / Blender 4.2.2 LTS / FreeCAD 0.21.2 / Mayo 0.10.0, 2026-08-17, converting the
 official Red Pitaya STEMlab 125-14 model (1127 STEP products → 4412 Blender objects,

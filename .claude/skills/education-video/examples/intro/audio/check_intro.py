@@ -1,6 +1,6 @@
 """Measure a finished intro-film mix back out of the audio, against the film's own schedule.
 
-    python video/tools/check_intro.py --wav video/out/audio/score.wav
+    python education-video/examples/intro/audio/check_intro.py --wav out/audio/score.wav
 
 The mixer places everything from a timecode, so checking it against the same timecodes proves
 nothing. What can be checked is whether the finished audio actually contains what the schedule

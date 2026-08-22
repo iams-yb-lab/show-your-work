@@ -1,6 +1,6 @@
 """Read the intro film's own schedule out of the film, and write it as one cue sheet.
 
-    python video/tools/intro_cues.py --out video/out/audio/cues.json
+    python education-video/examples/intro/audio/intro_cues.py --out out/audio/cues.json
 
 Nothing here is typed by hand. Two artifacts already carry the timing and they were produced
 by whatever drew the pictures:

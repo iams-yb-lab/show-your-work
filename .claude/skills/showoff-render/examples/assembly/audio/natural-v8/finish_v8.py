@@ -40,7 +40,7 @@ import librosa
 import soundfile as sf
 
 # Anchored by walking up to the directory that holds the video tree, so this
-# file works in any checkout it is lifted into. See video/README.md.
+# file works in any checkout it is lifted into. See _shared/README.md.
 REPO = next(p for p in Path(__file__).resolve().parents
             if (p / ".claude" / "skills" / "natural-voice").is_dir())
 ROOT = REPO / "out" / "showoff" / "natural-v8"

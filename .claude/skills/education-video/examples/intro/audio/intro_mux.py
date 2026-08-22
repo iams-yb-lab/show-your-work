@@ -1,9 +1,9 @@
 """Put the finished audio into the finished picture without re-encoding a single frame.
 
-    python video/tools/intro_mux.py --audio video/out/audio/score.wav \
+    python education-video/examples/intro/audio/intro_mux.py --audio out/audio/score.wav \
         --out "Temperature Controller Intro 1080p scored.mp4"
-    python video/tools/intro_mux.py --audio video/out/audio/score.wav \
-        --clip 42.33 81.63 --out video/out/samples/loop.mp4
+    python education-video/examples/intro/audio/intro_mux.py --audio out/audio/score.wav \
+        --clip 42.33 81.63 --out out/samples/loop.mp4
 
 `-c:v copy` copies the video stream through, so the picture in the output is bit-for-bit the
 picture that was rendered and the audio can be re-cut any number of times for free. That claim

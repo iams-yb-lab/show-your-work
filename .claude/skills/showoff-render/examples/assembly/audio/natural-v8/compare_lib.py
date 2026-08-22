@@ -9,7 +9,7 @@ encoded on top. The student heard it instantly: "the tone is completely fine,
 but the acoustic effect is so much worse". That is the signature of clipping,
 and it invalidated both comparisons.
 
-`video/natural-voice/README.md` requires loudness matching before any
+`natural-voice/method/README.md` requires loudness matching before any
 comparison, because louder sounds superficially better. It does not license
 matching *upward into the ceiling*. So:
 

@@ -1,12 +1,12 @@
 """Synthesise the intro film's soundtrack from the film's own nine-scene cut.
 
-    python video/tools/intro_score.py --out video/out/audio/score.wav
-    python video/tools/intro_score.py --no-voice --window 0 60 --variant warm \
-        --out video/out/audio/sample.wav
+    python education-video/examples/intro/audio/intro_score.py --out out/audio/score.wav
+    python education-video/examples/intro/audio/intro_score.py --no-voice --window 0 60 --variant warm \
+        --out out/audio/sample.wav
 
 Nothing is sampled and nothing is placed by ear: every structural moment is a scene boundary
 out of `intro_cues.py`, and every narration line sits at the timecode the script gives it.
-numpy and the standard library only, plus the shared engine in `video/engine`.
+numpy and the standard library only, plus the shared engine in `_shared/audio`.
 
 **F major, and the harmony moves.** The first version of this file borrowed the assembly film's
 pitch set -- D E F G A C over a D drone -- and was rejected in one word: depressing. It earned

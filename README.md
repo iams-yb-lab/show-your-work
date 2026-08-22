@@ -14,54 +14,62 @@ room a project gets presented in — and the evidence behind them.
 They are already installed. Open a Claude Code session in this directory and they load — project
 skills live at `.claude/skills/<name>/SKILL.md`, which is where these are.
 
-To use them somewhere else, see [Installing elsewhere](#installing-elsewhere) — do not copy
-`.claude/skills/` on its own.
+To use them somewhere else, see [Installing elsewhere](#installing-elsewhere) — do not copy a
+`SKILL.md` on its own.
 
-## Why the `video/` tree comes with them
+**[`MAP.md`](MAP.md) says which files belong to which skill.** Start there if you are looking for
+something.
 
-`natural-voice/SKILL.md` is a short document that says *the method is somewhere else, go and read
-it*. That somewhere is [`video/natural-voice/README.md`](.claude/skills/natural-voice/method/README.md), reached by
-a relative link. Two more skills cite evidence the same way.
+## One folder per skill
 
-So the skills are not the three folders under `.claude/`. They are those folders **plus the tree
-they point into**, and the paths between them are fixed:
+Everything a skill owns is inside that skill's folder: its instructions, its method, its profiles
+and its worked examples. `natural-voice/SKILL.md` is a short document that says *the method is next
+door, go and read it*, and next door is
+[`natural-voice/method/README.md`](.claude/skills/natural-voice/method/README.md).
+
+So a skill is not one file. It is the folder, and the paths inside it are fixed:
 
 ```
-<repo>/.claude/skills/natural-voice/SKILL.md   ──►   ../../../video/natural-voice/README.md
-<repo>/video/natural-voice/README.md           ──►   ../engine/voice_chain.py
-                                               ──►   ../showoff/assembly/audio/VOICE-LOG.md
+natural-voice/SKILL.md          ──►   method/README.md
+natural-voice/method/README.md  ──►   ../../_shared/audio/voice_chain.py
+                                ──►   ../../showoff-render/examples/assembly/audio/VOICE-LOG.md
 ```
 
-Move either half without the other and the skills still load, still sound authoritative, and
-quietly stop being able to tell you the thing they exist to tell you. `tools/check_links.py`
-exists to catch precisely that.
+Copy a `SKILL.md` without its folder and the skill still loads, still sounds authoritative, and
+quietly stops being able to tell you the thing it exists to tell you. `tools/check_links.py` exists
+to catch precisely that.
 
-`technical-report` and `slide-deck` are the exceptions: they link to nothing, so those two alone
-would survive traveling without the tree — `install_skills.py` copies the payload whole either
-way.
+Only what more than one skill calls is shared, in
+[`_shared/`](.claude/skills/_shared/) — the audio engine and the composition check.
+`technical-report` and `slide-deck` contain no paths at all, and `technical-report` owns nothing
+beyond its instructions, which [`MAP.md`](MAP.md) says out loud so nobody goes looking.
+
+This layout replaced a top-level `video/` tree on 2026-08-22; the case is in
+[`proposals/one-folder-per-skill.md`](proposals/one-folder-per-skill.md).
 
 ## Layout
 
 ```
-.claude/skills/     the five skills — three byte-identical to the repository they came from,
-                    technical-report and slide-deck born here (see EXPORT-MANIFEST.md)
-video/              the method, the shared tooling and the films' logs — see video/README.md
-presentation/       the how-to-use-the-skills deck: slide-deck's own first evidence, and a
-                    worked example of what a run of these skills produces. Does not install
+.claude/skills/     the five skills, each with its own method and examples inside it, plus
+                    _shared/ for what more than one of them calls. This is the whole payload
+MAP.md              which files belong to which skill. Read this first
+references/         set aside, not deleted, and never installed — see references/README.md
 proposals/          why the skills were changed, one record per authorized edit
 feedback/           what the skills got wrong in real runs. lessons/ is reviewed and travels
                     with the skills; inbox/ is raw, per-machine, and stays here
-tools/              install_skills.py, check_links.py, friction.py, update.py
+tools/              install_skills.py, check_links.py, friction.py, update.py — this
+                    repository's machinery. No skill calls any of it
 EXPORT-MANIFEST.md  what was carried out of the source repository, and what was not
 LICENSE             PolyForm Noncommercial 1.0.0. Travels with an install; see Licence below
 ACCEPTABLE-USE.md   what the lab asks of you beyond the licence. Does not install
 ```
 
-`presentation/` is the one thing here that is an *output* rather than a method, and it earns the
-exception twice over: its subject is this repository, so it has no other project to live in, and
-it is the only evidence `slide-deck` has — that skill was written without a reference deck, and
-this is the deck that tested it. It is not in the install payload, so it costs a target project
-nothing. It is not a precedent for films: those still live in the project they are about.
+`slide-deck/examples/presentation/` is the one thing here that is an *output* rather than a method,
+and it earns its place twice over: its subject is this repository, so it has no other project to
+live in, and it is the only evidence `slide-deck` has — that skill was written without a reference
+deck, and this is the deck that tested it. Until 2026-08-22 it sat in a top-level `presentation/`
+that no document connected to the skill it belonged to. It is not a precedent for films: those
+still live in the project they are about.
 
 ## How the skills improve
 
@@ -87,30 +95,30 @@ from when a skill genuinely needs to change.
 python tools/install_skills.py /path/to/other/project
 ```
 
-It copies the skills **and** the tree they depend on, preserving the relative geometry above, so
-every link resolves in the target. It also wires two things into the target's
+It copies each skill's folder whole, so every link inside it resolves in the target. It also wires two things into the target's
 `.claude/settings.json`, and says which: the two friction hooks — `--no-feedback-hook` opts out, at
 the cost of that project's runs teaching nobody anything — and the session-start update check,
 which `--no-update-hook` opts out of, at the cost of that project never seeing a newer version.
 `--check` shows what it would do; `--update` brings an install that is already there up to date;
 `--skills-only` is available and is the wrong choice unless you know why.
 
-**A target project gains two directories, not four.** `.claude/skills/` and `video/` are forced —
-a project's skills must sit at its root to be found at all, and `natural-voice/SKILL.md` reaches its
-method by `../../../video/natural-voice/README.md`, which is read-only and so cannot be redirected.
-Everything else is installed *inside* `video/`:
+**A target project gains one directory.** `.claude/skills/` is forced — a project's skills must sit
+at its root to be found at all — and everything else is installed inside it:
 
 ```
-<target>/.claude/skills/        the five skills
-<target>/video/                 the method and the tooling they read
-        video/tools/            check_links.py, friction.py, update.py, skill-hashes.txt
-        video/feedback/lessons/ what earlier runs got wrong
-        video/WHAT-IS-THIS.md   what this tree is, and that deleting it breaks the skills silently
+<target>/.claude/skills/            the five skills, each whole
+        _shared/                    the audio engine and the composition check
+        _shared/tools/              check_links.py, friction.py, update.py, skill-hashes.txt
+        _shared/feedback/lessons/   what earlier runs got wrong
+        _shared/WHAT-IS-THIS.md     what this is, and that deleting it breaks the skills silently
 ```
+
+182 files, 15.8 MB. Before 2026-08-22 it was 108 MB, because a `video/` tree carried three past
+jobs' media that no skill ever opened; that media is in `references/` now and does not install.
 
 Nothing is ever written to a target's own `tools/`, so an install cannot collide with a directory
-the project already has. Installing everything into one subfolder instead does not work: skills
-nested below the project root are not discovered, and the skills would load as nothing at all.
+the project already has. Installing into a subfolder below the project root does not work: skills
+nested there are not discovered, and would load as nothing at all.
 
 To take it back out:
 
@@ -121,10 +129,12 @@ python tools/install_skills.py /path/to/project --uninstall
 It removes only the files it installed, leaves anything edited since and names it, unwires the hooks
 it added, and prunes the directories it created. `--uninstall --check` shows you first.
 
-Installing to `~/.claude/skills/` — the usual way to make a skill global — **does not work for
-these** and the installer will refuse it. From there, `../../../video/natural-voice/README.md`
-resolves to `~/video/natural-voice/README.md`, which does not exist, and `natural-voice` becomes a
-skill whose entire content is a broken link.
+Installing to `~/.claude/skills/` — the usual way to make a skill global — is **refused**, for a
+narrower reason than it used to be. The installer creates `.claude/skills/` itself, so pointing it
+at one would nest a second copy inside the first; give it the project root. Pointing it at `$HOME`
+is refused too, though since every path a skill needs is now inside its own folder that case would
+probably resolve and work. Nobody has tried it, and a half-working global install is worse than
+none, so it stays refused until someone does it on purpose.
 
 ## Staying up to date
 
@@ -141,10 +151,10 @@ It is deliberately narrow:
 - **Fast-forward only.** A checkout that has diverged, or where the merge would overwrite
   something, is reported and left exactly as it is — never merged, never rebased, never stashed.
 - **In a project it re-installs from the checkout on this machine**, the one `install_skills.py`
-  left a pointer to. The files that are read-only by contract — the skills, `video/tools/`,
-  `video/feedback/lessons/` — are replaced when they differ, because a difference there is
-  staleness or damage. Anything else in `video/` that the project has edited is left alone and
-  named. With no checkout on the machine it says that, rather than looking successful.
+  left a pointer to. The files that are read-only by contract — the skill instruction files and
+  everything in `_shared/`, tools and lessons included — are replaced when they differ, because a
+  difference there is staleness or damage. A skill's `method/`, `examples/` or `profiles/` that the
+  project has edited is left alone and named. With no checkout on the machine it says that, rather than looking successful.
 - **After an update it runs `check_links.py` on what landed**, so a version that arrives broken
   says so at the start of the session instead of three gates later.
 - **It says nothing when there is nothing to say.** A session that was already current starts
@@ -202,8 +212,9 @@ without checking with anyone. Commercial use is the one thing it does not grant;
 This is a **source-available** licence, not an open-source one. That is deliberate, and it is the
 reason GitHub will not show an SPDX badge for it.
 
-`LICENSE` is part of the install payload and lands at `video/LICENSE` in a target project, because
-the licence requires that anyone who receives any part of this also receives the terms.
+`LICENSE` is part of the install payload and lands at `.claude/skills/_shared/LICENSE` in a target
+project, because the licence requires that anyone who receives any part of this also receives the
+terms.
 
 Separately, [`ACCEPTABLE-USE.md`](ACCEPTABLE-USE.md) is what the lab **asks** of you — about cloned
 voices, generated footage presented as record, and the honesty rules the skills are built around.

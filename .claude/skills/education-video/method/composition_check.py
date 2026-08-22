@@ -49,8 +49,13 @@ from urllib.parse import quote
 
 from playwright.sync_api import sync_playwright
 
+# The two rendered checks live in _shared/checks/composition.py: they are the same two the
+# slide deck's render_check.py runs, and a second copy of a font floor is a second answer.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "_shared" / "checks"))
+from composition import BOX_TOL, FONT_FLOOR  # noqa: E402
+from composition import problems as composition_problems  # noqa: E402
+
 EXPORT_SELECTOR = "[data-om-exportable-video-with-duration-secs]"
-BOX_TOL = 1.0  # px
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
@@ -90,42 +95,6 @@ def find_chrome(explicit: str | None) -> str:
     raise SystemExit("Google Chrome/Chromium was not found; pass --chrome PATH")
 
 
-# Adapted from presentation/tools/render_check.py, where these two checks were first
-# proved on this repository's own deck. The composition is checked per instant, not
-# per slide, because its contents are a function of time.
-JS_CHECK = """
-([selector, tol, floor]) => {
-  const root = document.querySelector(selector);
-  const problems = [];
-  const sr = root.getBoundingClientRect();
-  for (const el of root.querySelectorAll('*')) {
-    const cs = getComputedStyle(el);
-    if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-    if (parseFloat(cs.opacity) === 0) continue;
-    const r = el.getBoundingClientRect();
-    if (r.width === 0 && r.height === 0) continue;
-    const tag = el.tagName.toLowerCase() +
-      (el.className && typeof el.className === 'string' && el.className.trim()
-        ? '.' + el.className.trim().split(/\\s+/)[0] : '');
-    if (r.left < sr.left - tol || r.right > sr.right + tol ||
-        r.top < sr.top - tol || r.bottom > sr.bottom + tol) {
-      problems.push('overflow: <' + tag + '> ' + JSON.stringify({
-        l: Math.round(r.left - sr.left), r: Math.round(r.right - sr.left),
-        t: Math.round(r.top - sr.top), b: Math.round(r.bottom - sr.top)}));
-    }
-    const hasText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
-    if (hasText) {
-      const fs = parseFloat(cs.fontSize);
-      if (fs < floor - 0.01) {
-        problems.push('font ' + fs.toFixed(1) + 'px in <' + tag + '> "' +
-                      el.textContent.trim().slice(0, 40) + '"');
-      }
-    }
-  }
-  return problems;
-}
-"""
-
 SEEK = """
 ([selector, time]) => {
   const el = document.querySelector(selector);
@@ -160,7 +129,7 @@ def main() -> int:
     ap.add_argument("--expect-duration", type=float,
                     help="the locked master's duration; the page must agree with it")
     ap.add_argument("--duration-tolerance", type=float, default=0.01)
-    ap.add_argument("--font-floor", type=float, default=28.0,
+    ap.add_argument("--font-floor", type=float, default=FONT_FLOOR,
                     help="smallest text the film allows, in px on the authored canvas")
     ap.add_argument("--samples", type=int, default=24,
                     help="instants to check the DOM and the pixels at")
@@ -254,7 +223,7 @@ def main() -> int:
 
         for t in times:
             page.evaluate(SEEK, [EXPORT_SELECTOR, t])
-            found = page.evaluate(JS_CHECK, [EXPORT_SELECTOR, BOX_TOL, args.font_floor])
+            found = composition_problems(page, EXPORT_SELECTOR, BOX_TOL, args.font_floor)
             for f in found:
                 problems.append(f"t={t:.3f}s  {f}")
             png = page.screenshot(type="png", clip=clip)

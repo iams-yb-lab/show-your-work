@@ -9,12 +9,19 @@
 """
 import html as htmllib
 import io, os, re, sys
+from pathlib import Path
+
+# The floor is defined once, in _shared/checks/composition.py. This file checks it statically —
+# every font-size written in the master, whether or not it ever renders — and render_check.py
+# checks it as computed. Two methods answering one question is the point; two numbers is not.
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "_shared" / "checks"))
+from composition import FONT_FLOOR  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRES = os.path.dirname(HERE)
 MASTER = os.path.join(PRES, "how-to-use-the-skills.html")
 STORYLINE = os.path.join(PRES, "STORYLINE.md")
-FLOOR = 28.0
+FLOOR = FONT_FLOOR
 
 def norm(s):
     return re.sub(r"\s+", " ", s).strip()

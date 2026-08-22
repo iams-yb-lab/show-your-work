@@ -1,20 +1,20 @@
 # The image gate
 
 Read this in full before gathering anything. It is GATE 4 of `SKILL.md`, and it runs after the
-audio is locked and before Claude Design is briefed.
+audio is locked and before the picture is built.
 
 ## Open it yourself
 
 **The moment the narration master is locked, say so unprompted:** the picture cannot be briefed
 until the images exist, and you are going to go and find candidates now. Do not ask permission to
 start. Do not ask the user to supply images first — turning up empty-handed is exactly what makes
-this stage get skipped, and a film briefed without it gets filled with whatever the picture tool
+this stage get skipped, and a film built without it gets filled with whatever the composition
 invents.
 
 ## The order, and it is this way round on purpose
 
 1. **Read the cue sheet and list which cues actually need a photograph.** Most do not. Type,
-   diagrams, charts and motion are the picture tool's job. An image is for the thing that must be
+   diagrams, charts and motion are the composition's job. An image is for the thing that must be
    *shown* — a real object, a real place, a real instrument, a real person's work.
 2. **Gather candidates yourself, several per slot**, so there is something to choose between.
    Note for each one what it is, where it came from, and its licence, as you go — not afterwards.
@@ -43,8 +43,8 @@ A film that has to be taken down over an image is worse than a film with one few
 ## The manifest
 
 Record the set in the film's own image manifest — one row per image: file, what it shows, which
-cue it serves, source URL, licence, attribution string, and what was edited. The handoff prompt
-references this manifest, so an image with no licence stops the film here, which is cheap, rather
+cue it serves, source URL, licence, attribution string, and what was edited. The composition draws from this manifest,
+so an image with no licence stops the film here, which is cheap, rather
 than after publication, which is not.
 
 If the film genuinely needs no photographs, say that and record the empty manifest with the

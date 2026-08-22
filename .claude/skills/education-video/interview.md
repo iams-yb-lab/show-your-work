@@ -29,9 +29,9 @@ answered before GATE 1 opens.**
 6. **The verdict** — the decision the film ends on, and which alternatives lost.
 7. **Vocabulary** — terms to define on first use, terms to avoid entirely.
 8. **Voice** — narrated or captions-only, whose voice, which language.
-9. **Picture direction** — the visual register Claude Design should work in, and any diagram the
+9. **Picture direction** — the visual register the composition works in, and any diagram the
    source document already implies. Never *who* makes it: `SKILL.md` has settled that.
-10. **Delivery** — where it is published, aspect ratio, caption requirement, deadline.
+10. **Delivery** — where it is published, aspect ratio, frame rate, subtitle language, deadline.
 11. **Where the film's files live** — see below. Ask it; do not choose it.
 
 Do not open GATE 1 on assumptions about any of these. An unanswered one is a question, not a default.
@@ -46,7 +46,11 @@ have to refuse. These are decided, and stay out of every window:
   or picture first?". It is the skill's one non-negotiable claim.
 - **whether there is narration at all.** "Captions only" is not an option: with no audio, nothing
   sets the timing, and the whole method collapses into guesswork.
-- **who draws the picture, or where it comes from.** Settled in `SKILL.md`.
+- **who draws the picture, or where it comes from.** Settled in `SKILL.md`: you build it, as one
+  self-contained HTML composition, and you render it.
+- **whether the captions are burned into the picture.** They are not, ever. They ship as a subtitle
+  track the viewer switches on, and `SKILL.md` settles it. A burned-in copy is an extra file, asked
+  for by name — never an option offered here.
 - **whether the source document must be audited, or the script approved before recording.** Both are
   the process. Asking implies they could be skipped.
 

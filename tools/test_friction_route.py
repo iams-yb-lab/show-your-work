@@ -232,6 +232,20 @@ check("mechanics: unreachable route sends nothing", quietly(m.send, dead, [entry
 check("mechanics: buffer kept", "held back" in m.PENDING.read_text(encoding="utf-8"), True)
 
 
+# The one case a local remote cannot show. These bare repositories serve every object, so nothing
+# is ever missing and nothing is ever lazily fetched. Against GitHub the filter is honoured, and
+# `write-tree` proving that each index entry exists fetches every blob in the tree — 80 MB, in a
+# Stop hook, to write a tree whose hashes it already holds. Assert the flag rather than the size.
+seen = []
+real_git = m.git
+m.git = lambda repo, *args, **kw: (seen.append(args), real_git(repo, *args, **kw))[1]
+quietly(m.send, ROUTE, [entry("third rule")], False)
+m.git = real_git
+wrote = [a for a in seen if a and a[0] == "write-tree"]
+check("mechanics: write-tree ran once", len(wrote), 1)
+check("mechanics: write-tree does not backfill blobs", "--missing-ok" in wrote[0], True)
+
+
 # --------------------------------- flush end to end, including the re-resolve
 
 class Args:
@@ -263,6 +277,48 @@ m2 = load(TMP / "empty")
 m2.gh = faker(("", (None, "")))
 check("flush: empty buffer exits 0", quietly(m2.cmd_flush, Args()), 0)
 check("flush: empty buffer decided no route", m2.ROUTE.is_file(), False)
+
+
+# ------------------------------------------------------ the standing request
+
+# One request per sender, opened once and updated by every later push. The fork route has to match
+# on who owns the head as well as on the branch name, because `--head` matches a branch name across
+# every fork and two senders can be on the same hostname.
+FORK = {"route": "fork", "url": "u", "name": "someone-mac", "login": "someone"}
+DIRECT = {"route": "direct", "url": "u", "name": "mac", "login": "someone"}
+OURS = json.dumps([{"number": 3, "headRepositoryOwner": {"login": "someone"}}])
+THEIRS = json.dumps([{"number": 4, "headRepositoryOwner": {"login": "somebody-else"}}])
+
+PR_CASES = [
+    ("fork: nothing open, so open one", FORK, (True, "[]"), True),
+    ("fork: ours is already open", FORK, (True, OURS), False),
+    ("fork: somebody else's is open on the same branch name", FORK, (True, THEIRS), True),
+    ("direct: ours is already open", DIRECT, (True, OURS), False),
+    ("direct: nothing open, so open one", DIRECT, (True, "[]"), True),
+    ("cannot ask GitHub, so do not risk a duplicate", FORK, (False, ""), False),
+    ("no gh at all", FORK, (None, ""), False),
+    ("an answer that is not JSON", FORK, (True, "not json"), False),
+]
+
+m4 = load(TMP / "pr")
+for name, route, listing, want_create in PR_CASES:
+    calls = []
+
+    def fake(*args, timeout=60, _calls=calls, _listing=listing):
+        _calls.append(args)
+        return _listing if args[:2] == ("pr", "list") else (True, "")
+
+    m4.gh = fake
+    m4.open_pr(route, f"friction/{route['name']}", route["name"])
+    created = [c for c in calls if c[:2] == ("pr", "create")]
+    check(f"request: {name}", bool(created), want_create)
+    if created and want_create:
+        args = created[0]
+        head = args[args.index("--head") + 1]
+        check(f"request: {name} — head", head,
+              f"someone:friction/{route['name']}" if route["route"] == "fork"
+              else f"friction/{route['name']}")
+        check(f"request: {name} — names the lab", args[args.index("--repo") + 1], m4.UPSTREAM)
 
 
 # ------------------------------------------ the one thing allowed to be said

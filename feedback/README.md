@@ -14,8 +14,8 @@ provenance for the day someone asks *why* that line is in a skill.
 a skill runs somewhere            PostToolUse(Skill) injects lessons/<skill>.md
   something goes wrong            Claude records one entry, silently, at session end
                                     -> ~/.claude/skill-friction/pending.jsonl   (machine-local)
-session ends                      Stop hook pushes it to friction/<host>
-                                    -> inbox/<host>.md, one standing PR per machine
+session ends                      Stop hook pushes it to friction/<name>
+                                    -> inbox/<name>.md, one standing PR per sender
 you review the PR                 with Claude, at your pace
   worth keeping                   python tools/friction.py compact
                                     -> lessons/<skill>.md on main
@@ -28,14 +28,41 @@ you review the PR                 with Claude, at your pace
 same guarantee the read-only rule gives, applied to the feedback loop. `inbox/` is evidence; it is
 never injected into a run.
 
+## How it gets here, with or without push rights
+
+Reporting friction does not need write access to this repository. `flush` builds its commit in a
+bare scratch repo of its own — `~/.claude/skill-friction/upstream.git`, a hundred KB or so, trees
+and no file contents — and never inside one of your own checkouts. It then takes one of three
+routes, resolved once from two API answers and cached in `route.json` next to it:
+
+| route | when | where it lands | `<name>` |
+|---|---|---|---|
+| direct | you have push rights here | `friction/<host>`, one standing request per machine | `mac` |
+| fork | you do not | your fork, then a cross-fork request onto `main` here | `you-mac` |
+| stuck | no `gh`, not signed in, no network | nowhere; the buffer holds it for next session | — |
+
+The name carries the handle on the fork route because `mac` and `macbook-pro` collide the moment two
+people outside the lab report. `compact` globs `inbox/*.md` and does not care which shape it is.
+
+Two things follow. A cross-fork pull request is **attributable**: it carries your GitHub handle,
+creates a public fork under your account, and shows in your activity. There is no anonymous version
+of this transport, and "silent" only ever meant that the tooling does not announce itself. And the
+route is anchored on this repository's name rather than on your `origin` — on a fork `origin` is the
+fork, and in a project the skills were installed into it is that project's own remote, which is
+where a friction branch once could have landed.
+
+`gh` not being signed in is the single state the loop says out loud, once per machine, because until
+it is fixed nothing can leave at all. Every other reason to be stuck is silent and retried next
+session.
+
 ## The two directories
 
 | | what it is | who writes it | travels with the skills |
 |---|---|---|---|
-| `inbox/<host>.md` | raw entries from one machine, newest last, awaiting review | `friction.py flush`, via git plumbing, on a branch — never in your working tree | no |
+| `inbox/<name>.md` | raw entries from one sender, newest last, awaiting review | `friction.py flush`, via git plumbing, in a scratch repo of its own — never in your working tree | no |
 | `lessons/<skill>.md` | reviewed, compacted, size-capped to 2 KB | you, at merge, with `friction.py compact` | **yes** |
 
-One inbox file per machine, so two people's entries never conflict in the same PR.
+One inbox file per sender, so two people's entries never conflict in the same request.
 
 `inbox/` is the ledger, not a queue: `compact` counts `seen N×` by reading it, which makes it a pure
 function of what is recorded there. Fold entries in, leave them where they are, and running compact
@@ -57,11 +84,13 @@ Every field is capped at 220 characters. Longer than that and it is a transcript
 
 ## Redaction is part of the format
 
-This repository goes to the whole lab. It must never become a back door onto someone's film.
+This repository goes to the whole lab, in public, and an entry arrives under a real GitHub
+handle. It must never become a back door onto someone's film.
 
 **Never** put in an entry: verbatim script or narration text, a subject or client name, an absolute
-path, a filename from the user's project. `friction.py note` rejects absolute paths outright, but it
-cannot recognise a title or a name — that judgement is the writer's.
+path, a filename from the user's project. `friction.py note` refuses what a pattern can catch —
+absolute paths, `~/` paths, UNC shares, `file://` URLs, email addresses — but it cannot recognise a
+title or a name, so treat the check as a floor and not as the rule. That judgement is the writer's.
 
 Skill, gate, mistake, fix, rule. Nothing about *what* the film was.
 

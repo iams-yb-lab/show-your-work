@@ -36,14 +36,6 @@ approval means **nobody lands a change alone** — with nine collaborators that 
 ends same-session merges. And an empty bypass list binds the admins who create it, which is the
 point and also the part people undo three weeks later.
 
-### `friction.py flush` has no fork path — read-only collaborators cannot deliver friction
-
-`flush` pushes `friction/<host>` straight to `origin`. Someone with read access gets a silent no-op
-and a local buffer that grows forever: entries are never lost and never arrive. Six of the nine
-collaborators are `pull`-only and would hit this today. Fixing it means a fork-and-PR path in
-`flush`, which is real work, not a patch. Waits on the user deciding whether the skills go wider
-than the write-access list.
-
 ### 31 files hardcode `C:\Users\iams1\...`
 
 Not a secret, but a machine account name in a public repository, and `CLAUDE.md` calls a hardcoded
@@ -65,3 +57,10 @@ user, because it is a question about what the floor is for.
 Cleared 2026-08-23. Four of the branches thought to be stale had already been deleted; the local
 remote-tracking refs were out of date, which is worth knowing next time — `git fetch --prune`, not
 `git fetch`, before believing `git branch -r`.
+
+### `update.py` trusts `origin` the way `flush` used to
+
+`friction.py` now anchors on the lab by name and routes by fork, so a `pull`-only sender delivers.
+`update.py` still asks whichever remote it happens to find, so a project installed from a fork that
+has fallen behind updates its skills from the fork and not from the lab, silently. Same misplaced
+trust, one file over, and the same fix: name the lab. Waits on nobody — it is small, and next.

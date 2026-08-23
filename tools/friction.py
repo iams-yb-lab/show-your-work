@@ -15,17 +15,30 @@ pull request, and once *reviewed* is read back at the start of the next run of t
 Three tiers, and the separation is the whole safety argument:
 
   raw         ~/.claude/skill-friction/pending.jsonl   machine-local, written in any project
-  in flight   feedback/inbox/<host>.md on friction/<host>, one commit per session, one standing PR
+  in flight   feedback/inbox/<name>.md on friction/<name>, one commit per session, one standing PR
   reviewed    feedback/lessons/<skill>.md on main       the ONLY tier that is ever read back
 
 Nothing unreviewed can change how a skill behaves. Same guarantee as the read-only rule, applied
 to the feedback loop.
 
+Getting there assumes no push rights on the lab, and borrows none of the user's repositories to
+work in. `flush` builds its commit in a bare scratch repo of its own and takes one of three routes,
+resolved once and cached in the state directory:
+
+  direct   push rights on the lab       push friction/<host> there, keep the standing PR
+  fork     no push rights               push to the sender's fork, open a cross-fork PR on the lab
+  stuck    no gh, no auth, no network   keep the buffer, say nothing, try again next session
+
+A cross-fork pull request is attributable by construction: it carries the sender's GitHub handle,
+creates a public fork under their account and shows in their activity. "Silent" here means the
+tooling never announces itself, not that the delivery is anonymous.
+
 Two hard contracts:
 
   Never bother the user.   No prompt, no question, no mid-run interruption. `check` blocks the Stop
                            hook, but a Stop block is addressed to Claude, not to the human; the
-                           human sees a status line and the PR, nothing else.
+                           human sees a status line and the PR, nothing else. One exception, said
+                           once ever: `gh` is not signed in, so nothing can leave at all.
 
   Never break a turn.      Every hook path exits 0. No network, no gh, no push rights, no git at
                            all: keep the buffer, say nothing, try again next session. Same contract
@@ -59,13 +72,34 @@ FLUSHED = STATE / "flushed.jsonl"
 SESSIONS = STATE / "sessions"
 LATEST = STATE / "latest.txt"
 HOME_TXT = STATE / "home.txt"
+SCRATCH = STATE / "upstream.git"      # the loop's own object store — see scratch_repo()
+ROUTE = STATE / "route.json"          # how friction leaves this machine, decided once
+AUTH_SAID = STATE / "auth-notice.txt"
+
+# The lab, named as an identity and not as a path. `origin` is not it: on a fork `origin` is the
+# fork, and in a project the skills were installed into it is that project's own remote.
+UPSTREAM = "iams-yb-lab/show-your-work"
+UPSTREAM_URL = f"https://github.com/{UPSTREAM}.git"
+FORK_NAME = UPSTREAM.split("/")[1]
+
+BASE_REF = "refs/friction/base"       # inside the scratch repo, nowhere else
 
 FIELDS = ("complaint", "mistake", "fix", "rule")
 FIELD_CAP = 220           # a field longer than this is a transcript, not a lesson
 LESSON_CAP_BYTES = 2048   # per-skill read-back budget; compact enforces it
 
-# No film content, no client names, no machine paths. The lab repo is not a leak.
-LEAKS = re.compile(r"(?:^|[\s(\"'])(?:/Users/|/home/|/private/|[A-Za-z]:[\\/])", re.I)
+# No film content, no client names, no machine paths. Entries now land in a public repository
+# under a real handle, so the mechanical half of the redaction rule is checked here. The half
+# that needs judgement — a film's title, a client's name — stays the writer's, as
+# feedback/README.md says.
+LEAKS = (
+    ("an absolute path",
+     re.compile(r"(?:^|[\s(\"'])(?:/Users/|/home/|/private/|[A-Za-z]:[\\/])", re.I)),
+    ("a home-relative path", re.compile(r'(?:^|[\s("\'])~[/\\]')),
+    ("a UNC path", re.compile(r'\\\\[A-Za-z0-9._-]+\\')),
+    ("a file:// URL", re.compile(r'\bfile://', re.I)),
+    ("an email address", re.compile(r'[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[A-Za-z]{2,}')),
+)
 
 ENTRY_RE = re.compile(
     r"^### (?P<date>\d{4}-\d{2}-\d{2}) · (?P<skill>[\w.-]+)(?: · (?P<gate>[^\n]+))?\n"
@@ -85,9 +119,20 @@ def read_hook() -> dict:
         return {}
 
 
+def slug(text: str) -> str:
+    return re.sub(r"[^a-z0-9-]+", "-", (text or "").lower()).strip("-")
+
+
 def host() -> str:
-    h = re.sub(r"[^a-z0-9-]+", "-", socket.gethostname().split(".")[0].lower()).strip("-")
-    return h or "unknown-host"
+    return slug(socket.gethostname().split(".")[0]) or "unknown-host"
+
+
+def leak_in(value: str) -> str | None:
+    """What the mechanical redaction check found in this field, or None."""
+    for what, pattern in LEAKS:
+        if pattern.search(value):
+            return what
+    return None
 
 
 def git(repo: Path, *args, env=None, stdin=None):
@@ -100,6 +145,20 @@ def git(repo: Path, *args, env=None, stdin=None):
         return r.returncode == 0, (r.stdout or "").strip() or (r.stderr or "").strip()
     except (OSError, subprocess.SubprocessError):
         return False, ""
+
+
+def gh(*args, timeout=60):
+    """Run gh, return (ok, output). `ok is None` means gh is not installed — the one failure worth
+    telling apart, because it is the only one that will not fix itself by next session."""
+    try:
+        r = subprocess.run(["gh", *args], capture_output=True, text=True, timeout=timeout,
+                           env={**os.environ, "GH_PROMPT_DISABLED": "1",
+                                "GH_NO_UPDATE_NOTIFIER": "1", "GIT_TERMINAL_PROMPT": "0"})
+    except FileNotFoundError:
+        return None, ""
+    except (OSError, subprocess.SubprocessError):
+        return False, ""
+    return r.returncode == 0, (r.stdout or "").strip() or (r.stderr or "").strip()
 
 
 # Where lessons sit relative to the tree root. In this repository, `feedback/lessons/`. In a project
@@ -245,8 +304,8 @@ def cmd_note(a) -> int:
              "gate": (a.gate or "").strip()}
     for f in FIELDS:
         v = " ".join(getattr(a, f).split())
-        if LEAKS.search(v):
-            print(f"--{f} contains an absolute path. Entries carry rules, never machine paths "
+        if (found := leak_in(v)):
+            print(f"--{f} contains {found}. Entries carry rules, never machine paths, addresses "
                   f"or film content.", file=sys.stderr)
             return 2
         if len(v) > FIELD_CAP:
@@ -314,9 +373,9 @@ def render(entries: list[dict]) -> str:
     return "\n\n".join(chunks)
 
 
-def cmd_flush(a) -> int:
-    if not PENDING.is_file() or not PENDING.read_text(encoding="utf-8").strip():
-        return 0
+def pending_entries() -> list[dict]:
+    if not PENDING.is_file():
+        return []
     entries = []
     for line in PENDING.read_text(encoding="utf-8").splitlines():
         if line.strip():
@@ -324,96 +383,281 @@ def cmd_flush(a) -> int:
                 entries.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
-    if not entries:
-        return 0
+    return entries
 
-    repo = home_checkout()
-    if not repo:
-        return 0                          # no clone here to push from; buffer waits
-    ok, _ = git(repo, "rev-parse", "--git-dir")
+
+def scratch_repo() -> Path | None:
+    """A bare repo belonging to the loop, and to nothing else.
+
+    `flush` builds its commit with plumbing so that no branch is switched and no working tree is
+    ever touched. That still needs somewhere to write objects, and this used to borrow whichever
+    checkout was to hand — which is how a friction branch could be pushed to the origin of the
+    user's own product repository. This one is ours. It holds trees and no file contents
+    (`blob:none`), so it costs a few hundred KB rather than the 80 MB a full fetch of this
+    repository does. Delete it and the next session builds it again.
+    """
+    SCRATCH.parent.mkdir(parents=True, exist_ok=True)
+    if not (SCRATCH / "HEAD").is_file():
+        git(SCRATCH.parent, "init", "--bare", "--quiet", SCRATCH.name)
+        if not (SCRATCH / "HEAD").is_file():
+            return None
+    # Re-applied every run, so a scratch repo left by an older version heals itself. `lab` is always
+    # the canonical repository; `mine` is whatever the resolved route points at, set in fetch_base.
+    for key, value in (("extensions.partialClone", "mine"),
+                       ("remote.mine.promisor", "true"),
+                       ("remote.mine.partialclonefilter", "blob:none"),
+                       ("remote.lab.url", UPSTREAM_URL),
+                       ("remote.lab.promisor", "true"),
+                       ("remote.lab.partialclonefilter", "blob:none")):
+        git(SCRATCH, "config", key, value)
+    return SCRATCH
+
+
+def fork_url(login: str) -> str:
+    """The clone URL of this account's fork of the lab repository, or "".
+
+    A repository of the right name that is *not* a fork of the lab does not count. Somebody's
+    unrelated project called show-your-work is exactly the wrong place to push friction to, and
+    pushing into an unrelated repository is the bug this routing exists to remove.
+    """
+    ok, raw = gh("api", f"repos/{login}/{FORK_NAME}",
+                 "--jq", '[(.parent.full_name // ""), .clone_url] | @tsv')
+    if ok is not True or not raw:
+        return ""
+    parent, _, url = raw.partition("\t")
+    return url.strip() if parent.strip() == UPSTREAM else ""
+
+
+def ensure_fork(login: str) -> str:
+    """This account's fork, created if it is not there yet. "" if that cannot be done — the buffer
+    then waits, which is the same silence as being offline."""
+    if (url := fork_url(login)):
+        return url
+    ok, _ = gh("repo", "fork", UPSTREAM, "--clone=false", "--remote=false", timeout=120)
+    if ok is not True:
+        return ""
+    return fork_url(login)
+
+
+def resolve_route(force: bool = False) -> dict:
+    """Where this machine's friction goes.
+
+    Asked once and cached, because it costs two API calls and the answer almost never changes.
+    Asked again when a push fails, because access can be granted or taken away and the loop should
+    recover on its own rather than wait for someone to notice.
+    """
+    if not force and ROUTE.is_file():
+        try:
+            cached = json.loads(ROUTE.read_text(encoding="utf-8"))
+            if (cached.get("route") in ("direct", "fork")
+                    and cached.get("url") and cached.get("name")):
+                return cached
+        except (json.JSONDecodeError, ValueError, OSError):
+            pass
+
+    ok, login = gh("api", "user", "--jq", ".login")
+    if ok is None:
+        return {"route": "stuck", "why": "no-gh"}
+    if ok is not True or not login:
+        return {"route": "stuck", "why": "auth"}
+
+    ok, push = gh("api", f"repos/{UPSTREAM}", "--jq", ".permissions.push")
+    if ok is not True:
+        return {"route": "stuck", "why": "unreachable"}
+
+    if push == "true":
+        # Bare <host>, so the lab's existing inbox files and standing requests are undisturbed.
+        route = {"route": "direct", "url": UPSTREAM_URL, "name": host(), "login": login}
+    else:
+        url = ensure_fork(login)
+        if not url:
+            return {"route": "stuck", "why": "fork"}
+        # `mac` and `macbook-pro` collide the moment two people outside the lab report, so an
+        # outside sender's inbox file and branch carry their handle as well.
+        route = {"route": "fork", "url": url, "name": f"{slug(login)}-{host()}", "login": login}
+
+    try:
+        STATE.mkdir(parents=True, exist_ok=True)
+        ROUTE.write_text(json.dumps(route), encoding="utf-8")
+    except OSError:
+        pass
+    return route
+
+
+def fetch_base(repo: Path, url: str, branch: str) -> str:
+    """The commit to build on: this sender's own branch where it already exists, so that entries
+    accumulate, else the lab's `main`.
+
+    Both remotes are pointed at their URL here rather than read from anyone's configuration, so no
+    `origin` anywhere can redirect this. Shallow and blob-filtered, because `read-tree` needs the
+    trees and never the file contents.
+    """
+    git(repo, "config", "remote.mine.url", url)
+    git(repo, "update-ref", "-d", BASE_REF)     # never build on last session's stale base
+    for remote, refspec in (("mine", f"+refs/heads/{branch}:{BASE_REF}"),
+                            ("lab", f"+refs/heads/main:{BASE_REF}")):
+        if git(repo, "fetch", "--quiet", "--depth=1", "--filter=blob:none", remote, refspec)[0]:
+            ok, sha = git(repo, "rev-parse", "--verify", "--quiet", BASE_REF)
+            if ok and sha:
+                return sha
+    return ""
+
+
+INBOX_HEADER = ("# Friction from `{name}`\n\n"
+                "Raw entries, newest last, awaiting review. Format and redaction rule: "
+                "`feedback/README.md`.\n")
+
+
+def prior_inbox(repo: Path, base: str, path: str, name: str) -> str | None:
+    """The inbox file as it already stands on the branch, or a fresh header when there is none yet.
+
+    None means the file is there and could not be read. Bail on that rather than replace an
+    accumulated inbox with a header and this session's entries. `ls-tree` reads trees, which the
+    scratch repo has; the blob is fetched on demand, and is the only content this loop downloads.
+    """
+    ok, listed = git(repo, "ls-tree", base, "--", path)
     if not ok:
-        return 0
-    ok, origin = git(repo, "remote", "get-url", "origin")
-    if not ok or not origin:
-        return 0
+        return None
+    if not listed:
+        return INBOX_HEADER.format(name=name)
+    parts = listed.split()
+    if len(parts) < 3:
+        return None
+    ok, text = git(repo, "cat-file", "blob", parts[2])
+    return text if ok else None
 
-    h = host()
-    branch = f"friction/{h}"
-    path = f"feedback/inbox/{h}.md"
-    git(repo, "fetch", "--quiet", "origin", branch)
 
-    base = ""
-    for ref in (f"refs/remotes/origin/{branch}", f"refs/heads/{branch}", "refs/remotes/origin/main"):
-        ok, sha = git(repo, "rev-parse", "--verify", "--quiet", ref)
-        if ok and sha:
-            base = sha
-            break
-    if not base:
-        return 0
-
-    ok, prior = git(repo, "show", f"{base}:{path}")
-    if not ok:
-        prior = (f"# Friction from `{h}`\n\n"
-                 f"Raw entries, newest last, awaiting review. Format and redaction rule: "
-                 f"`feedback/README.md`.\n")
-    body = prior.rstrip() + "\n\n" + render(entries) + "\n"
-    msg = (f"friction({h}): {len(entries)} entr{'y' if len(entries) == 1 else 'ies'} — "
-           + ", ".join(sorted({e['skill'] for e in entries})))
-
-    if a.check:
-        print(f"would append {len(entries)} entr(ies) to {path} on {branch} (base {base[:8]})\n"
-              f"  message: {msg}\n  push to: {origin}")
-        return 0
-
-    # Build the commit with plumbing: no branch switch, no stash, the working tree is never touched.
+def build_commit(repo: Path, base: str, path: str, body: str, msg: str) -> str:
+    """One commit on top of `base`, built with plumbing: no branch switch, no working tree."""
     ok, blob = git(repo, "hash-object", "-w", "--stdin", stdin=body)
     if not ok or not blob:
-        return 0
+        return ""
     with tempfile.TemporaryDirectory() as td:
         env = {"GIT_INDEX_FILE": str(Path(td) / "index")}
         if not git(repo, "read-tree", base, env=env)[0]:
-            return 0
-        if not git(repo, "update-index", "--add", "--cacheinfo", f"100644,{blob},{path}", env=env)[0]:
-            return 0
+            return ""
+        if not git(repo, "update-index", "--add", "--cacheinfo",
+                   f"100644,{blob},{path}", env=env)[0]:
+            return ""
         ok, tree = git(repo, "write-tree", env=env)
     if not ok or not tree:
-        return 0
+        return ""
     ok, commit = git(repo, "commit-tree", tree, "-p", base, "-m", msg)
-    if not ok or not commit:
-        return 0
+    return commit if ok else ""
+
+
+def send(route: dict, entries: list[dict], check: bool) -> bool:
+    """Append these entries to this sender's inbox on this sender's branch. False means nothing
+    left the machine, and the buffer keeps them for next session."""
+    repo = scratch_repo()
+    if not repo:
+        return False
+    name = route["name"]
+    branch, path = f"friction/{name}", f"feedback/inbox/{name}.md"
+
+    base = fetch_base(repo, route["url"], branch)
+    if not base:
+        return False
+    prior = prior_inbox(repo, base, path, name)
+    if prior is None:
+        return False
+
+    body = prior.rstrip() + "\n\n" + render(entries) + "\n"
+    msg = (f"friction({name}): {len(entries)} entr{'y' if len(entries) == 1 else 'ies'} — "
+           + ", ".join(sorted({e['skill'] for e in entries})))
+
+    if check:
+        print(f"route: {route['route']} -> {route['url']}\n"
+              f"would append {len(entries)} entr(ies) to {path} on {branch} (base {base[:8]})\n"
+              f"  message: {msg}")
+        return True
+
+    commit = build_commit(repo, base, path, body, msg)
+    if not commit:
+        return False
     if not git(repo, "update-ref", f"refs/heads/{branch}", commit)[0]:
-        return 0
-    if not git(repo, "push", "--quiet", "origin", f"refs/heads/{branch}:refs/heads/{branch}")[0]:
-        return 0                          # offline or no rights: buffer stays, retry next session
+        return False
+    if not git(repo, "push", "--quiet", route["url"],
+               f"refs/heads/{branch}:refs/heads/{branch}")[0]:
+        return False                      # offline or rights lost: buffer stays, retry next session
 
     # Pushed. The buffer has done its job; keep a local copy of what left.
     with FLUSHED.open("a", encoding="utf-8") as fh:
         for e in entries:
             fh.write(json.dumps(e, ensure_ascii=False) + "\n")
     PENDING.write_text("", encoding="utf-8")
-    open_pr(repo, branch, h)
+    open_pr(route, branch, name)
     print(f"friction: pushed {len(entries)} entr(ies) to {branch}")
+    return True
+
+
+AUTH_NOTICE = ("Friction from the skills is buffered on this machine and cannot be sent: the GitHub "
+               "CLI is not signed in. `gh auth login` once and it goes on its own from then on. "
+               "Nothing recorded is lost in the meantime.")
+
+
+def say_auth_once() -> None:
+    """The one thing this loop may say out loud, and only ever once on a machine: nothing can leave
+    at all, and one command fixes it. Every other reason to be stuck stays silent, because every
+    other reason resolves itself."""
+    if AUTH_SAID.is_file():
+        return
+    try:
+        STATE.mkdir(parents=True, exist_ok=True)
+        AUTH_SAID.write_text(date.today().isoformat(), encoding="utf-8")
+    except OSError:
+        return                            # cannot promise "once", so say nothing
+    out_json({"systemMessage": AUTH_NOTICE})
+
+
+def cmd_flush(a) -> int:
+    entries = pending_entries()
+    if not entries:
+        return 0
+
+    cached = ROUTE.is_file()
+    route = resolve_route()
+    if route["route"] != "stuck":
+        if send(route, entries, a.check):
+            return 0
+        if cached:
+            route = resolve_route(force=True)   # access may have changed under a cached answer
+            if route["route"] != "stuck" and send(route, entries, a.check):
+                return 0
+    if route["route"] == "stuck" and route.get("why") == "auth":
+        say_auth_once()
     return 0
 
 
-def open_pr(repo: Path, branch: str, h: str) -> None:
-    """One standing PR per machine. Opened once, updated by every later push."""
+PR_BODY = ("Friction recorded automatically while running the skills on `{name}`. Raw entries only "
+           "— review, then fold the ones worth keeping into `feedback/lessons/` with "
+           "`python tools/friction.py compact`.\n\nOnly reviewed lessons on `main` are ever read "
+           "back into a run.")
+
+
+def open_pr(route: dict, branch: str, name: str) -> None:
+    """One standing pull request per sender. Opened once; every later push updates it.
+
+    On the fork route the head is `<login>:<branch>`, which is what makes it a request against the
+    lab rather than one inside the sender's own fork. `--repo` rather than a working directory,
+    because by now there may be no checkout of this repository on the machine at all.
+    """
+    ok, raw = gh("pr", "list", "--repo", UPSTREAM, "--head", branch, "--state", "open",
+                 "--json", "number,headRepositoryOwner")
+    if ok is not True:
+        return                            # cannot ask: the branch is pushed, and that is enough
     try:
-        r = subprocess.run(["gh", "pr", "list", "--head", branch, "--state", "open",
-                            "--json", "number"], capture_output=True, text=True,
-                           timeout=45, cwd=str(repo))
-        if r.returncode == 0 and json.loads(r.stdout or "[]"):
-            return                        # already open; the push updated it
-        subprocess.run(["gh", "pr", "create", "--base", "main", "--head", branch,
-                        "--title", f"friction from {h}",
-                        "--body", "Friction recorded automatically while running the skills on "
-                                  f"`{h}`. Raw entries only — review, then fold the ones worth "
-                                  "keeping into `feedback/lessons/` with "
-                                  "`python tools/friction.py compact`.\n\nOnly reviewed lessons on "
-                                  "`main` are ever read back into a run."],
-                       capture_output=True, text=True, timeout=60, cwd=str(repo))
-    except (OSError, subprocess.SubprocessError, ValueError):
-        return                            # no gh, no network: the branch is pushed, that is enough
+        existing = json.loads(raw or "[]")
+    except (json.JSONDecodeError, ValueError):
+        return                            # cannot tell: better no request than a duplicate
+    for pr in existing:
+        if route["route"] != "fork":
+            return                        # same repository, and --head already matched this branch
+        if ((pr.get("headRepositoryOwner") or {}).get("login") or "") == route["login"]:
+            return
+    head = f"{route['login']}:{branch}" if route["route"] == "fork" else branch
+    gh("pr", "create", "--repo", UPSTREAM, "--base", "main", "--head", head,
+       "--title", f"friction from {name}", "--body", PR_BODY.format(name=name))
 
 
 # ---------------------------------------------------------------------- compact

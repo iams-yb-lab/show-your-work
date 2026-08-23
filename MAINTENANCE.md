@@ -36,14 +36,6 @@ approval means **nobody lands a change alone** — with nine collaborators that 
 ends same-session merges. And an empty bypass list binds the admins who create it, which is the
 point and also the part people undo three weeks later.
 
-### 31 files hardcode `C:\Users\iams1\...`
-
-Not a secret, but a machine account name in a public repository, and `CLAUDE.md` calls a hardcoded
-checkout path a bug in its own right. `tools/friction.py` refuses these in friction entries while
-the repository is full of them. Most of them are under `.claude/skills/**`, which is read-only, so
-the fix needs the exact phrase; the rest are in `references/frozen-scripts/`, which is frozen by
-definition. Waits on the user.
-
 ### `education-video/examples/intro/` header text is 14px against a 28px floor
 
 Found by running the composition check against it: "PRECISION TEMPERATURE CONTROLLER" and the

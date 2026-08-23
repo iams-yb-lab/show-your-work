@@ -79,7 +79,7 @@ def tokens(text: str) -> int:
 
 def ffprobe(path: Path) -> dict:
     exe = shutil.which("ffprobe") or (
-        r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
+        r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages"
         r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffprobe.exe"
     )
     out = subprocess.run(

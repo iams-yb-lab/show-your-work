@@ -38,7 +38,9 @@ afterwards with the video stream copied. That is the correct order — see `../n
 
 ```bash
 # ffmpeg must be on PATH: the script looks for it with shutil.which and has no override flag.
-PATH="/c/Users/iams1/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-9.0-full_build/bin:$PATH" \
+# winget installs it outside the shell's PATH; this is where, under whoever is logged in. The glob
+# covers the version directory, which changes at every upgrade.
+PATH="$(echo "$HOME"/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg*/ffmpeg-*/bin):$PATH" \
 python export_html_video.py "<bundle>.html" "<out>.mp4" --width 1920 --height 1080 --overwrite
 ```
 

@@ -53,6 +53,11 @@ not to run — their inputs were takes that never travelled. The other sixteen s
 those directories are cross-referenced from `VOICE-LOG.md`, `AUDIO-LOG.md` or each other,
 so they stayed.
 
+Four of them named one machine's account in an ffmpeg path. On 2026-08-23 that account
+segment was replaced with `<user>` and nothing else in them was touched, for the reason
+in `EXPORT-MANIFEST.md`: a record stays a record, but a public repository should not
+carry somebody's login.
+
 ## slide-deck-gate4-toolkit/ — 40 KB
 
 The reference implementations that came back with the GATE 4 proposal, on 2026-08-23, after that

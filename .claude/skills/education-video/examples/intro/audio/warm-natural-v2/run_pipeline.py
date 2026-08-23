@@ -22,13 +22,13 @@ EDUCATION = SKILLS / "education-video" / "examples" / "intro"
 NATURAL_VOICE = SKILLS / "natural-voice"
 WORK = REPO / "out" / "education" / "warm-natural-v2"
 RELEASES = REPO / "out" / "releases"
-LEGACY = Path(r"C:\Users\iams1\.codex\visualizations\2026\08\12\019ff5e6-333c-7732-a44f-7daa05aa5c47")
-TEMP = Path(r"C:\Users\iams1\AppData\Local\Temp")
+LEGACY = Path(r"C:\Users\<user>\.codex\visualizations\2026\08\12\019ff5e6-333c-7732-a44f-7daa05aa5c47")
+TEMP = Path(r"C:\Users\<user>\AppData\Local\Temp")
 CHATTER_PYTHON = TEMP / "chatterbox-venv" / "Scripts" / "python.exe"
 EDIT_PYTHON = TEMP / "editx-venv" / "Scripts" / "python.exe"
 SR_PYTHON = TEMP / "sr-venv" / "Scripts" / "python.exe"
 FFMPEG = Path(
-    r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
+    r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages"
     r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe"
     r"\ffmpeg-9.0-full_build\bin\ffmpeg.exe"
 )

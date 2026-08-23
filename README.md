@@ -185,7 +185,7 @@ Five checks, exit non-zero with the file and line on any failure:
 |---|---|
 | geometry | a skill that can no longer reach its method |
 | skills | a skill file that was edited — they are read-only, and verified by hash |
-| independence | any absolute path naming another checkout, so this repository never quietly needs one |
+| independence | any absolute path naming another checkout, so this repository never quietly needs one — and, inside the payload, any literal home directory, which resolves on one machine and names its owner |
 | travel | a link from inside the installable payload to a file that would not travel with it |
 | links | any relative link that does not resolve |
 

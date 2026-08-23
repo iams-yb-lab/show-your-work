@@ -11,9 +11,9 @@ from pathlib import Path
 
 import numpy as np, torch, torchaudio, librosa, soundfile as sf
 
-OUT = Path(r"C:\Users\iams1\AppData\Local\Temp\temperature-controller-media\chatterbox_deep")
+OUT = Path(r"C:\Users\<user>\AppData\Local\Temp\temperature-controller-media\chatterbox_deep")
 OUT.mkdir(parents=True, exist_ok=True)
-SRC = Path(r"C:\Users\iams1\AppData\Local\Temp\temperature-controller-media\chatterbox")
+SRC = Path(r"C:\Users\<user>\AppData\Local\Temp\temperature-controller-media\chatterbox")
 
 LINES = [
     (1, "It all begins with a bare board... and an idea precise enough to become real.", 2.23, 6.0, 12.0),

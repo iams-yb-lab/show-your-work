@@ -12,7 +12,7 @@ mix_final-compatible dir (line{N}_best.wav + manifest.json).
 import os, json, re, difflib, shutil, sys
 from pathlib import Path
 
-os.environ["PATH"] += os.pathsep + r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin"
+os.environ["PATH"] += os.pathsep + r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin"
 
 IMPL = Path(os.environ["TEMP"]) / "editx-node" / "step_audio_impl"
 os.chdir(IMPL)

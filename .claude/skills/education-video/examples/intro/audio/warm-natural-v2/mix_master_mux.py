@@ -11,7 +11,7 @@ import soundfile as sf
 
 
 FFMPEG = Path(
-    r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
+    r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages"
     r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe"
     r"\ffmpeg-9.0-full_build\bin\ffmpeg.exe"
 )

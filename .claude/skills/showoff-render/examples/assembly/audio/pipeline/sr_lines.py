@@ -9,7 +9,7 @@ Writes editx_sr/ as a mix_final-compatible takes dir.
 import os, json, re, difflib, shutil
 from pathlib import Path
 
-os.environ["PATH"] += os.pathsep + r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin"
+os.environ["PATH"] += os.pathsep + r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin"
 
 import numpy as np, librosa, soundfile as sf
 

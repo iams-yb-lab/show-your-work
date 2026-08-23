@@ -30,8 +30,10 @@ possible but untested. It stays refused until someone tries it on purpose.
 It also wires two things into the target's `.claude/settings.json`, and says which:
 
   the feedback loop (--no-feedback-hook opts out)   reads `feedback/lessons/<skill>.md` into a run
-      and pushes what went wrong back here as a pull request. Without it the skills still work;
-      they just cannot learn from the run, and nothing comes back to the lab.
+      and sends what went wrong back to the lab as a pull request — from your own fork if you have
+      no push rights there, and never through this project's remote, which it does not read.
+      Without it the skills still work; they just cannot learn from the run, and nothing comes back
+      to the lab.
 
   the update check (--no-update-hook opts out)      at the start of a session, `update.py` under
       `.claude/skills/_shared/tools/`

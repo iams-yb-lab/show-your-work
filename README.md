@@ -150,6 +150,11 @@ python tools/update.py apply    # do it now
 
 It is deliberately narrow:
 
+- **It updates from the lab, not from `origin`.** `iams-yb-lab/show-your-work` is named in the tool
+  as an identity. `origin` is trusted only where it *is* that repository: on a fork it is the fork,
+  and a fork a few months behind would otherwise hand you its stale skills and report success. Off
+  the lab, the lab's `main` is fetched by URL into a ref of the tool's own — no remote is added to
+  your checkout and no branch appears in your list.
 - **Fast-forward only.** A checkout that has diverged, or where the merge would overwrite
   something, is reported and left exactly as it is — never merged, never rebased, never stashed.
 - **In a project it re-installs from the checkout on this machine**, the one `install_skills.py`

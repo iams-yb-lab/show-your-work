@@ -7,13 +7,19 @@
 
 Two places this runs, and it works out which by looking at what is around it:
 
-  the checkout   fetch origin and fast-forward, if that is all it takes. The skills here ARE the
-                 installation, so a fast-forward is the whole update.
+  the checkout   fetch the lab and fast-forward, if that is all it takes. The skills here ARE
+                 the installation, so a fast-forward is the whole update.
 
   a project the skills were installed into   update the checkout on this machine first — found by
                  the pointer `install_skills.py` leaves at ~/.claude/skill-friction/home.txt — then
                  re-install the payload into this project from it. With no checkout on the machine
                  there is nothing to update from, and it says so rather than looking successful.
+
+The lab — `iams-yb-lab/show-your-work` — is named here as an identity, not discovered from the
+checkout's remotes. `origin` is trusted only when it *is* the lab: on a fork `origin` is the fork,
+and a fork that has fallen behind would otherwise update the skills to its own stale copy and report
+success. Off the lab, the lab's `main` is fetched by URL into a ref of this tool's own, so no remote
+is added to anyone's checkout and nothing new appears in their branch list.
 
 What it overwrites and what it will not: `install_skills.py --update` draws that line, and the
 reasoning lives there. Short version — the read-only files are replaced, the method and the records
@@ -23,13 +29,14 @@ Three contracts, the same ones friction.py works under:
 
   Never bother the user.   No prompt, no question, no mid-run interruption. A line of context when
                            something happened, silence when nothing did.
-  Never break a turn.      Every path exits 0. Git missing, no remote, no network, no rights: say
-                           nothing and try again next session.
+  Never break a turn.      Every path exits 0. Git missing, no network, no rights: say nothing
+                           and try again next session.
   Never touch work.        Fast-forward only. A diverged or dirty checkout is reported and left
                            exactly as it is — never merged, never rebased, never stashed.
 
 Turn it off on one machine with SHOW_YOUR_WORK_UPDATE=off in the environment; `check` and `apply`
-still work by hand.
+still work by hand. `tools/test_update_route.py` covers where an update comes from against local
+repositories standing in for the lab and a fork; run it after any edit.
 """
 
 from __future__ import annotations
@@ -37,6 +44,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -54,6 +62,22 @@ STATE = Path(os.environ.get("FRICTION_STATE")
              or Path.home() / ".claude" / "skill-friction").expanduser()
 HOME_TXT = STATE / "home.txt"
 MEMO = STATE / "update.json"
+
+# The lab, named as an identity and not as a path — the one repository the skills update from.
+# friction.py carries the same constant for the same reason, so take it from there when it is beside
+# us and a rename cannot move one and leave the other behind.
+try:
+    from friction import UPSTREAM as LAB
+except Exception:                         # a neighbour that will not import must not stop a session
+    LAB = "iams-yb-lab/show-your-work"
+LAB_URL = f"https://github.com/{LAB}.git"
+LAB_REF = "refs/show-your-work/lab-main"  # this tool's own namespace: no remote, no branch, no tag
+LAB_MAIN = "the lab's main"               # how the messages name it, and how run() spots the route
+
+# Every form git accepts for that one repository, and nothing that merely contains its name: a host
+# of anything but github.com is somebody else's server.
+LAB_URL_RE = re.compile(r"^(?:(?:https?|ssh|git)://)?(?:[^@/]+@)?github\.com(?::\d+)?[:/]"
+                        + re.escape(LAB) + r"$", re.I)
 
 HOOK_SECONDS = 150        # what the SessionStart hook may spend copying, under its own timeout
 MIN_GAP_MINUTES = 15      # a resume five minutes later does not need to ask GitHub again
@@ -138,40 +162,67 @@ def since(stamp: str | None) -> float:
 
 # ------------------------------------------------------------------ the git half
 
-def sync(repo: Path, apply: bool) -> tuple[str, str, int]:
-    """Fetch, then fast-forward if that is all it takes. Returns (state, detail, commits behind).
+def names_lab(url: str) -> bool:
+    """True if a remote URL is the lab itself, in any of the forms git accepts for it."""
+    u = (url or "").strip().rstrip("/")
+    return bool(LAB_URL_RE.match(u[:-4] if u.lower().endswith(".git") else u))
 
-    States that mean *do not act*: no-git, no-remote, detached, no-upstream, offline (all silent),
-    diverged and blocked (both reported — they need a person). current and ahead are fine as they
-    are; the Stop hook is what pushes `ahead`."""
+
+def upstream_of(repo: Path) -> tuple[str, str]:
+    """What this checkout must measure itself against: (ref to compare, how to name it).
+
+    `origin` is used only where it is the lab. Everywhere else — a fork, or a checkout whose remote
+    was pointed somewhere private — the lab's own `main` is the answer, because a fork answers
+    "current" while the skills inside it sit months behind."""
+    ok, url = git(repo, "remote", "get-url", "origin")
+    if ok and names_lab(url):
+        return "@{upstream}", ""
+    return LAB_REF, LAB_MAIN
+
+
+def sync(repo: Path, apply: bool) -> tuple[str, str, int, str]:
+    """Fetch, then fast-forward if that is all it takes. Returns (state, detail, commits behind,
+    what it compared against).
+
+    States that mean *do not act*: no-git, detached, no-upstream, offline (all silent), diverged and
+    blocked (both reported — they need a person). current and ahead are fine as they are; the Stop
+    hook is what pushes `ahead`."""
     if not git(repo, "rev-parse", "--git-dir")[0]:
-        return "no-git", "", 0
-    if not git(repo, "remote", "get-url", "origin")[0]:
-        return "no-remote", "", 0
+        return "no-git", "", 0, ""
     ok, branch = git(repo, "symbolic-ref", "--quiet", "--short", "HEAD")
     if not ok or not branch:
-        return "detached", "", 0
-    if not git(repo, "rev-parse", "--abbrev-ref", "@{upstream}")[0]:
-        return "no-upstream", branch, 0
-    if not git(repo, "fetch", "--quiet", "origin", timeout=45)[0]:
-        return "offline", branch, 0
+        return "detached", "", 0, ""
 
-    ok, counts = git(repo, "rev-list", "--left-right", "--count", "@{upstream}...HEAD")
+    ref, src = upstream_of(repo)
+    src = src or f"origin/{branch}"
+    if ref == LAB_REF:
+        # By URL and into a ref of our own: no remote is added to someone else's checkout, nothing
+        # appears in their branch list, and no `origin` anywhere can redirect this.
+        if not git(repo, "fetch", "--quiet", "--no-tags", LAB_URL,
+                   f"+refs/heads/main:{LAB_REF}", timeout=45)[0]:
+            return "offline", branch, 0, src
+    else:
+        if not git(repo, "rev-parse", "--abbrev-ref", "@{upstream}")[0]:
+            return "no-upstream", branch, 0, src
+        if not git(repo, "fetch", "--quiet", "origin", timeout=45)[0]:
+            return "offline", branch, 0, src
+
+    ok, counts = git(repo, "rev-list", "--left-right", "--count", f"{ref}...HEAD")
     try:
         behind, ahead = (int(x) for x in counts.split())
     except (ValueError, AttributeError):
-        return "offline", branch, 0
+        return "offline", branch, 0, src
     if behind == 0:
-        return ("ahead" if ahead else "current"), branch, ahead
+        return ("ahead" if ahead else "current"), branch, ahead, src
     if ahead:
-        return "diverged", branch, behind
+        return "diverged", branch, behind, src
     if not apply:
-        return "behind", branch, behind
+        return "behind", branch, behind, src
 
     # Fast-forward only. Git refuses this itself if a local change would be overwritten, which is
     # the safety we want — no dirty-tree guess of our own, no stash, no rebase.
-    ok, msg = git(repo, "merge", "--ff-only", "@{upstream}", timeout=60)
-    return ("updated", branch, behind) if ok else ("blocked", first_line(msg), behind)
+    ok, msg = git(repo, "merge", "--ff-only", ref, timeout=60)
+    return ("updated", branch, behind, src) if ok else ("blocked", first_line(msg), behind, src)
 
 
 def verify(repo: Path) -> str:
@@ -233,26 +284,31 @@ def run(apply: bool, budget: int = 900) -> tuple[list[str], list[str]]:
                 "on this machine. Clone it, then run its tools/install_skills.py on this project.")
         return notable, quiet
 
-    state, detail, n = sync(clone, apply)
+    state, detail, n, src = sync(clone, apply)
     where = "" if here_is_checkout else " (the checkout the skills came from)"
     plural = "commit" if n == 1 else "commits"
 
     if state == "updated":
-        notable.append(f"Updated the skills to origin/{detail}{where}: {n} new {plural} from GitHub.")
+        notable.append(f"Updated the skills to {src}{where}: {n} new {plural} from GitHub.")
         if (bad := verify(clone)):
             notable.append(f"But the check on the new version FAILS: {bad}")
     elif state == "behind":
-        notable.append(f"{n} {plural} behind origin/{detail}{where} — not applied (check only).")
+        notable.append(f"{n} {plural} behind {src}{where} — not applied (check only).")
     elif state == "diverged":
-        notable.append(f"The checkout{where} has diverged from origin/{detail}: {n} {plural} behind "
+        notable.append(f"The checkout{where} has diverged from {src}: {n} {plural} behind "
                        f"and local commits of its own. Left alone; it needs a person.")
     elif state == "blocked":
-        notable.append(f"{n} {plural} behind origin, and the fast-forward was refused: {detail}. "
+        notable.append(f"{n} {plural} behind {src}, and the fast-forward was refused: {detail}. "
                        f"Nothing was changed.")
     else:
         quiet.append(f"checkout: {state}" + (f" ({detail})" if detail else ""))
 
     fetched = state in {"current", "ahead", "updated", "behind", "diverged", "blocked"}
+    # Worth saying once, and only once: the answers above came from somewhere other than the remote
+    # this checkout was cloned from, and someone reading them would otherwise assume `origin`.
+    if fetched and src == LAB_MAIN and occasionally("not-the-lab"):
+        notable.append(f"This checkout's `origin` is not the lab, so the skills were measured "
+                       f"against {LAB} itself rather than against `origin`.")
     if fetched:
         stamp("last_ok")
     elif state == "offline" and (age := since(slot().get("last_ok"))) > STALE_DAYS * 24 * 60:
@@ -262,7 +318,7 @@ def run(apply: bool, budget: int = 900) -> tuple[list[str], list[str]]:
 
     # In a project, the skills are a copy. Refresh it whether or not the checkout moved: the copy
     # can be stale on its own — installed once, months ago, and never touched since.
-    if not here_is_checkout and state not in {"no-git", "no-remote"}:
+    if not here_is_checkout and state != "no-git":
         line, ok = reinstall(clone, ROOT, apply, budget)
         # The installer's own summary line: "update: N file(s) refreshed|stale, M left alone".
         counts = [int(w) for w in line.split() if w.isdigit()]
@@ -349,7 +405,7 @@ def cmd_report(a) -> int:
     for line in quiet:
         print(f"({line})")
     if not notable and not quiet:
-        print("already current with origin.")
+        print("already current with the lab.")
     flush_memo()
     return 0
 

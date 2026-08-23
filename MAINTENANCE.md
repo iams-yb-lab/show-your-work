@@ -59,6 +59,14 @@ the repository is full of them. Most of them are under `.claude/skills/**`, whic
 the fix needs the exact phrase; the rest are in `references/frozen-scripts/`, which is frozen by
 definition. Waits on the user.
 
+### `education-video/examples/intro/` header text is 14px against a 28px floor
+
+Found by running the composition check against it: "PRECISION TEMPERATURE CONTROLLER" and the
+"01 · 09" counter render at 14px, half the floor `slide-deck` GATE 0 sets and `education-video`
+inherits. They are visible in the frame, so the finding is real. Either the film's furniture is
+exempt from the floor and the check should say so, or that example needs a rebuild. Waits on the
+user, because it is a question about what the floor is for.
+
 ### Nothing. `origin` carries `main` and the branch in review, and no more.
 
 Cleared 2026-08-23. Four of the branches thought to be stale had already been deleted; the local

@@ -30,7 +30,7 @@ it as a skill.
 | | what | called by |
 |---|---|---|
 | [`audio/`](.claude/skills/_shared/audio/) | the BS.1770-4 loudness meter, the true-peak limiter, the van Herk sliding maximum, the voice chain, the pitch set | `natural-voice` links `voice_chain.py` by name; `education-video` and `showoff-render` films import it |
-| [`checks/`](.claude/skills/_shared/checks/) | `composition.py` — canvas overflow and the font floor, measured in a browser. One implementation, one 28-pixel constant | `education-video` (per instant), `slide-deck` (per slide, and again statically) |
+| [`checks/`](.claude/skills/_shared/checks/) | `composition.py` — overflow, the font floor, overlap (text on text, text on a picture, a picture on a picture) and the clearance a word keeps from lines and block edges, measured in a browser. One implementation, one 28-pixel constant | `education-video` (per instant), `slide-deck` (per slide, and again statically) |
 
 ## The rest of the repository
 

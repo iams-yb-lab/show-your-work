@@ -44,16 +44,6 @@ collaborators are `pull`-only and would hit this today. Fixing it means a fork-a
 `flush`, which is real work, not a patch. Waits on the user deciding whether the skills go wider
 than the write-access list.
 
-### The applied GATE 4 proposal named a real project and a real person, and history keeps it
-
-The file was deleted on 2026-08-23 when the proposal was applied, so **the tip is clean** — the
-record that replaced it in `EXPORT-MANIFEST.md` says "a 15-slide talk built with this skill
-elsewhere" and names nobody, and `references/slide-deck-gate4-toolkit/` carries no lab name either.
-But the repository has been public since 2026-08-21 and **the commits still contain the original**,
-which named `RedPitaya` and the IAMS Yb Lab and quoted the deck's author verbatim. Removing that
-means rewriting public history, which is a decision and not a cleanup, and `CLAUDE.md` forbids
-rewriting history to tidy. Waits on the user.
-
 ### 31 files hardcode `C:\Users\iams1\...`
 
 Not a secret, but a machine account name in a public repository, and `CLAUDE.md` calls a hardcoded

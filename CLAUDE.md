@@ -141,6 +141,11 @@ for it to merge; never open a second pull request because the new work "is unrel
 including one opened by a session weeks ago that everyone forgot. If the refusal is wrong, say so
 and let me decide; do not route around it.
 
+**The standing friction request does not count**, in either direction: it is meant to stay open, so
+counting it would refuse every ordinary pull request from the moment a skill first ran. The hook
+exempts `friction/*` and `tools/test_one_pr.py` holds that case. Run that test after touching the
+hook.
+
 **Say what the branch is for before you commit to it.** A branch that collects five unrelated
 changes becomes a pull request nobody can review as one decision — which is how #8 ended up
 carrying eleven commits and swallowing four other branches.

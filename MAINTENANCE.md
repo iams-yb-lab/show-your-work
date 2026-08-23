@@ -59,15 +59,8 @@ the repository is full of them. Most of them are under `.claude/skills/**`, whic
 the fix needs the exact phrase; the rest are in `references/frozen-scripts/`, which is frozen by
 definition. Waits on the user.
 
-### The stale remote branches were not deleted
+### Nothing. `origin` carries `main` and the branch in review, and no more.
 
-`add-license`, `proposal/gate4-tuning-constants`, `proposal/public-repo-followups`,
-`slide-deck-gate4-geometry-checks` and `education-video/self-delivered-film` are all
-patch-equivalent to commits already in pull request #8, and their local copies are gone. Deleting
-them on `origin` was blocked by the permission classifier on 2026-08-23:
-
-```bash
-git push origin --delete add-license proposal/gate4-tuning-constants \
-  proposal/public-repo-followups slide-deck-gate4-geometry-checks \
-  education-video/self-delivered-film
-```
+Cleared 2026-08-23. Four of the branches thought to be stale had already been deleted; the local
+remote-tracking refs were out of date, which is worth knowing next time — `git fetch --prune`, not
+`git fetch`, before believing `git branch -r`.

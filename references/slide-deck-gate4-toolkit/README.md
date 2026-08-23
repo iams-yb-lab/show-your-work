@@ -1,8 +1,11 @@
 # Reference implementation — the four GATE 4 mechanical checks
 
-Supporting code for [`../../slide-deck-gate4-checks.md`](../../slide-deck-gate4-checks.md). These
-files are **evidence and a starting point, not part of the install payload** — nothing here is
-reached by a skill, and `install_skills.py` does not copy `proposals/`.
+Supporting code for the GATE 4 proposal, which was **applied on 2026-08-23 and then deleted**, as an
+applied proposal is. Its argument and its evidence now live in that pull request and in
+`EXPORT-MANIFEST.md`; the part that generalizes lives in `_shared/checks/composition.py`, which both
+`slide-deck` and `education-video` run. These files are **evidence and a starting point, not part of
+the install payload** — nothing here is reached by a skill, and `install_skills.py` does not copy
+this directory.
 
 They came out of one 15-slide talk deck. Every rule they enforce exists because a human found the
 defect first.

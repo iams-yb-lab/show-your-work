@@ -54,8 +54,8 @@ did it, `#8`.
                     _shared/ for what more than one of them calls. This is the whole payload
 MAP.md              which files belong to which skill. Read this first
 references/         set aside, not deleted, and never installed — see references/README.md
-proposals/          skill text waiting for the user's exact phrase. Nothing else, and a
-                    proposal is deleted by the pull request that applies it
+proposals/          absent unless something is waiting. It holds skill text and nothing
+                    else, and the pull request that applies one deletes it
 MAINTENANCE.md      open items on this repository's own machinery, one line each
 feedback/           what the skills got wrong in real runs. lessons/ is reviewed and travels
                     with the skills; inbox/ is raw, per-machine, and stays here

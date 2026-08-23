@@ -53,6 +53,28 @@ not to run — their inputs were takes that never travelled. The other sixteen s
 those directories are cross-referenced from `VOICE-LOG.md`, `AUDIO-LOG.md` or each other,
 so they stayed.
 
+## slide-deck-gate4-toolkit/ — 40 KB
+
+The reference implementations that came back with the GATE 4 proposal, on 2026-08-23, after that
+proposal was applied and deleted: `mechcheck.js` (the four checks, written to run inside a built
+master), `run_mechcheck.py`, `render_slides.py`, `check_pptx_layout.py`, `deckcfg.py`,
+`render_pptx.ps1` and their README.
+
+**The part that generalizes is already in the skills.** Checks 3 and 4 — element collision, and
+clearance inside a diagram — were ported into `_shared/checks/composition.py`, with the tuned
+constants and a negative test, so `slide-deck` and `education-video` both run them. What is kept
+here is the original, unported form, because it is the evidence the tuning numbers came from.
+
+`check_pptx_layout.py` is the one piece with **no counterpart in the skills**, deliberately. GATE 4
+now asks for a mechanical check on any export that is a second implementation; the only deck in
+this repository rebuilds its PowerPoint as one full-bleed image per slide, so there is no second
+layout engine here to check and a ported copy would be code that had never been run. The next deck
+that builds a hand-editable rebuild should start from this file. It carries the 960-pt canvas
+constant that a 720-pt version got wrong.
+
+Its own README states the tuning numbers and the negative test. Nothing links here from a skill,
+and nothing may.
+
 ## SETUP-vendor-step-to-blender.md — 8 KB
 
 A verified vendor-STEP to Blender route: Mayo 0.10.0, FreeCAD 0.21.2, Blender 4.2.2, with

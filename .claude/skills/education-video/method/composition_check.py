@@ -9,7 +9,7 @@ looks right at every instant it is asked about — not just at t=0.
     python composition_check.py film.html --width 1920 --height 1080 \
         --expect-duration 270.349 --contact-sheet out/
 
-Six checks, in the order they hurt:
+Seven checks, in the order they hurt:
 
   contract     the export root exists, its box is exactly the authored size, and
                its duration attribute is present and matches the locked master
@@ -20,7 +20,17 @@ Six checks, in the order they hurt:
                perfect in a browser
   overflow     no visible element extends past the canvas, at any sampled instant
   font floor   no visible text renders below the floor the film agreed
+  overlap      nothing is drawn on top of anything else — words on words, words
+               on a picture, a picture on a picture — and inside a drawing no
+               line, curve or block edge crowds a word. This is the one that
+               catches the defect a viewer sees first and the source hides
   errors       no page error or failed console assertion while seeking
+
+A finding that holds at every sampled instant is reported once, at the first
+instant it appears, with a count of the later ones. A composition caught
+mid-transition can legitimately have two beats crossing; mark a layer that is
+meant to sit on another with `class="no-collide"` rather than reaching for a
+switch that turns the check off.
 
 Then it writes a contact sheet — a grid, never a single frame, because a lone
 frame can land between one beat clearing and the next building and read as a
@@ -221,17 +231,25 @@ def main() -> int:
         frames: list[Path] = []
         shots: dict[float, str] = {}
 
+        # A defect that is on screen for a whole scene is found at every instant that
+        # scene covers. Reporting it once, where it starts, keeps one bad label from
+        # filling the report and hiding the other nine.
+        first_seen: dict[str, list[float]] = {}
+
         for t in times:
             page.evaluate(SEEK, [EXPORT_SELECTOR, t])
-            found = composition_problems(page, EXPORT_SELECTOR, BOX_TOL, args.font_floor)
-            for f in found:
-                problems.append(f"t={t:.3f}s  {f}")
+            for f in composition_problems(page, EXPORT_SELECTOR, BOX_TOL, args.font_floor):
+                first_seen.setdefault(f, []).append(t)
             png = page.screenshot(type="png", clip=clip)
             shots[t] = hashlib.md5(png).hexdigest()
             if sheet_dir:
                 out = sheet_dir / f"t{t:09.3f}.png"
                 out.write_bytes(png)
                 frames.append(out)
+
+        for f, seen_at in first_seen.items():
+            more = f" and {len(seen_at) - 1} later instant(s)" if len(seen_at) > 1 else ""
+            problems.append(f"t={seen_at[0]:.3f}s{more}  {f}")
 
         # Determinism: return to each instant out of order and demand the same pixels.
         for t in reversed(times):
@@ -274,7 +292,8 @@ def main() -> int:
         if len(problems) > 40:
             print(f"  ... and {len(problems) - 40} more")
         return 1
-    print("\nOK — contract kept, self-contained, deterministic, nothing overflowing or too small")
+    print("\nOK — contract kept, self-contained, deterministic, nothing overflowing, too small "
+          "or drawn on top of anything else")
     return 0
 
 

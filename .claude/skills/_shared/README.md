@@ -5,7 +5,7 @@ this directory exists so a measurement has one answer instead of several.
 
 ```
 audio/    dsp, mix_audio, voice_chain, narrate, check_score
-checks/   the composition check: canvas overflow and the font-size floor
+checks/   the composition check: overflow, the font floor, overlap and clearance
 ```
 
 `_shared/` has no `SKILL.md`, so Claude Code does not discover it as a skill. It travels with the
@@ -25,7 +25,10 @@ Called by: `natural-voice` (method), `education-video` and `showoff-render` (the
 
 ## checks/
 
-`composition.py` — canvas overflow and the minimum on-screen font size, measured in headless Chrome.
+`composition.py` — canvas overflow, the minimum on-screen font size, anything drawn on top of
+anything else, and the clearance a word keeps from the geometry around it. Measured in headless
+Chrome, because all four failures are invisible in the source. `tools/test_composition_check.py`
+proves each one can fail before anyone trusts a green result.
 One implementation, one 28-pixel floor. Two callers wrap it and add their own medium's checks:
 `education-video/method/composition_check.py` adds determinism, offline behaviour, the duration
 attribute and a contact sheet; `slide-deck/examples/presentation/tools/render_check.py` adds

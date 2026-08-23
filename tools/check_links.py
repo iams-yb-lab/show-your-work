@@ -76,6 +76,18 @@ RECORDS = {k.replace("EV/", ".claude/skills/education-video/")
 
 FOREIGN = re.compile(r"[a-zA-Z]:[\\/]{1,2}temperature-controller", re.I)
 
+# A literal home directory is the same failure as a foreign checkout, one level up: it resolves on
+# exactly one machine and nowhere else, and it puts a person's account name in a public repository.
+# Enforced over the payload, because that is what travels to other people's machines. `<user>` is
+# the placeholder a redacted record keeps, so it is the one account segment that passes.
+HOME_LITERAL = re.compile(
+    r"(?:[a-zA-Z]:[\\/]{1,2}|/c/|/)(?:Users|home)[\\/]{1,2}(?!<user>)[a-zA-Z0-9_.-]+", re.I)
+PAYLOAD_DIR = ".claude/skills/"
+
+# Files whose subject *is* a path, so they carry ones that must never resolve. Not records: the
+# fake homes in them are the fixtures that prove friction.py's redaction refuses a real one.
+FIXTURES = {"tools/test_friction_route.py": "the redaction test's deliberately fake home paths"}
+
 # The load-bearing relative paths: (file containing the link, link as written in it).
 GEOMETRY = [
     (".claude/skills/natural-voice/SKILL.md", "method/README.md"),
@@ -187,7 +199,8 @@ def check_skills(fail, bless=False):
 
 
 def check_independence(fail):
-    """No live path may name another checkout. This repository stands on its own."""
+    """No live path may name another checkout, or one person's home. This repository stands on its
+    own, and everything in the payload runs on a machine that is not the one that wrote it."""
     for p in sorted(ROOT.rglob("*")):
         if not p.is_file():
             continue
@@ -201,13 +214,18 @@ def check_independence(fail):
         except (UnicodeDecodeError, OSError):
             continue
         name = r.as_posix()
-        if name in RECORDS or name == "tools/check_links.py":
+        if name in RECORDS or name in FIXTURES or name == "tools/check_links.py":
             continue
         for n, line in enumerate(text.splitlines(), 1):
             if FOREIGN.search(line):
                 fail("independence", f"{name}:{n}",
                      "names an absolute path into another checkout — make it relative, take it "
                      "from the environment, or declare the file a record in RECORDS")
+            if name.startswith(PAYLOAD_DIR) and (m := HOME_LITERAL.search(line)):
+                fail("independence", f"{name}:{n}",
+                     f"names one person's home directory ({m.group(0)}) — derive it from "
+                     f"Path.home() or $HOME, or redact the account name to <user> if the file "
+                     f"is a record of a run")
 
 
 def check_travel(fail):
@@ -282,7 +300,8 @@ def main(argv):
     if not failures:
         if not hook_mode:
             n = len(list(markdown_files()))
-            print(f"ok — geometry intact, skills unmodified, no path into another checkout, "
+            print(f"ok — geometry intact, skills unmodified, no path into another checkout "
+                  f"or anyone's home, "
                   f"payload self-contained, links resolve ({n} markdown files)")
         return 0
 

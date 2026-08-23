@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np, torch, soundfile as sf, librosa
 
-OUT = Path(r"C:\Users\iams1\AppData\Local\Temp\temperature-controller-media\kokoro")
+OUT = Path(r"C:\Users\<user>\AppData\Local\Temp\temperature-controller-media\kokoro")
 OUT.mkdir(parents=True, exist_ok=True)
 
 LINES = [

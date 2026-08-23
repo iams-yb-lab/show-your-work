@@ -23,10 +23,12 @@ import re
 import sys
 from pathlib import Path
 
-os.environ["PATH"] += os.pathsep + (
-    r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
-    r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin"
-)
+# winget installs ffmpeg outside the shell's PATH, so put it there. Derived from whoever is logged
+# in -- a literal account name is somebody else's home the moment this file travels. The glob covers
+# the version directory, which changes at every upgrade. See _shared/README.md.
+for _ffbin in sorted(Path.home().glob(
+        "AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg*/ffmpeg-*/bin")):
+    os.environ["PATH"] += os.pathsep + str(_ffbin)
 
 import numpy as np
 import librosa

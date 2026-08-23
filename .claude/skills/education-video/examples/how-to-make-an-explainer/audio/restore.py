@@ -29,7 +29,7 @@ import re
 import sys
 from pathlib import Path
 
-FFBIN = (r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
+FFBIN = (r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages"
          r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin")
 if Path(FFBIN).is_dir():
     os.environ["PATH"] += os.pathsep + FFBIN

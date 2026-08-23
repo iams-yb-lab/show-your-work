@@ -11,7 +11,7 @@ import re
 import subprocess
 from pathlib import Path
 
-FFBIN = (r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
+FFBIN = (r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages"
          r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin")
 FFMPEG = str(Path(FFBIN) / "ffmpeg.exe")
 os.environ["PATH"] += os.pathsep + FFBIN

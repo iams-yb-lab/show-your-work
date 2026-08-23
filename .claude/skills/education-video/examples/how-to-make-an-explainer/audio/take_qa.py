@@ -27,7 +27,7 @@ import librosa
 import numpy as np
 import soundfile as sf
 
-FFMPEG_BIN = (r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
+FFMPEG_BIN = (r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages"
               r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin")
 if Path(FFMPEG_BIN).is_dir():
     os.environ["PATH"] += os.pathsep + FFMPEG_BIN

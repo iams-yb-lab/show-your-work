@@ -12,7 +12,7 @@ from pathlib import Path
 
 import torch, torchaudio
 
-OUT = Path(r"C:\Users\iams1\AppData\Local\Temp\temperature-controller-media\chatterbox")
+OUT = Path(r"C:\Users\<user>\AppData\Local\Temp\temperature-controller-media\chatterbox")
 OUT.mkdir(parents=True, exist_ok=True)
 
 LINES = [

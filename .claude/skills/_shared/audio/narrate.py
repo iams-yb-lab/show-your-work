@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import re
 import shutil
 import subprocess
@@ -52,16 +53,22 @@ VOICES = {
 # for 84 seconds; holding one is a large part of why text-to-speech sounds like text-to-speech.
 RATE_WOBBLE = (-3, +2, -1, +3, -2, 0, +2, -3, +1, -2, +3)
 
-FFMPEG_HINT = (
-    r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages"
-    r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe"
-)
+# Where winget puts ffmpeg, relative to whoever is logged in. Never a literal account name: this
+# file travels to other people's machines, and the one it was written on is nobody else's home.
+WINGET_FFMPEG = "AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg*/ffmpeg-*/bin/ffmpeg.exe"
 
 
 def find_ffmpeg() -> str:
-    """winget installs ffmpeg outside the shell's PATH on this machine, so `which` finds
-    nothing and it looks absent. Check the known location before giving up."""
-    return shutil.which("ffmpeg") or (FFMPEG_HINT if Path(FFMPEG_HINT).exists() else "")
+    """The ffmpeg to use, or "" if there is none.
+
+    winget installs it outside the shell's PATH, so `which` finds nothing and it looks absent --
+    hence the second look under the current user's home. The glob covers the version directory,
+    which changes at every upgrade. $FFMPEG wins over both, for a machine that keeps it elsewhere."""
+    if (named := os.environ.get("FFMPEG", "").strip()) and Path(named).exists():
+        return named
+    if (found := shutil.which("ffmpeg")):
+        return found
+    return next((str(p) for p in sorted(Path.home().glob(WINGET_FFMPEG)) if p.exists()), "")
 
 
 def read_table(doc: Path):

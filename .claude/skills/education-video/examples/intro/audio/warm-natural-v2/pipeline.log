@@ -1,12 +1,12 @@
 
 
 [2026-08-13T12:05:59+08:00] regenerate-approved-untrimmed-performances
-C:\Users\iams1\AppData\Local\Temp\chatterbox-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\regenerate_selected_raw.py --repo C:\temperature-controller --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-raw-selected --prompt C:\temperature-controller\video\warm-natural-narrator-v2\voice-profile\warm_narrator_prompt.wav --legacy-dir C:\Users\iams1\.codex\visualizations\2026\08\12\019ff5e6-333c-7732-a44f-7daa05aa5c47\chatterbox-intro-context-warm
-C:\Users\iams1\AppData\Local\Temp\chatterbox-venv\Lib\site-packages\diffusers\models\lora.py:393: FutureWarning: `LoRACompatibleLinear` is deprecated and will be removed in version 1.0.0. Use of `LoRACompatibleLinear` is deprecated. Please switch to PEFT backend by installing PEFT: `pip install peft`.
+C:\Users\<user>\AppData\Local\Temp\chatterbox-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\regenerate_selected_raw.py --repo C:\temperature-controller --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-raw-selected --prompt C:\temperature-controller\video\warm-natural-narrator-v2\voice-profile\warm_narrator_prompt.wav --legacy-dir C:\Users\<user>\.codex\visualizations\2026\08\12\019ff5e6-333c-7732-a44f-7daa05aa5c47\chatterbox-intro-context-warm
+C:\Users\<user>\AppData\Local\Temp\chatterbox-venv\Lib\site-packages\diffusers\models\lora.py:393: FutureWarning: `LoRACompatibleLinear` is deprecated and will be removed in version 1.0.0. Use of `LoRACompatibleLinear` is deprecated. Please switch to PEFT backend by installing PEFT: `pip install peft`.
   deprecate("LoRACompatibleLinear", "1.0.0", deprecation_message)
 loaded PerthNet (Implicit) at step 250,000
 Chatterbox loaded; sample_rate=24000
-C:\Users\iams1\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+C:\Users\<user>\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
   self.gen = func(*args, **kwds)
 `sdpa` attention does not support `output_attentions=True`. Please set your attention to `eager` if you want any of these features.
 
@@ -3233,17 +3233,17 @@ DONE: 23 approved raw performances reconstructed
 
 
 [2026-08-13T12:17:09+08:00] align-with-protected-endings
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\align_preserve_endings.py --repo C:\temperature-controller --raw C:\temperature-controller\video\warm-natural-narrator-v2\voice-raw-selected --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-aligned-24k --reference-manifest C:\temperature-controller\video\warm-natural-narrator-v2\reference\approved-manifest-v1.json
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\align_preserve_endings.py --repo C:\temperature-controller --raw C:\temperature-controller\video\warm-natural-narrator-v2\voice-raw-selected --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-aligned-24k --reference-manifest C:\temperature-controller\video\warm-natural-narrator-v2\reference\approved-manifest-v1.json
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
   warnings.warn(
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
   warnings.warn(
 cue 01: group 01/1; WER=0.000; protected tail=0.615s
 cue 02: group 01/1; WER=0.000; protected tail=0.555s
 cue 03: group 01/1; WER=0.000; protected tail=0.480s
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
   warnings.warn(
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
   warnings.warn(
 cue 04: group 02/3; WER=0.000; protected tail=0.595s
 cue 05: group 02/3; WER=0.167; protected tail=1.155s
@@ -3305,17 +3305,17 @@ RuntimeError: Alignment gate failed: [13]
 
 
 [2026-08-13T12:20:02+08:00] align-with-protected-endings
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\align_preserve_endings.py --repo C:\temperature-controller --raw C:\temperature-controller\video\warm-natural-narrator-v2\voice-raw-selected --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-aligned-24k --reference-manifest C:\temperature-controller\video\warm-natural-narrator-v2\reference\approved-manifest-v1.json
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\align_preserve_endings.py --repo C:\temperature-controller --raw C:\temperature-controller\video\warm-natural-narrator-v2\voice-raw-selected --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-aligned-24k --reference-manifest C:\temperature-controller\video\warm-natural-narrator-v2\reference\approved-manifest-v1.json
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
   warnings.warn(
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
   warnings.warn(
 cue 01: group 01/1; WER=0.000; protected tail=0.615s
 cue 02: group 01/1; WER=0.000; protected tail=0.555s
 cue 03: group 01/1; WER=0.000; protected tail=0.480s
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:42: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower median kernel implementation...
   warnings.warn(
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Lib\site-packages\whisper\timing.py:146: UserWarning: Failed to launch Triton kernels, likely due to missing CUDA toolkit; falling back to a slower DTW implementation...
   warnings.warn(
 cue 04: group 02/3; WER=0.000; protected tail=0.595s
 cue 05: group 02/3; WER=0.167; protected tail=1.155s
@@ -3372,7 +3372,7 @@ DONE: 49 cues; minimum protected ending tail=0.440s
 
 
 [2026-08-13T12:20:36+08:00] speech-restoration
-C:\Users\iams1\AppData\Local\Temp\sr-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\superresolve_voice.py --src C:\temperature-controller\video\warm-natural-narrator-v2\voice-aligned-24k --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-restored-48k --checkpoint C:\temperature-controller\checkpoints\MossFormer2_SR_48K\do_03925000
+C:\Users\<user>\AppData\Local\Temp\sr-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\superresolve_voice.py --src C:\temperature-controller\video\warm-natural-narrator-v2\voice-aligned-24k --out C:\temperature-controller\video\warm-natural-narrator-v2\voice-restored-48k --checkpoint C:\temperature-controller\checkpoints\MossFormer2_SR_48K\do_03925000
 Running MossFormer2_SR_48K ...
 
   0%|          | 0/1 [00:00<?, ?it/s]
@@ -3671,7 +3671,7 @@ DONE: 36/49 restored
 
 
 [2026-08-13T12:23:56+08:00] happy-welcoming-major-key-score
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\make_happy_music.py --out C:\temperature-controller\video\warm-natural-narrator-v2\music\happy-welcoming-major-key.wav --duration 338.1
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\make_happy_music.py --out C:\temperature-controller\video\warm-natural-narrator-v2\music\happy-welcoming-major-key.wav --duration 338.1
 {
   "path": "C:\\temperature-controller\\video\\warm-natural-narrator-v2\\music\\happy-welcoming-major-key.wav",
   "duration": 338.1,
@@ -3688,7 +3688,7 @@ C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-c
 
 
 [2026-08-13T12:24:03+08:00] mix-master-and-stream-copy-video
-C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\mix_master_mux.py --voice C:\temperature-controller\video\warm-natural-narrator-v2\voice-restored-48k --music C:\temperature-controller\video\warm-natural-narrator-v2\music\happy-welcoming-major-key.wav --video C:\temperature-controller\video\warm-natural-narrator-v2\reference\Temperature Controller Intro 1080p.source.mp4 --work C:\temperature-controller\video\warm-natural-narrator-v2\mix --audio-out C:\temperature-controller\video\warm-natural-narrator-v2\Temperature Controller Intro - Warm Natural Narration v2.wav --video-out C:\temperature-controller\video\warm-natural-narrator-v2\Temperature Controller Intro 1080p - Warm Natural Narration v2.mp4
+C:\Users\<user>\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-controller\video\warm-natural-narrator-v2\mix_master_mux.py --voice C:\temperature-controller\video\warm-natural-narrator-v2\voice-restored-48k --music C:\temperature-controller\video\warm-natural-narrator-v2\music\happy-welcoming-major-key.wav --video C:\temperature-controller\video\warm-natural-narrator-v2\reference\Temperature Controller Intro 1080p.source.mp4 --work C:\temperature-controller\video\warm-natural-narrator-v2\mix --audio-out C:\temperature-controller\video\warm-natural-narrator-v2\Temperature Controller Intro - Warm Natural Narration v2.wav --video-out C:\temperature-controller\video\warm-natural-narrator-v2\Temperature Controller Intro 1080p - Warm Natural Narration v2.mp4
 {
   "source_video": "C:\\temperature-controller\\video\\warm-natural-narrator-v2\\reference\\Temperature Controller Intro 1080p.source.mp4",
   "final_audio": "C:\\temperature-controller\\video\\warm-natural-narrator-v2\\Temperature Controller Intro - Warm Natural Narration v2.wav",
@@ -4173,8 +4173,8 @@ C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe C:\temperature-c
 
 
 [2026-08-13T12:25:47+08:00] full-decode-verification
-C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe -v error -i C:\temperature-controller\video\warm-natural-narrator-v2\Temperature Controller Intro 1080p - Warm Natural Narration v2.mp4 -map 0:v:0 -map 0:a:0 -f null -
+C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe -v error -i C:\temperature-controller\video\warm-natural-narrator-v2\Temperature Controller Intro 1080p - Warm Natural Narration v2.mp4 -map 0:v:0 -map 0:a:0 -f null -
 
 
 [2026-08-13T12:57:23+08:00] full-decode-verification
-C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe -v error -i C:\temperature-controller\video\out\releases\Temperature Controller Intro 1080p - Warm Natural Narration v2.mp4 -map 0:v:0 -map 0:a:0 -f null -
+C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe -v error -i C:\temperature-controller\video\out\releases\Temperature Controller Intro 1080p - Warm Natural Narration v2.mp4 -map 0:v:0 -map 0:a:0 -f null -

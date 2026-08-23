@@ -9,8 +9,8 @@ so the picture stays MD5-identical.
 import json, os, subprocess, sys
 from pathlib import Path
 
-FF = r"C:\Users\iams1\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe"
-MEDIA = Path(r"C:\Users\iams1\AppData\Local\Temp\temperature-controller-media")
+FF = r"C:\Users\<user>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0-full_build\bin\ffmpeg.exe"
+MEDIA = Path(r"C:\Users\<user>\AppData\Local\Temp\temperature-controller-media")
 CB = MEDIA / (sys.argv[1] if len(sys.argv) > 1 else "chatterbox")
 # The silent picture to mux against. No default: naming one project's render is what made this
 # script unusable anywhere else. Set SHOWOFF_PICTURE to your own file.

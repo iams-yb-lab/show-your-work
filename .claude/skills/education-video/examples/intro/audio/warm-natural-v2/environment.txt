@@ -1,5 +1,5 @@
 [chatterbox]
-python=C:\Users\iams1\AppData\Local\Temp\chatterbox-venv\Scripts\python.exe
+python=C:\Users\<user>\AppData\Local\Temp\chatterbox-venv\Scripts\python.exe
 Python 3.12.9
 addict==2.4.0
 aiofiles==24.1.0
@@ -156,7 +156,7 @@ wrapt==2.3.0
 zipp==4.1.0
 
 [alignment-and-mix]
-python=C:\Users\iams1\AppData\Local\Temp\editx-venv\Scripts\python.exe
+python=C:\Users\<user>\AppData\Local\Temp\editx-venv\Scripts\python.exe
 Python 3.12.9
 accelerate==1.14.0
 addict==2.4.0
@@ -324,7 +324,7 @@ wrapt==2.3.0
 zipp==4.1.0
 
 [speech-restoration]
-python=C:\Users\iams1\AppData\Local\Temp\sr-venv\Scripts\python.exe
+python=C:\Users\<user>\AppData\Local\Temp\sr-venv\Scripts\python.exe
 Python 3.12.9
 addict==2.4.0
 aiofiles==24.1.0

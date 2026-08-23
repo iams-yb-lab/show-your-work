@@ -2,7 +2,7 @@
   "text": "Hi, thanks for taking a look. This is a project we're building together, and in the next few minutes I'll show you what it does, why it matters, and where you can help.",
   "chosen": {
     "take": 2,
-    "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take2.wav",
+    "path": "C:\\Users\\<user>\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take2.wav",
     "duration": 7.441333333333334,
     "wer": 0.0,
     "f0": 107.52715702943429,
@@ -15,7 +15,7 @@
   "takes": [
     {
       "take": 1,
-      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take1.wav",
+      "path": "C:\\Users\\<user>\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take1.wav",
       "duration": 8.06,
       "wer": 0.0,
       "f0": 122.804867039613,
@@ -27,7 +27,7 @@
     },
     {
       "take": 2,
-      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take2.wav",
+      "path": "C:\\Users\\<user>\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take2.wav",
       "duration": 7.441333333333334,
       "wer": 0.0,
       "f0": 107.52715702943429,
@@ -39,7 +39,7 @@
     },
     {
       "take": 3,
-      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take3.wav",
+      "path": "C:\\Users\\<user>\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take3.wav",
       "duration": 7.633333333333334,
       "wer": 0.0,
       "f0": 121.3943328362307,
@@ -51,7 +51,7 @@
     },
     {
       "take": 4,
-      "path": "C:\\Users\\iams1\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take4.wav",
+      "path": "C:\\Users\\<user>\\.codex\\visualizations\\2026\\08\\12\\019ff5e6-333c-7732-a44f-7daa05aa5c47\\warm_prompt_take4.wav",
       "duration": 7.292,
       "wer": 0.0,
       "f0": 120.0,

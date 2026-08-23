@@ -42,6 +42,28 @@ does. The rationale, the evidence it argues from and what it deliberately leaves
 that applied it and in its pull request; the proposal itself was deleted on 2026-08-23, once nothing
 read-only named it any more.
 
+On 2026-08-23 the user authorized, with the exact phrase, the removal of one machine's account name
+from the skills. It stood 105 times across 33 files as `C:\Users\<the account>\...`, in a
+repository that is now public, and `CLAUDE.md` calls a hardcoded path a bug in its own right.
+
+Three of those files are live, and were fixed rather than redacted.
+`_shared/audio/narrate.py` resolves ffmpeg by `$FFMPEG`, then `shutil.which`, then a glob under
+`Path.home()` — so it also survives the ffmpeg upgrade that the pinned version directory would not.
+`natural-voice/profiles/deep-onyx-slow/make_prompt.py` puts that same glob on `PATH`.
+`education-video/method/README.md` stops telling a reader to prepend somebody else's home directory.
+
+Everything else is a record of a run — logs, generated reports, take selections, and the scripts
+`MAP.md` and `_shared/README.md` name as records to read and not to run. Rewriting one of those to
+look tidy would make it false, so **only the account segment was replaced, with `<user>`**. Nothing
+else in them moved: the versions, timings, measurements and warnings they are kept for read exactly
+as they did.
+
+**No hashed file changed**, so `tools/skill-hashes.txt` is untouched and the seven files it verifies
+are still byte-identical to the source repository. The payload's other files now differ from the
+source wherever they carried that account name. `tools/check_links.py` gained the rule that keeps it
+that way: inside the payload, a literal home directory fails the independence check, and `<user>` is
+the one account segment it accepts.
+
 Two tools were added to `video/picture/` for the new gates: `composition_check.py` (the GATE 5 check —
 export contract, canvas size, offline, determinism, overflow, font floor, contact sheet) and
 `deliver_film.py` (the GATE 6 mux, the switchable subtitle track and its verification). Both travel

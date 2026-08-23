@@ -85,3 +85,8 @@ Entries are the **only** sanctioned route to changing a skill. A `proposals/` do
 them — how often, at which gate, what it cost — and the user types the exact phrase, or the skill
 does not change. A proposal with no entries behind it is someone's taste, which is precisely what
 the read-only rule exists to keep out.
+
+A proposal is opened only when the user asks for one, and the pull request that applies it deletes
+it: the rationale then lives in the commit message, where a reviewer looks for it. `proposals/` is
+skill text awaiting the phrase and nothing else — see `../CLAUDE.md`. Everything about the tooling
+and these rules is one line in `../MAINTENANCE.md` instead.

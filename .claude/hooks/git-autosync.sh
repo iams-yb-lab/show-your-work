@@ -7,8 +7,11 @@
 #     as a pull request, admins included, so a session that commits on `main` is
 #     told how to turn that into a branch rather than having it pushed for it.
 #     There is no bypass: the point of the rule is that it binds the people who
-#     could grant themselves one. GitHub cannot enforce this yet (private repo,
-#     free org plan -> no rulesets), so this hook is the enforcement.
+#     could grant themselves one. GitHub is not enforcing it yet — the repo went
+#     public on 2026-08-21 so rulesets became available, but creating one needs an
+#     admin and nobody has (MAINTENANCE.md). Until then this hook is the whole
+#     enforcement. The companion is .claude/hooks/one-pr.py, which keeps the number
+#     of open pull requests at one.
 #   - WARNS about an uncommitted tree; never commits it. Real commits with real
 #     messages are Claude's job at meaningful checkpoints (see CLAUDE.md), so
 #     this stays out of the history.

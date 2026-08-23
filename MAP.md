@@ -39,7 +39,8 @@ it as a skill.
 | [`tools/`](tools/) | this repository's own machinery, which no skill calls: `install_skills.py`, `update.py`, `check_links.py`, `friction.py`, `skill-hashes.txt` |
 | [`references/`](references/) | set aside, not yet deleted — see [`references/README.md`](references/README.md) |
 | [`feedback/`](feedback/) | `lessons/<skill>.md` is injected at the start of a run of that skill; `inbox/` is raw and stays on this machine |
-| [`proposals/`](proposals/) | one document per authorised change to a skill |
+| [`proposals/`](proposals/) | skill text waiting for the user's exact phrase, and nothing else. The pull request that applies one deletes it |
+| [`MAINTENANCE.md`](MAINTENANCE.md) | open items on this repository's own machinery — the tooling, the checks, the hooks, the rules. One line each, deleted when done |
 
 ## What travels, and what does not
 
@@ -50,7 +51,7 @@ it, at `_shared/tools/` and `_shared/feedback/lessons/`.
 - **Travels:** every skill folder whole — instructions, methods, profiles and examples —
   plus `_shared/`, the four tools, `feedback/lessons/` and `LICENSE`.
 - **Does not travel:** `references/`, `proposals/`, `feedback/inbox/`, this file,
-  `README.md`, `CLAUDE.md`, `EXPORT-MANIFEST.md`.
+  `README.md`, `CLAUDE.md`, `EXPORT-MANIFEST.md`, `MAINTENANCE.md`.
 
 `examples/` travels deliberately. It is small now that the media has gone, and
 `natural-voice`'s method links a file inside `showoff-render/examples/` — the record of

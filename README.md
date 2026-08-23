@@ -44,8 +44,8 @@ Only what more than one skill calls is shared, in
 `technical-report` and `slide-deck` contain no paths at all, and `technical-report` owns nothing
 beyond its instructions, which [`MAP.md`](MAP.md) says out loud so nobody goes looking.
 
-This layout replaced a top-level `video/` tree on 2026-08-22; the case is in
-[`proposals/one-folder-per-skill.md`](proposals/one-folder-per-skill.md).
+This layout replaced a top-level `video/` tree on 2026-08-22; the case is in the pull request that
+did it, `#8`.
 
 ## Layout
 
@@ -54,7 +54,9 @@ This layout replaced a top-level `video/` tree on 2026-08-22; the case is in
                     _shared/ for what more than one of them calls. This is the whole payload
 MAP.md              which files belong to which skill. Read this first
 references/         set aside, not deleted, and never installed — see references/README.md
-proposals/          why the skills were changed, one record per authorized edit
+proposals/          skill text waiting for the user's exact phrase. Nothing else, and a
+                    proposal is deleted by the pull request that applies it
+MAINTENANCE.md      open items on this repository's own machinery, one line each
 feedback/           what the skills got wrong in real runs. lessons/ is reviewed and travels
                     with the skills; inbox/ is raw, per-machine, and stays here
 tools/              install_skills.py, check_links.py, friction.py, update.py — this

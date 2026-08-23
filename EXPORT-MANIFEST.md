@@ -22,7 +22,8 @@ different skill. Verified by `tools/check_links.py`, which reads `tools/skill-ha
 On 2026-08-17 the user authorized, with the exact phrase, a rewrite of
 `.claude/skills/showoff-render/SKILL.md`: the run protocol from `education-video` (interview,
 posted checklist, named gates, user-owned approvals) wrapped around the existing rules, which
-carried word-for-word. The design and its rationale are in `proposals/showoff-render-wrapper.md`.
+carried word-for-word. The design and its rationale are in the commit that applied it, `5e7590e`,
+and the proposal it was written from, `541b0f9`.
 New hash `8abf7da6eed3dc44`, blessed into `tools/skill-hashes.txt`. **This copy now leads the
 source repository** — the same edit still needs to land at the source, at which point the two are
 byte-identical again.
@@ -53,8 +54,8 @@ On 2026-08-18 the user authorized, with the exact phrase, the creation of a four
 background but no project context, distilled from the source project's design report
 (`docs/design-report-v2.md` there, cited as history, never as a live path). It originates in this
 repository and has no source-repository counterpart to be byte-identical to. The analysis behind
-it, the pipeline rationale and the two-reviewer verification record are in
-[`proposals/technical-report-skill.md`](proposals/technical-report-skill.md). It links to
+it, the pipeline rationale and the two-reviewer verification record are in the commit that created
+it, `5e7590e`, and the proposal it was written from, `541b0f9`. It links to
 nothing — the first skill with no `video/` dependency. Hash `e751dcf302480871`, blessed into
 `tools/skill-hashes.txt`.
 
@@ -65,7 +66,8 @@ skill that links to nothing**, so it travels alone. Unlike every other skill in 
 it was **not distilled from a produced artifact** — there is no reference deck; it carries the
 three gate-run siblings' protocol and states its slide craft as method rather than measurement,
 and it says so about itself. The proposal, the pipeline rationale and the two-reviewer
-verification record are in [`proposals/slide-deck-skill.md`](proposals/slide-deck-skill.md);
+verification record are in the commit that created it, `5e7590e`, and the proposal it was written
+from, `541b0f9`;
 the first deck it produces is its first evidence, and that evidence stays with the deck. Hash
 `1ecd48bc86bef336`, blessed into `tools/skill-hashes.txt`.
 
@@ -156,8 +158,8 @@ Honest limits, so nobody discovers them mid-task:
 
 The `video/` tree described throughout the sections above **no longer exists**. Everything a skill
 owns now sits inside that skill's own folder under `.claude/skills/`, and only what more than one
-skill calls is shared, at `_shared/`. The argument, and every path rewritten, is in
-[`proposals/one-folder-per-skill.md`](proposals/one-folder-per-skill.md); the current map is
+skill calls is shared, at `_shared/`. The argument, and every path rewritten, is in the pull request
+that did it, `#8`; the current map is
 [`MAP.md`](MAP.md). Read the tables above as history: they record what came out of
 `temperature-controller` and where it landed *then*.
 

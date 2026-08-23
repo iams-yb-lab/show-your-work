@@ -8,6 +8,11 @@ Three design questions were put in a question window before anything was written
 *MP4 with a soft `mov_text` track plus the sidecar `.srt`*, and *six gates — the picture approved
 silent, then the film*. This document is the record and the rationale.
 
+**Why this one survived being applied.** An applied proposal is deleted by the pull request that
+applies it. This one stays because `.claude/skills/education-video/method/README.md` names it by
+path and that file is read-only, so deleting it would put a dangling reference inside a file no
+session may edit. Nothing else here has that excuse — see `CLAUDE.md`.
+
 ## Why
 
 The old GATE 5 was a paste. Its last deliverable was one self-contained prompt, the user copied it

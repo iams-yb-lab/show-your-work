@@ -24,8 +24,9 @@ decision>" when it is not needed yet. Then stop.
   you* and nowhere else.
 - **Keep a problem I have now apart from maintenance I might want later.**
 - **Sources survive in plain English** — "the render log from the showoff film", never a bare path.
-- **Never put a proposal about this system in chat.** A skill change, the tooling, the checks and
-  these rules go to `proposals/`, with the friction entries that would settle them.
+- **Never put a proposal about this system in chat.** The tooling, the checks and these rules go to
+  [`MAINTENANCE.md`](MAINTENANCE.md) as one line, not as a new document. A skill change goes to
+  `proposals/` — and only when I have asked for it.
 
 **This governs reporting work; it does not govern answering a question.** Asked what a skill does or
 where something stands, I want the whole picture — unfinished, unverified and awkward included. A
@@ -101,6 +102,22 @@ This is also the only sanctioned route to changing a skill: a `proposals/` docum
 entries — how often, at which gate, what it cost — and then the user types the exact phrase. A
 proposal with no entries behind it is taste, which is what the read-only rule exists to keep out.
 
+## IMPORTANT: `proposals/` holds one thing, and empties itself
+
+A proposal is **skill text waiting for the exact phrase** — the argument, the evidence, and the
+block that will become `.claude/skills/**`. That is its whole job. Three rules keep the directory
+from becoming a graveyard:
+
+- **Do not open one unless I asked.** Anything about the tooling, the checks, the hooks or these
+  rules is a line in [`MAINTENANCE.md`](MAINTENANCE.md), not a document. A thought you had while
+  working is a line there too.
+- **The pull request that applies a proposal deletes it.** The rationale then lives in the commit
+  message and the pull request, which is where a reviewer will actually look for it. Do not leave
+  behind a file stamped APPLIED; that is the accumulation this rule exists to stop.
+- **A proposal a read-only skill names by path stays**, because removing it would put a dangling
+  reference inside a file you are not allowed to edit. `education-video`'s method does this. It is
+  the only reason to keep an applied one, and it is not a general excuse.
+
 ## IMPORTANT: every change arrives as a pull request
 
 Nothing is pushed to `main`. Not by me, not by an admin, not by a session that only fixed a typo.
@@ -108,13 +125,25 @@ Work happens on a branch, the branch becomes a pull request, and the merge is de
 reviewing it together. **There is no bypass, because the rule exists to bind the people who could
 grant themselves one.**
 
-GitHub is not what enforces this. The repository is private on a free org plan, where rulesets and
-branch protection are unavailable, so the enforcement is `.claude/hooks/git-autosync.sh`: on the
-default branch it pushes nothing and tells you the three commands that turn your commits into a
-branch. On any other branch it behaves as it always did.
+GitHub is not what enforces this. The repository went public on 2026-08-21, so rulesets became
+available, but creating one needs an admin and nobody has — it is an open item in
+[`MAINTENANCE.md`](MAINTENANCE.md). Until then the enforcement is `.claude/hooks/git-autosync.sh`:
+on the default branch it pushes nothing and tells you the three commands that turn your commits
+into a branch. On any other branch it behaves as it always did.
 
 So: **branch before the first commit of a session.** Landing commits on `main` is not a disaster —
 they simply sit there until someone moves them — but it is a step you then have to undo by hand.
+
+**One open pull request at a time.** I can review one thing well and two things badly, so a second
+one is not throughput, it is a queue I did not ask for. If work is open, add to that branch or wait
+for it to merge; never open a second pull request because the new work "is unrelated". Enforced by
+`.claude/hooks/one-pr.py`, a `PreToolUse` hook that refuses `gh pr create` while another is open —
+including one opened by a session weeks ago that everyone forgot. If the refusal is wrong, say so
+and let me decide; do not route around it.
+
+**Say what the branch is for before you commit to it.** A branch that collects five unrelated
+changes becomes a pull request nobody can review as one decision — which is how #8 ended up
+carrying eleven commits and swallowing four other branches.
 
 The friction loop already worked this way and is unchanged: `friction/<host>` and one standing pull
 request per machine, never a direct push.

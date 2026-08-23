@@ -281,8 +281,9 @@ and tells you what it left behind. `--uninstall --check` shows you first.
 ## Staying current
 
 A session started in this project checks GitHub for a newer version of the skills and installs it,
-through `tools/update.py` in here. It fast-forwards only, never touches your own files in here, and
-says nothing when there is nothing to do. `SHOW_YOUR_WORK_UPDATE=off` in the environment stops it on
+through `tools/update.py` in here. It updates from the lab itself — named in the tool, so a fork
+that has fallen behind cannot hand you its stale copy — fast-forwards only, never touches your own
+files in here, and says nothing when there is nothing to do. `SHOW_YOUR_WORK_UPDATE=off` in the environment stops it on
 this machine; removing its SessionStart hook from `.claude/settings.json` stops it for the project.
 
 ## The two directories inside

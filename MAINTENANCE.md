@@ -51,16 +51,3 @@ Found by running the composition check against it: "PRECISION TEMPERATURE CONTRO
 inherits. They are visible in the frame, so the finding is real. Either the film's furniture is
 exempt from the floor and the check should say so, or that example needs a rebuild. Waits on the
 user, because it is a question about what the floor is for.
-
-### Nothing. `origin` carries `main` and the branch in review, and no more.
-
-Cleared 2026-08-23. Four of the branches thought to be stale had already been deleted; the local
-remote-tracking refs were out of date, which is worth knowing next time — `git fetch --prune`, not
-`git fetch`, before believing `git branch -r`.
-
-### `update.py` trusts `origin` the way `flush` used to
-
-`friction.py` now anchors on the lab by name and routes by fork, so a `pull`-only sender delivers.
-`update.py` still asks whichever remote it happens to find, so a project installed from a fork that
-has fallen behind updates its skills from the fork and not from the lab, silently. Same misplaced
-trust, one file over, and the same fix: name the lab. Waits on nobody — it is small, and next.

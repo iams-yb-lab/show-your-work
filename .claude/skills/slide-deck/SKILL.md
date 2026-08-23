@@ -211,6 +211,13 @@ Each slide's script carries four things:
 term taught before any headline spends it; every trace pointing where it says; the flip test
 still passing.
 
+**Diagrams are the default and images are the exception.** A drawn diagram of structure beats a
+photograph for most of what a technical deck must explain and never waits on someone finding a
+file. When an image genuinely is needed, search for it — the project's own files first — before
+asking the user for anything, and close the act with **the asset list as a named output**: what
+was found, with paths, separated from what is still missing and what each missing one must show.
+The user should only ever be asked for what could not be found.
+
 Close each act with its location and one question, and repost the storyline with finished acts
 ticked, so progress is visible inside the gate.
 
@@ -219,9 +226,35 @@ ticked, so progress is visible inside the gate.
 **The master is one self-contained HTML file**: every slide on the same fixed canvas at the
 GATE 0 aspect ratio, fonts and images embedded, no external requests, and it plays from a
 double-click. Headlines land byte-identical to the approved scripts. Every chart is generated
-from the numbers it plots, never drawn to look right. Nothing renders below the GATE 0
-font-size floor and nothing overflows its slide — build these checks like the cross-check
-below: early, cheap, and never eyeballed.
+from the numbers it plots, never drawn to look right.
+
+**The mechanical checks are four, not two, and the cheap two find almost nothing.** Build all
+four early, run them on every build, and never eyeball what they cover:
+
+1. **Font floor** — nothing renders below the GATE 0 floor. Text inside a scaled diagram is
+   measured at its *scaled* size, because that is what the room sees.
+2. **Slide overflow** — nothing renders outside the canvas.
+3. **Element collision** — no two figures, diagrams, cards or tiles overlap each other. This is
+   what catches fixed-width artwork dropped into a narrower column, which lands silently on
+   whatever sits beside it.
+4. **Clearance inside every diagram** — no line, curve or shape edge comes near a word. State
+   this as *clearance, not contact*: "not touching" still reads as cramped, and a reader will
+   say so. Margins are per-axis, because the two directions are not the same problem — a
+   two-line label in a short block is normal, a label almost against a side edge is the defect
+   the eye catches first. A label fully inside its own block is correct; one straddling that
+   block's edge is not. For strokes, walk the geometry point by point — a diagonal line's
+   bounding box covers half a diagram.
+
+**Prove each check can fail before trusting it.** Inject a deliberate defect into a scratch copy,
+confirm the check reports it, remove the injection. A check that has only ever passed is not
+evidence, and reporting its green result as "the slides are sound" is a false claim about work
+you have not done.
+
+**Then look at the pictures.** Render every slide to an image and read the images, every build.
+The checks and a pair of eyes catch different things: a checker finds crossings and collisions a
+reader skims past, and a reader finds what is legal but ugly — a caption wrapped four lines deep
+in a narrow box, a photograph left in portrait on a landscape slide when it could simply have
+been rotated. Neither pass replaces the other, and a green check is not a reviewed slide.
 
 **A talk deck's speaker notes live in the master**, each marked as a note, and the master
 renders without them — the notes-free rendering is what the room sees, what every export
@@ -236,8 +269,28 @@ surface here, not on the projector. Never eyeball that agreement.
 PowerPoint is whichever kind GATE 0 agreed. An edit lands in the master and the exports are
 rebuilt — an export edited by hand is a second deck that will drift.
 
-Close with the master and the chosen export by absolute path; ask the user to open the master
-full screen on the machine it will actually play from — a deck that sits right in a browser
+**An export that is a second implementation gets a mechanical check of its own.** A
+hand-editable PowerPoint rebuild has its own layout engine, so the master's checks cannot see
+its defects: read the geometry back out of the saved file and test bounds, collisions and the
+font floor there too, estimating wrapped-text height pessimistically because a rebuilt file
+cannot be measured the way a browser measures. Say plainly which renderer the user is getting,
+and that **a rebuild does not carry its fonts** — on a machine without the typeface it
+substitutes, while the master embeds them.
+
+**The build is one named command chain, written down where the deck's files live.** Every
+derived artifact comes after the thing it derives from — diagrams rendered before the rebuild
+that inserts them, checks after the build that produces the file they read. Re-running the whole
+chain must be cheaper than remembering which parts to re-run, because the one step skipped is
+the step that ships a stale figure while every check still passes.
+
+**Tooling written to be reused is run against the finished deck before it is called done.** The
+completed artifact is the fixture: on the deck this gate was written from, running the
+generalized copies against a deck that had already passed found a units bug in the new code
+within one command, which reading it had not revealed.
+
+Close with the master and the chosen export by absolute path, and say which checks ran and what
+they cover — never let a green result stand in for "this looks right". Ask the user to open the
+master full screen on the machine it will actually play from — a deck that sits right in a browser
 window can still clip on the projector — and to open the export the way its recipient will,
 because a print can split a slide the master shows whole. One question covers both: does every
 slide sit right?

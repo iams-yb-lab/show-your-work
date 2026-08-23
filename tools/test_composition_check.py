@@ -5,8 +5,9 @@ A mechanical check that has only ever passed is not evidence. This builds one cl
 1920x1080 composition, confirms every check is silent on it, then injects exactly one
 deliberate defect at a time and confirms the right check catches each — text on text,
 text on a picture, a picture on a picture, a word crossed by a line, a word flush to
-the edge of its own block, a word crowded by a mark, something past the canvas, and
-text below the font floor.
+the edge of its own block, a word crowded by a mark, something past the canvas,
+text below the font floor, and a word that is only too small once its diagram is
+scaled.
 
     python tools/test_composition_check.py            # all cases
     python tools/test_composition_check.py --keep     # leave the fixtures to look at
@@ -123,6 +124,13 @@ CASES = [
      lambda b: b.replace('id="rule" x1="40" y1="260" x2="1160" y2="260"',
                          'id="rule" x1="40" y1="320" x2="1160" y2="320"'),
      "crossed by a line"),
+    ("a word crossed by a polygon edge",
+     # An arrowhead or a callout outline is a polygon, and its edges are shape edges
+     # like any other. The left edge of this one runs straight down through the word.
+     lambda b: b.replace("</svg>",
+                         '<polygon points="150,280 400,280 400,360 150,360" fill="none" '
+                         'stroke="#333333" stroke-width="3"/></svg>'),
+     "crossed by a shape edge"),
     ("a word flush to its block edge",
      lambda b: b.replace('id="inblock" x="60"', 'id="inblock" x="44"'),
      "against a rect edge"),
@@ -135,6 +143,12 @@ CASES = [
      lambda b: b.replace("</svg>\n</div>", "</svg>\n"
                          '<p class="extra" style="left:1800px;top:1000px;width:400px">past the edge</p>\n</div>'),
      "overflow:"),
+    ("a word small only once scaled",
+     # 32px authored inside a viewBox squeezed to half its width is 16px on the wall,
+     # and the computed style still says 32. The floor is about what the room sees.
+     lambda b: b.replace('<svg id="draw" width="1200" height="360"',
+                         '<svg id="draw" width="600" height="180"'),
+     "font 16.0px"),
     ("text below the font floor",
      lambda b: b.replace("</svg>\n</div>", "</svg>\n"
                          '<p class="extra" style="left:100px;top:560px;font-size:20px">too small to read</p>\n</div>'),

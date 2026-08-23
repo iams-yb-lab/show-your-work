@@ -5,8 +5,8 @@
 `deliver_film.py` muxes the frames, the approved mix and a switchable subtitle track into the film.
 
 The composition used to come back from Claude Design as a bundle. Since 2026-08-22 `education-video`
-authors it here instead — the reason is written up in the source repository's
-`proposals/education-video-self-delivered-film.md`, which does not travel with this tree.
+authors it here instead — the reason, the evidence and what it deliberately left alone are in the
+commit that applied it, and in the pull request that carried it.
 The exporter does not care which: it renders any page that honours its seek protocol, and the two
 Claude Design bundles in `../education/` still render exactly as they did.
 

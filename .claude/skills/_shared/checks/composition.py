@@ -2,11 +2,12 @@
 """The rendered checks that every authored composition has to pass, in one place.
 
   1. nothing visible extends past the canvas
-  2. no visible text renders below the font floor
+  2. no visible text renders below the font floor, measured at the size it is
+     drawn — text inside a scaled diagram counts as what the room sees
   3. nothing is drawn on top of anything else — text on text, text on a picture,
      picture on a picture
-  4. inside a drawing, no line, curve or block edge comes within the clearance of
-     a word
+  4. inside a drawing, no line, curve, polygon edge or block edge comes within the
+     clearance of a word
 
 All four are measured in a real browser on the computed style, because all four
 failures are invisible in the source. A heading that fits at the author's zoom
@@ -71,6 +72,10 @@ JS_CHECK = """
   if (!root) return ['the canvas ' + selector + ' is not in the page'];
   const problems = [];
   const sr = root.getBoundingClientRect();
+  // The canvas may itself be CSS-scaled to fit a window. offsetWidth is the authored
+  // width, the client rect is the drawn one, so this puts every measurement back into
+  // the units the font floor was agreed in.
+  const rootScale = root.offsetWidth ? (sr.width / root.offsetWidth) : 1;
   // checkVisibility walks the ancestors. getComputedStyle(el).opacity is the element's
   // OWN opacity, so a whole beat faded out by its parent measured as if it were on
   // screen — which is how a film's every scene appeared to be stacked on every other.
@@ -97,7 +102,17 @@ JS_CHECK = """
     }
     const hasText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
     if (hasText) {
-      const fs = parseFloat(cs.fontSize);
+      let fs = parseFloat(cs.fontSize);
+      // Text inside a drawing is measured at its SCALED size, because that is what the
+      // room sees. An SVG with a viewBox maps its user units onto whatever width it is
+      // given, so 32px authored inside a diagram squeezed into half the width is 16px on
+      // the wall — and the computed style still says 32.
+      const svg = el.ownerSVGElement;
+      if (svg) {
+        const vb = svg.viewBox && svg.viewBox.baseVal;
+        const w = svg.getBoundingClientRect().width;
+        if (vb && vb.width && w) fs = fs * ((w / rootScale) / vb.width);
+      }
       if (fs < floor - 0.01) {
         problems.push('font ' + fs.toFixed(1) + 'px in <' + tag + '> "' +
                       el.textContent.trim().slice(0, 40) + '"');
@@ -311,22 +326,20 @@ JS_OVERLAP = """
         for (const o of texts) if (inside(halo(o.b), x, y)) flag(o.el, what);
       }
     };
-    for (const ln of svg.querySelectorAll('line')) {
-      if (ln.closest('defs') || !shown(ln)) continue;
-      const x1 = +ln.getAttribute('x1'), y1 = +ln.getAttribute('y1');
-      const x2 = +ln.getAttribute('x2'), y2 = +ln.getAttribute('y2');
-      const len = Math.hypot(x2 - x1, y2 - y1);
-      if (!len) continue;
-      walk(ln, (s) => ({x: x1 + (x2 - x1) * s / len, y: y1 + (y2 - y1) * s / len}), len,
-           'crossed by a line (needs ' + cfg.clearX + 'px clearance)');
-    }
-    for (const pt of svg.querySelectorAll('path')) {
-      if (pt.closest('defs') || !shown(pt)) continue;
+    // Every stroked geometry, walked the same way. A polygon and a polyline are shape
+    // edges too — an arrowhead or a callout outline is usually one — and they belong to
+    // neither the block rule above nor the path rule alone, which is how they went
+    // unchecked. All of these answer getTotalLength/getPointAtLength.
+    const CALLED = {line: 'a line', path: 'a curve',
+                    polygon: 'a shape edge', polyline: 'a shape edge'};
+    for (const g of svg.querySelectorAll('line, path, polygon, polyline')) {
+      if (g.closest('defs') || !shown(g)) continue;
       let len;
-      try { len = pt.getTotalLength(); } catch (e) { continue; }
-      if (!len) continue;
-      walk(pt, (s) => pt.getPointAtLength(s), len,
-           'crossed by a curve (needs ' + cfg.clearX + 'px clearance)');
+      try { len = g.getTotalLength(); } catch (e) { continue; }
+      if (!len || !isFinite(len)) continue;
+      walk(g, (s) => g.getPointAtLength(s), len,
+           'crossed by ' + (CALLED[g.tagName.toLowerCase()] || 'a shape edge') +
+           ' (needs ' + cfg.clearX + 'px clearance)');
     }
   }
   return out;

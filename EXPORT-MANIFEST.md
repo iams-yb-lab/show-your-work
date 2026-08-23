@@ -38,8 +38,9 @@ GATE 0 through GATE 4 are untouched; `interview.md` loses two Claude Design refe
 settled question, and `images.md` loses one. New hashes `85d0e2f11842b63f` (SKILL.md),
 `31fd7a97d918746e` (interview.md) and `9b30e8b1da0d596c` (images.md), blessed into
 `tools/skill-hashes.txt`. **These copies now lead the source repository**, as `showoff-render` already
-does. The rationale, the evidence it argues from and what it deliberately leaves alone are in
-[`proposals/education-video-self-delivered-film.md`](proposals/education-video-self-delivered-film.md).
+does. The rationale, the evidence it argues from and what it deliberately leaves alone are in the commit
+that applied it and in its pull request; the proposal itself was deleted on 2026-08-23, once nothing
+read-only named it any more.
 
 Two tools were added to `video/picture/` for the new gates: `composition_check.py` (the GATE 5 check —
 export contract, canvas size, offline, determinism, overflow, font floor, contact sheet) and
@@ -70,6 +71,31 @@ verification record are in the commit that created it, `5e7590e`, and the propos
 from, `541b0f9`;
 the first deck it produces is its first evidence, and that evidence stays with the deck. Hash
 `1ecd48bc86bef336`, blessed into `tools/skill-hashes.txt`.
+
+On 2026-08-23 the user authorized, with the exact phrase, a change to
+`.claude/skills/slide-deck/SKILL.md`: **GATE 4's mechanical check is four checks, not two**, and the
+geometry rule is stated as *clearance, not contact*. The two the skill named — font floor, slide
+overflow — find almost nothing, because a real layout defect is full-size text inside the canvas.
+The two added are **element collision** and **clearance inside every diagram**, per-axis, with the
+straddling-versus-contained distinction that makes the second usable. GATE 4 also now requires that
+each check be proven able to fail before it is trusted, that every slide be rendered and *looked at*,
+that an export which is a second implementation get a check of its own, that the build be one named
+command chain, and that reusable tooling be run against the finished deck. GATE 3 gains one
+paragraph: diagrams are the default, and the asset list is a named output. Four hunks, +59/-6 lines;
+everything else is byte-identical by construction, because the text was produced by applying the
+edits programmatically rather than retyping the file.
+
+The evidence is a 15-slide talk built with this skill elsewhere, which passed both stated checks and
+still reached its author with six layout defects on his first look at a screen. Tuning mattered more
+than the idea: a symmetric 12px clearance reported 54 findings on those 15 slides and nearly all were
+fine, while the per-axis rule reported 8, every one real. Old hash `1ecd48bc86bef336`, new hash
+`6b0c277b92fcd76b`, blessed into `tools/skill-hashes.txt`. **This copy now leads the source
+repository**, as `showoff-render` and `education-video` already do.
+
+The machinery behind it is in `_shared/checks/composition.py`, which both `slide-deck` and
+`education-video` call, and `tools/test_composition_check.py` is the negative test that proves each
+check can fail. The proposal this was applied from was deleted by the same pull request; its
+reference implementations were set aside in `references/slide-deck-gate4-toolkit/`.
 
 ## What came with them, and why it had to
 

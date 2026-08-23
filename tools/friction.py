@@ -433,7 +433,9 @@ def ensure_fork(login: str) -> str:
     then waits, which is the same silence as being offline."""
     if (url := fork_url(login)):
         return url
-    ok, _ = gh("repo", "fork", UPSTREAM, "--clone=false", "--remote=false", timeout=120)
+    # No --remote: gh refuses that flag outright when a repository argument is given, so passing it
+    # made every fork route fail before it started. Nothing is cloned and no remote is added anyway.
+    ok, _ = gh("repo", "fork", UPSTREAM, "--clone=false", timeout=120)
     if ok is not True:
         return ""
     return fork_url(login)
@@ -539,7 +541,11 @@ def build_commit(repo: Path, base: str, path: str, body: str, msg: str) -> str:
         if not git(repo, "update-index", "--add", "--cacheinfo",
                    f"100644,{blob},{path}", env=env)[0]:
             return ""
-        ok, tree = git(repo, "write-tree", env=env)
+        # --missing-ok, and this is not cosmetic. write-tree otherwise proves every index entry's
+        # object exists, and in a blob-filtered repo that one check lazily fetches every blob in
+        # the tree: 80 MB, in a Stop hook, to write a tree it already has the hashes for. The tree
+        # it produces is byte-identical either way, and the remote already holds the blobs.
+        ok, tree = git(repo, "write-tree", "--missing-ok", env=env)
     if not ok or not tree:
         return ""
     ok, commit = git(repo, "commit-tree", tree, "-p", base, "-m", msg)

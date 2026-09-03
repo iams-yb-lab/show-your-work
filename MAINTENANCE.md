@@ -43,3 +43,19 @@ Found by running the composition check against it: "PRECISION TEMPERATURE CONTRO
 inherits. They are visible in the frame, so the finding is real. Either the film's furniture is
 exempt from the floor and the check should say so, or that example needs a rebuild. Waits on the
 user, because it is a question about what the floor is for.
+
+### The end card has never closed a real film — waits on the next film
+
+`_shared/endcard/` is proven end to end on a throwaway clip: the card renders through the film's
+own exporter, the stream-copy join is frame-exact (60 + 180 = 240) and the picture's video stream
+MD5 is unchanged by it. No finished film has used it. It joins `deliver_film.py` and
+`composition_check.py` in that category, and the first real pass is the one that proves it — read
+what it prints rather than trusting the exit code.
+
+### Should `slide-deck` get an authorship slide too? — waits on the user
+
+The end card was scoped to video, because a deck is not a film. But a deck presented outside the
+lab has the same problem the films had: nothing on it says who made it, what was generated, or who
+is answerable. The deck already renders 1920x1080 HTML through the same composition check, so the
+card would drop in with almost no work. Not done, because scope creep into a second medium is the
+user's call.

@@ -31,6 +31,7 @@ it as a skill.
 |---|---|---|
 | [`audio/`](.claude/skills/_shared/audio/) | the BS.1770-4 loudness meter, the true-peak limiter, the van Herk sliding maximum, the voice chain, the pitch set | `natural-voice` links `voice_chain.py` by name; `education-video` and `showoff-render` films import it |
 | [`checks/`](.claude/skills/_shared/checks/) | `composition.py` — overflow, the font floor, overlap (text on text, text on a picture, a picture on a picture) and the clearance a word keeps from lines and block edges, measured in a browser. One implementation, one 28-pixel constant | `education-video` (per instant), `slide-deck` (per slide, and again statically) |
+| [`endcard/`](.claude/skills/_shared/endcard/) | the authorship card a film ends on: who made it, who built the project, what was generated, who is answerable. `build_card.py` from a per-film credits file, `check_card.py` through the shared composition check, `render_card.py` to an MP4, PNG frames or a still, `append_card.py` to join it to the picture as a stream copy | `education-video` (MP4, joined before the mux), `showoff-render` (frames numbered past the last rendered one) |
 
 ## The rest of the repository
 
@@ -39,12 +40,12 @@ it as a skill.
 | [`tools/`](tools/) | this repository's own machinery, which no skill calls: `install_skills.py`, `update.py`, `check_links.py`, `friction.py`, `skill-hashes.txt` |
 | [`references/`](references/) | set aside, not yet deleted — see [`references/README.md`](references/README.md) |
 | [`feedback/`](feedback/) | `lessons/<skill>.md` is injected at the start of a run of that skill; `inbox/` is raw and stays on this machine |
-| `proposals/` | absent, which is the rule working: it holds only skill text waiting for the user's exact phrase, and the pull request that applies one deletes it |
+| [`proposals/`](proposals/) | holds only skill text waiting for the user's exact phrase, and the pull request that applies one deletes it. Currently: `end-card.md`, the gate text that would make every film close on its authorship card |
 | [`MAINTENANCE.md`](MAINTENANCE.md) | open items on this repository's own machinery — the tooling, the checks, the hooks, the rules. One line each, deleted when done |
 
 ## What travels, and what does not
 
-`python tools/install_skills.py <project>` copies **182 files, 15.8 MB**, and a target
+`python tools/install_skills.py <project>` copies **192 files, 16.5 MB**, and a target
 project gains exactly one directory: `.claude/skills/`. The machinery is remapped inside
 it, at `_shared/tools/` and `_shared/feedback/lessons/`.
 
@@ -79,6 +80,11 @@ showoff-render/SKILL.md         ──►  examples/assembly/RENDER-LOG.md   (pr
 Named here rather than fixed, because each is a record of what ran on a particular
 machine and rewriting one to look tidier would make it false.
 
+- `_shared/endcard/fonts.css` — the same two inlined woff2 faces as
+  `slide-deck/examples/presentation/fonts.css`, 403 KB of it. Copied rather than shared so the
+  end card's folder is self-contained: it is called from two skills that assemble a film in
+  different ways, and a font path reaching sideways into one skill's *examples* would break the
+  moment that example moved. The faces are identical bytes; nothing computes anything from them.
 - `showoff-render/examples/assembly/audio/natural-v8/` and `.../pipeline/` — five files
   measure loudness by running ffmpeg over a file. That is a different mechanism from the
   meter in `_shared/audio/`, which takes a numpy array, so it is not a second answer to

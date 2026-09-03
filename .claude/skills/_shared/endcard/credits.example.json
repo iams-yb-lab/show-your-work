@@ -1,0 +1,53 @@
+{
+  "_comment": "A worked example. Copy it into YOUR FILM'S directory and edit it there, never here: _shared/ is replaced wholesale by update.py, so a credits file kept in this folder is lost the first time someone updates the skills.",
+
+  "mode": "project",
+
+  "film": {
+    "title": "How the Cooling Loop Holds Temperature",
+    "title_alt": "",
+    "kind": "Explainer",
+    "year": "2026",
+    "credits": [
+      {"role": "Written & produced", "names": ["A. Researcher"]},
+      {"role": "Narration", "names": ["Synthetic speech"]},
+      {"role": "Picture", "names": ["A. Researcher"]},
+      {"role": "Music", "names": ["Slow Return, by K. Salo (CC BY 4.0)"]}
+    ]
+  },
+
+  "project": {
+    "name": "Cooling loop rev C",
+    "credits": [
+      {"role": "Design & layout", "names": ["B. Engineer"]},
+      {"role": "Firmware", "names": ["C. Developer"]},
+      {"role": "Measurement", "names": ["D. Scientist"]}
+    ]
+  },
+
+  "sources": [
+    {"role": "Source document", "names": ["Cooling loop design report, rev C"]}
+  ],
+
+  "supervision": [
+    {"role": "Principal investigator", "names": ["E. Supervisor"]}
+  ],
+
+  "disclosure": "Narration is synthetic speech. Script and picture were built with an AI assistant and checked by the authors.",
+
+  "funding": "",
+
+  "accountability": {
+    "responsible": "Example Research Group",
+    "contact": "example.org/cooling-loop"
+  },
+
+  "identity": {
+    "name": "Example Research Group",
+    "name_alt": "An institution goes here",
+    "logo": "",
+    "logo_height": 56
+  },
+
+  "duration_s": 6
+}

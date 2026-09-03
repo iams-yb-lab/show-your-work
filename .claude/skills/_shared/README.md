@@ -6,6 +6,8 @@ this directory exists so a measurement has one answer instead of several.
 ```
 audio/    dsp, mix_audio, voice_chain, narrate, check_score
 checks/   the composition check: overflow, the font floor, overlap and clearance
+endcard/  the authorship end card: who made the film, who built the project, what was
+          generated, and who is answerable for it
 ```
 
 `_shared/` has no `SKILL.md`, so Claude Code does not discover it as a skill. It travels with the
@@ -35,6 +37,26 @@ attribute and a contact sheet; `slide-deck/examples/presentation/tools/render_ch
 per-slide screenshots.
 
 Called by: `education-video`, `slide-deck`.
+
+## endcard/
+
+The standard closing slide a film ends on: who made the film, who built the thing it is about,
+what in it was generated, who stands behind the claims and where a viewer takes a correction. One
+template filled from a per-film credits file, built, checked, rendered and joined onto the picture
+without either being re-encoded. `README.md` in that folder is the method.
+
+It is here rather than in a skill because both video skills need it and they assemble a film two
+different ways — `education-video` from one HTML composition, `showoff-render` from a PNG sequence
+— so the card renders to an MP4, to numbered frames, or to a still.
+
+**`render_card.py` invokes `education-video/method/export_html_video.py` rather than encoding the
+card itself, and that dependency runs the wrong way on purpose.** The card only earns its keep if
+it will stream-copy onto the end of the film's picture, which means it must come out of the same
+encoder with the same H.264 profile, pixel format, colour range and bt709 metadata. Those settings
+have exactly one home, in that exporter. A copy of them here would be a second answer to the same
+question, and the failure when the two drifted would be a joined file that plays and is wrong.
+
+Called by: `education-video` (its films' delivery), `showoff-render` (its films' frame sequence).
 
 ## Frozen copies that were deliberately left alone
 

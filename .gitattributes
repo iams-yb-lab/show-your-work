@@ -28,3 +28,8 @@
 # differ by exactly one byte (`captions:true` -> `false`), which is the claim that would be lost.
 # The films' picture cannot be re-rendered without these files.
 *.html -text -diff
+
+# ...except the end card's template, which is hand-written source rather than a generated bundle.
+# It is small, it has no hash riding on it, and a template nobody can read in a diff is a template
+# nobody can review. Same exception, and same reasoning, as _shared/*.md above.
+.claude/skills/_shared/endcard/card.template.html text diff

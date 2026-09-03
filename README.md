@@ -40,7 +40,8 @@ quietly stops being able to tell you the thing it exists to tell you. `tools/che
 to catch precisely that.
 
 Only what more than one skill calls is shared, in
-[`_shared/`](.claude/skills/_shared/) — the audio engine and the composition check.
+[`_shared/`](.claude/skills/_shared/) — the audio engine, the composition check and the
+authorship end card every film closes on.
 `technical-report` and `slide-deck` contain no paths at all, and `technical-report` owns nothing
 beyond its instructions, which [`MAP.md`](MAP.md) says out loud so nobody goes looking.
 
@@ -109,13 +110,13 @@ at its root to be found at all — and everything else is installed inside it:
 
 ```
 <target>/.claude/skills/            the five skills, each whole
-        _shared/                    the audio engine and the composition check
+        _shared/                    the audio engine, the composition check, the end card
         _shared/tools/              check_links.py, friction.py, update.py, skill-hashes.txt
         _shared/feedback/lessons/   what earlier runs got wrong
         _shared/WHAT-IS-THIS.md     what this is, and that deleting it breaks the skills silently
 ```
 
-182 files, 15.8 MB. Before 2026-08-22 it was 108 MB, because a `video/` tree carried three past
+192 files, 16.5 MB. Before 2026-08-22 it was 108 MB, because a `video/` tree carried three past
 jobs' media that no skill ever opened; that media is in `references/` now and does not install.
 
 Nothing is ever written to a target's own `tools/`, so an install cannot collide with a directory

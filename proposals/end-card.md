@@ -3,6 +3,11 @@
 **Status: waiting for the exact phrase.** This document holds skill text and nothing else. If it is
 applied, the pull request that applies it deletes this file.
 
+**Applying it was asked for on 2026-09-02 and not done.** The phrase came through as *"I insist on
+editting the skills"*, and the gate is the exact string or nothing — a typo is named in `CLAUDE.md`
+as not counting, precisely so that no session gets to decide what the user obviously meant. The
+request stands and is recorded here; it needs the phrase typed again, correctly, to proceed.
+
 ## What this changes
 
 Three files, all additions — no existing sentence is reworded or removed:

@@ -201,6 +201,12 @@ The camera tables must be **byte-identical** to the approved draft's — diff th
 memory. Render once, at final resolution, to the film's directory. Close with the master by
 absolute path, the updated render log beside it, and one question: done?
 
+**Then put the authorship card on the end.** `_shared/endcard/` renders it as PNGs numbered past the
+last rendered frame, at the render's own width and height, and the frame encoder picks them up
+because it globs and sorts — so the card costs no video work and no re-encode. It credits whoever
+built the hardware as well as whoever made the film, and it states that the footage is generated. A
+cinematic render of somebody else's board that carries no attribution is the case this exists for.
+
 ## What draft 1 got wrong, and why draft 3 was right
 
 **Draft 1** shipped with every part off the board, and its camera read as several shots stitched

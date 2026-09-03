@@ -59,3 +59,12 @@ lab has the same problem the films had: nothing on it says who made it, what was
 is answerable. The deck already renders 1920x1080 HTML through the same composition check, so the
 card would drop in with almost no work. Not done, because scope creep into a second medium is the
 user's call.
+
+### The skills name `_shared/endcard/` in prose, so nothing checks it is there — waits on the user
+
+`education-video` and `showoff-render` now tell a run to use `_shared/endcard/`, but they name it
+rather than linking it, so `check_links.py` cannot see the reference and `GEOMETRY` — which is a
+list of relative *links* — has no shape to hold it. Delete that directory and both skills would
+still load, still sound authoritative, and send someone to a folder that is not there. The same is
+true of `showoff-render`'s prose reference to its render log, which is why this is a question about
+the check rather than a defect in the edit.

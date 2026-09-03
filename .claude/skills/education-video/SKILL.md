@@ -159,6 +159,12 @@ music level, no ducking — mixed down to **one combined audio track**, and **th
 track before GATE 4 opens.** A voice approved dry is not a voice approved under music, and the picture
 must never be timed against an audio track that is still going to change.
 
+**The mix runs past the last word by the length of the end card**, which GATE 0 settled — six
+seconds unless the user said otherwise. Let the music tail run out underneath it. This is the one
+thing about the card that cannot be fixed later: the delivered film's picture and audio may differ
+by no more than one frame, so a mix locked at the length of the narration forces the card to be
+silent, or forces this gate open again after it was approved.
+
 ## GATE 4 — the images. You raise it, and you arrive with candidates.
 
 **Read [`images.md`](images.md) in full and follow it exactly.** Open this gate unprompted once the
@@ -182,6 +188,10 @@ composition that animates itself renders as a smear, and it looks perfect in a b
 renders `round(duration × fps)` frames. **Set it from the locked master**, so the audio is still the
 timing authority at the last gate exactly as it was at the third. The root's box must equal the authored
 size or the render aborts before the first frame.
+
+**The card is not part of this composition.** Its duration is the narration's, not the film's
+total: the card is built and rendered separately and joined to the picture at GATE 6, so that a
+change to a credit never costs a re-render of the film.
 
 **The scene table and the cue sheet drive it, and the composition re-derives nothing.** Every cue's
 start and slot comes from the file the master was measured into. **The GATE 4 images sit in it as they
@@ -224,6 +234,22 @@ track that is present but empty is indistinguishable from a good one until someb
 **Never burn captions into the frames.** If a platform genuinely needs them burned in — silent autoplay
 in a feed — that is an *additional* file the user asks for by name, and the switchable film is still
 what gets delivered.
+
+**The film ends on its authorship card, and the card is not optional.** It says who made the film,
+who built the thing it is about, what in it was generated, who stands behind the claims and where a
+viewer takes a correction. `_shared/endcard/` builds it from a credits file kept with the film —
+never inside the skill — checks it against the same composition rules the picture obeys, and renders
+it through this skill's own exporter so it joins the picture as a stream copy with neither
+re-encoded. Its own README is the method.
+
+**The disclosure line is required and it is the reason the card exists.** The narration is synthetic
+and the picture was generated; a film that does not say so is asking a viewer to assume otherwise.
+Never ship a card whose disclosure was left blank because the film "obviously" looks generated.
+
+**Join the card before the mux, not after.** The joined picture is what `deliver_film.py` takes as
+`--picture`, and the audio it takes is the longer mix from GATE 3. If that mix was locked at the
+narration's length, pad it with silence and say plainly that the film goes quiet under the card —
+never quietly shorten the card to fit the audio that exists.
 
 **Measure the file you are handing over, not the one you fed in.** Loudness and true peak on the
 delivered MP4, and its duration against the master. The picture is `round(duration × fps)` frames, so it

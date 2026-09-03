@@ -33,6 +33,8 @@ answered before GATE 1 opens.**
    source document already implies. Never *who* makes it: `SKILL.md` has settled that.
 10. **Delivery** — where it is published, aspect ratio, frame rate, subtitle language, deadline.
 11. **Where the film's files live** — see below. Ask it; do not choose it.
+12. **Credits** — is the film about something somebody built? If it is, who built it, and who
+    else must appear: sources, supervisors, funder, the institution answerable for it.
 
 Do not open GATE 1 on assumptions about any of these. An unanswered one is a question, not a default.
 
@@ -66,6 +68,27 @@ The same goes for any directory the user is packaging for reuse.
 So establish at GATE 0: which directory holds the film's document, script, cue sheet and manifest,
 and which holds its heavy audio takes and masters. Both belong to the user's project, not to the
 tooling. If they have no preference, propose one and get it confirmed rather than assuming.
+
+## Who the film credits
+
+**Ask this at GATE 0, not at the end.** Every film ends on an authorship card, and a card
+assembled after the picture is locked is a list of whoever happened to be in the room. The
+question is short and it has one branch that matters:
+
+**Is this film about a project — something somebody designed, built, measured or wrote?** If it
+is, the card credits those people as well as the film's, and it will not build without them. A
+film about a project that credits only its film-makers takes credit for someone else's work. If
+it is not — an explainer about a standard, a method, an idea — the film's own credits are the
+whole list, and there is no project block.
+
+Then collect, in the same window or the next: who wrote and produced the film, whose voice it is
+and whether it is synthetic, who built the project and in what roles, the source document, image
+and music licences, supervisors, funder, the institution that stands behind the claims, and where
+a viewer takes a correction.
+
+**Ask how long the card holds, too**, and carry the answer to GATE 3. Six seconds is the default.
+It is not a picture decision: the mix has to be that much longer or the film will not deliver,
+which is settled at the audio gate and expensive to revisit after it.
 
 ## How GATE 0 closes — the summary in bullets
 

@@ -70,6 +70,44 @@ export contract, canvas size, offline, determinism, overflow, font floor, contac
 with the payload; neither has been run on a real film. `tools/check_links.py` now treats the skill's
 links to all three as load-bearing, so moving one breaks the check rather than the film.
 
+On 2026-09-02 the user authorized, with the exact phrase, an addition to three files —
+`education-video/SKILL.md`, `education-video/interview.md` and `showoff-render/SKILL.md`: **every
+film now ends on an authorship card.** It names who made the film, who built the thing the film is
+about, what in it was generated, who stands behind the claims and where a viewer takes a correction.
+Until now a finished film carried none of that, and the synthetic narration was nowhere disclosed.
+
+Every change is an addition; no existing sentence was reworded or removed, and no gate was renamed
+or renumbered. `interview.md` gains a twelfth question and the short section behind it, because
+credits assembled after the picture is locked are a list of whoever was in the room. `SKILL.md`
+gains one paragraph at GATE 3 (the mix runs past the last word by the card's length, or the film
+cannot be delivered), one at GATE 5 (the card is not part of the composition, so a credit change
+never costs a re-render) and three at GATE 6 (the card, the required disclosure, and joining it
+before the mux). `showoff-render` gains one paragraph at GATE 5, its card being PNGs numbered past
+the last rendered frame.
+
+The cost is stated in the skill because it is easy to discover too late: a six-second card needs six
+more seconds of audio, since `deliver_film.py` refuses a picture and a mix that differ by more than
+one frame. That makes the card an audio decision at GATE 3, not a GATE 6 afterthought.
+
+The machinery it calls, `_shared/endcard/`, is not a skill file and was added without needing the
+phrase. It is proven end to end on a throwaway clip — the card renders through the film's own
+exporter, the stream-copy join is frame-exact and the picture's video stream MD5 is unchanged by it
+— and **no finished film has used it**, which `MAINTENANCE.md` records.
+
+Old hashes `615f8d021584040c` (SKILL.md), `31fd7a97d918746e` (interview.md) and `ff6df3c1ca528e0c`
+(showoff-render/SKILL.md); new hashes `2302d530b9792d1f`, `ba2e4ed13e7a7d45` and
+`26764e615fd117c1`, blessed into `tools/skill-hashes.txt`. `images.md` was not touched and its hash
+is unchanged. **These copies now lead the source repository**, as the earlier edits already do.
+
+The rationale and what a reviewer should push back on were in `proposals/end-card.md`, which this
+change deletes, per the rule that a proposal is skill text waiting for the phrase and nothing else.
+Its argument survives in the commit that applied it. That proposal was also unusual and said so: its
+evidence was a direct commission rather than friction entries, which is the weaker of the two cases
+for changing a skill.
+
+The payload grew from 182 files and 15.8 MB to 192 files and 16.5 MB, almost all of it the two
+inlined woff2 faces the card sets its type in.
+
 ## Added after export
 
 On 2026-08-18 the user authorized, with the exact phrase, the creation of a fourth skill:

@@ -13,6 +13,11 @@ Then it checks the parts that are arithmetic rather than policy: the grid fit mo
 must count a CSS grid's row maxima rather than a column's total, and the wrap counting that
 keeps a long credit from being underestimated off the bottom of the card.
 
+Then the closing-frame card: a byline moves the film's roles out of the grid rather than
+copying them, a still and a QR code take budget away from the credits, a link that points
+where the accountability contact already points is not printed twice, and a byline long
+enough to be a credits block is refused rather than set in three lines under the title.
+
     python tools/test_endcard.py
 
 Pure Python. No browser, no ffmpeg -- check_card.py is what asks a browser, and this is
@@ -21,6 +26,7 @@ what proves the rules underneath it. Exits non-zero if any case reports the wron
 
 from __future__ import annotations
 
+import base64
 import copy
 import json
 import sys
@@ -94,6 +100,11 @@ REFUSALS = [
     ("a role with nobody in it",
      broken(film__credits=[{"role": "", "names": ["A. Researcher"]}]), "has names but no role"),
     ("credits that are not objects", broken(sources=["just a string"]), "is not an object"),
+    ("an image credit with no image", broken(film__image_credit="Frame from the film"),
+     "image that is not on the card"),
+    ("a link that goes nowhere", broken(link={"label": "The project"}), "goes nowhere"),
+    ("a link with no label", broken(link={"url": "https://example.org/p"}),
+     "link.label is required"),
 ]
 
 MANIFEST_WITH_ROWS = """\
@@ -110,8 +121,15 @@ MANIFEST_EMPTY = """\
 """
 
 
+# The smallest valid PNG. The still only has to exist and be embeddable; what it looks
+# like is check_card.py's business, not this file's.
+PNG_1PX = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==")
+
+
 def main() -> int:
     bad = 0
+    skipped: list[str] = []
 
     def report(name: str, ok: bool, why: str) -> None:
         nonlocal bad
@@ -226,6 +244,102 @@ def main() -> int:
         except B.CardError as exc:
             report("--pages splits a long section", False, f"refused: {exc}")
 
+        # ---- the byline moves the film's roles; it does not copy them ------------------
+        # A byline that also left a "This film" block behind would credit the same person
+        # twice on one card, which is the failure this is here to hold shut.
+        bl = B.load_credits(write(tmp, broken(mode="standalone", project=None,
+                                              film__byline=True)))
+        labels = [b["label"] for b in B.sections_of(bl)]
+        report("a byline empties the film block", not any("This film" in l for l in labels),
+               f"sections are {labels}")
+        report("a byline still keeps the rows", len(bl["film"]["rows"]) == 2,
+               f"{len(bl['film']['rows'])} roles are available to set on the line")
+
+        # ...and a card whose only credit is a byline builds. sections_of() returns nothing
+        # for it, which without the byline would be "nothing to credit".
+        try:
+            B.build(write(tmp, broken(mode="standalone", project=None, sources=[],
+                                      supervision=[], film__byline=True,
+                                      film__credits=[{"role": "Created by",
+                                                      "names": ["A. Researcher"]}])),
+                    tmp / "byline.html", 1920, 1080, 1, None)
+            html = (tmp / "byline.html").read_text(encoding="utf-8")
+            ok = 'class="byline"' in html and 'class="block"' not in html
+            report("a byline-only card builds", ok,
+                   "the byline carries the credit and no block is rendered" if ok
+                   else "built, but the byline or the empty grid is wrong")
+        except B.CardError as exc:
+            report("a byline-only card builds", False, f"refused: {exc}")
+
+        # ...but not one long enough to be a credits block in disguise.
+        try:
+            B.build(write(tmp, broken(mode="standalone", project=None, film__byline=True,
+                                      film__credits=[{"role": f"Long role name {i}",
+                                                      "names": [f"Somebody Person {i}"]}
+                                                     for i in range(6)])),
+                    tmp / "longbyline.html", 1920, 1080, 1, None)
+        except B.CardError as exc:
+            report("an overlong byline refuses", "wearing a hat" in str(exc),
+                   f"caught: {str(exc).splitlines()[0][:70]}" if "wearing a hat" in str(exc)
+                   else f"refused for the wrong reason: {exc}")
+        else:
+            report("an overlong byline refuses", False, "NOT caught; it built anyway")
+
+        # ---- a showcase takes its room out of the credits' budget ----------------------
+        (tmp / "still.png").write_bytes(PNG_1PX)
+        plain = B.load_credits(write(tmp, GOOD))
+        withimg = B.load_credits(write(tmp, broken(film__image="still.png")))
+        B.prepare_link(plain)
+        B.prepare_link(withimg)
+        b0 = B.credits_budget(plain, 1920, 1080)
+        b1 = B.credits_budget(withimg, 1920, 1080)
+        report("a still costs the credits their room", b1 < b0 - 200,
+               f"{b0:.0f}px of credits room becomes {b1:.0f}px")
+
+        # A missing still is a refusal, not a hole in the card. check_card.py would catch a
+        # 404 at render time; catching it here says which field is wrong.
+        try:
+            B.build(write(tmp, broken(film__image="not-there.png")),
+                    tmp / "missing.html", 1920, 1080, 1, None)
+        except B.CardError as exc:
+            report("a missing still refuses", "film.image not found" in str(exc),
+                   f"caught: {str(exc)[:70]}")
+        else:
+            report("a missing still refuses", False, "NOT caught; it built anyway")
+
+        # ---- one address, written twice, is printed once -------------------------------
+        report("the same address is recognised",
+               B.same_target("https://example.org/cooling-loop/", "example.org/cooling-loop"),
+               "a scheme and a trailing slash do not make it a second place")
+        report("a different address is not",
+               not B.same_target("https://example.org/other", "example.org/cooling-loop"),
+               "two real destinations stay two")
+
+        # ---- the QR code, if segno is here ---------------------------------------------
+        try:
+            import segno  # noqa: F401
+        except ModuleNotFoundError:
+            skipped.append("QR code cases (segno is not installed)")
+        else:
+            linked = B.load_credits(write(tmp, broken(
+                link={"label": "The project", "url": "https://example.org/other"})))
+            B.prepare_link(linked)
+            uri, px = linked["link"]["_qr_data"], linked["link"]["_qr_px"]
+            svg = base64.b64decode(uri.split(",", 1)[1]).decode("ascii")
+            report("the QR is inlined, not fetched",
+                   uri.startswith("data:image/svg+xml;base64,") and "<svg" in svg,
+                   "an SVG data URI, so nothing is fetched at render time")
+            report("the QR is drawn on whole pixels", f'width="{px}"' in svg and px % 1 == 0,
+                   f"{px}px, an exact multiple of its module count")
+            report("a link elsewhere is printed as text", linked["link"]["_show_url"],
+                   "the rail shows the address because the footer's is a different place")
+
+            dupe = B.load_credits(write(tmp, broken(
+                link={"label": "The project", "url": "https://example.org/cooling-loop"})))
+            B.prepare_link(dupe)
+            report("the contact's address is not printed twice", not dupe["link"]["_show_url"],
+                   "the rail keeps the code, the footer keeps the text")
+
         # ---- the footer does not print the institution twice ---------------------------
         same = B.load_credits(write(tmp, GOOD))
         report("a wordmark suppresses the repeat", B.identity_already_named(same),
@@ -236,6 +350,8 @@ def main() -> int:
                not B.identity_already_named(diff), "the stamp keeps the name")
 
     print()
+    for why in skipped:
+        print(f"SKIP  {why}")
     print("ALL PASS" if not bad else f"{bad} CASE(S) FAILED")
     return 1 if bad else 0
 

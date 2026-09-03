@@ -43,6 +43,9 @@ choices rather than something inferred from whether a field happens to be filled
 | `film.title_alt` | | a second-language title, set under the first |
 | `film.kind`, `film.year` | | the kicker line, e.g. `Explainer · 2026` |
 | `film.credits` | **required** | who made the film. At least one row |
+| `film.byline` | | set the film's credits above the rule instead of in a block |
+| `film.image` | | a representative still, beside the credits file |
+| `film.image_credit` | | one attribution line under that still |
 | `project.name` | project mode | what the film is about |
 | `project.credits` | project mode | who built it. At least one row |
 | `sources` | | the source document, standards, datasets, images |
@@ -53,6 +56,7 @@ choices rather than something inferred from whether a field happens to be filled
 | `accountability.contact` | **required** | where a viewer takes a correction |
 | `identity.name`, `.name_alt` | | the institution, in one or two languages |
 | `identity.logo`, `.logo_height` | | a logo file beside the credits file |
+| `link.url`, `link.label` | | where the viewer goes next: a QR code, and its address |
 | `duration_s` | | how long the card holds. 6 seconds by default |
 
 A credit row is `{"role": …, "names": [ … ], "alt": …}`. `alt` is the second-language line under
@@ -69,6 +73,63 @@ Say what was generated and what generated it — the narration, the picture, the
 that carries a synthetic voice without saying so is the thing this card exists to prevent, and
 the lab's acceptable-use statement asks for exactly this. It is a required field so that it
 cannot be dropped by someone in a hurry.
+
+### The closing-frame card: a byline, a still, and a QR code
+
+A film whose credits are one name does not want a credits block. `"byline": true` on the
+`film` block sets those roles on one line under the title, above the rule, where a byline
+belongs — and the space they were using goes to the still:
+
+```json
+"film": {
+  "title": "How to Make an Explainer",
+  "credits": [{"role": "Created by", "names": ["A. Researcher"]}],
+  "byline": true,
+  "image": "still.png",
+  "image_credit": "Frame from the film"
+},
+"link": {"label": "The lab's page for this project", "url": "https://example.org/project"}
+```
+
+**The roles are moved, not copied.** A byline that also left a block behind would credit the
+same person twice, so the `This film` block is not rendered at all when it is on. Everything
+that made a credits block honest still holds: `check_card.py` reads the byline for a role with
+nobody in it exactly as it reads a row, and a card with neither a row nor a byline still fails
+as crediting nobody. Past two lines the build refuses — a byline with six roles on it is a
+credits block wearing a hat, and the block is the better answer.
+
+**The still is height-bound, not width-bound.** Its box is as tall as the credits leave, and a
+16:9 frame cannot use the width that remains, so it sits on the card's left edge with the rail
+at the right. `object-fit: contain`, never `cover`: cropping somebody's frame to fill a box is
+a decision the card does not get to make on its own.
+
+**The link is not the accountability contact**, even when they are the same address. One is
+where a viewer goes next; the other is where a correction goes. When the two point at the same
+place the rail keeps the code and drops the text, because printing one URL twice on one card
+reads as a mistake — the same reasoning that suppresses a repeated wordmark.
+
+`link.label` is required whenever there is a link. Nobody scans an unlabelled square, and the
+code itself says nothing about where it goes.
+
+### The QR code needs segno, and your phone
+
+```bash
+python -m pip install segno
+```
+
+Only needed when a card has a link. It is generated at build time and inlined as an SVG data
+URI, because nothing may be fetched at render time — and because a code pulled from a chart
+service would hand that service the URL of every film anybody renders.
+
+The code is drawn at a whole number of pixels per module rather than a round 260px, so the
+browser never resamples it. That matters more than it sounds: a resampled code looks perfect
+in a still and fails to scan off a compressed frame.
+
+**Scan it off a rendered frame before the film ships.** Your phone is the bench here, the same
+way your ears are the bench for the mix — a code that survives the PNG and dies in H.264 is
+invisible to every check in this folder. At 259px with error correction M it has been decoded
+out of the exporter's own H.264 output, which is evidence and not a guarantee: a smaller card,
+a longer URL or a lower bitrate all change the answer.
 
 ### The image manifest closes a loop
 

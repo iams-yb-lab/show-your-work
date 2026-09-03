@@ -22,6 +22,12 @@ Two things this script will not do, both on purpose:
   someone will notice; a card that quietly credits "-" for Music is wrong in a way nobody can
   see.
 
+A card may also carry a representative still from the film and a QR code to where the
+viewer goes next. Both are optional and both are off unless the credits file asks; a card
+with neither renders exactly as it did before they existed. The still takes the room the
+credits do not want, so it is largest on the card that needs it most -- the one with two
+names on it.
+
 The composition font floor is 28px and this card obeys it, which is why it carries no fine
 print. Fewer and larger credits, or another page. Never smaller type.
 """
@@ -31,6 +37,7 @@ from __future__ import annotations
 import argparse
 import base64
 import html
+import io
 import json
 import math
 import mimetypes
@@ -57,6 +64,11 @@ TITLE_SIZE, TITLE_LH = 58, 1.08
 TITLE_MT = 16
 TITLE_ALT_H = 34 * 1.25 + 8
 RULE_H = 24 + 8 + 30
+BYLINE_MT = 18
+BYLINE_SIZE = 36
+BYLINE_LH = BYLINE_SIZE * 1.25
+BYLINE_SEP = "  ·  "              # what joins two roles on one byline
+BYLINE_MAX_LINES = 2                   # past this it is a credits block wearing a hat
 
 BLOCK_LABEL_LH = FLOOR * 1.2
 BLOCK_LABEL_CHROME = 10 + 1 + 14               # padding-bottom + border + margin-bottom
@@ -77,6 +89,21 @@ FOOTER_CHROME = 18 + 20 + 1                    # margin-top + padding-top + bord
 STAMP_LH = FLOOR * 1.38
 WORDMARK_LH = FLOOR * 1.35
 PLATE_PAD = 28
+
+SHOWCASE_MT = 30                               # .showcase margin-top
+SHOWCASE_GAP = 64                              # .showcase column-gap
+LINKOUT_W = 420                                # the QR rail's width, from .linkout
+LINKOUT_GAP = 14                               # .linkout and .still row-gap
+LINK_LH = FLOOR * 1.35
+STILL_MIN = 240                                # the least room a still is worth showing in
+
+# The QR code. QR_TARGET is what is wanted, not what is used: the code is drawn at a whole
+# number of pixels per module, so the real size is the nearest multiple of the module count.
+# QR_BORDER is the quiet zone the spec requires and a scanner uses to find the code at all.
+QR_TARGET = 260
+QR_BORDER = 4
+QR_ERROR = "m"                                 # ~15% recovery
+QR_DARK, QR_LIGHT = "#0F0F11", "#FFFFFF"
 
 # Rough advance width, as a fraction of the font size. Only used to guess how many lines a
 # string wraps to; a wrong guess costs a re-run, not a bad card. The tracked variant is for
@@ -151,6 +178,24 @@ def load_credits(path: Path, image_manifest: Path | None = None) -> dict:
         raise CardError("mode is 'standalone' but a project block is filled in. Set mode to "
                         "'project', or remove the block")
 
+    byline = bool(film.get("byline"))
+
+    image = (film.get("image") or "").strip()
+    image_credit = (film.get("image_credit") or "").strip()
+    if image_credit and not image:
+        raise CardError("film.image_credit carries an attribution for an image that is not "
+                        "on the card. Set film.image, or drop the credit")
+
+    link = data.get("link") or {}
+    link_url = (link.get("url") or "").strip()
+    link_label = (link.get("label") or "").strip()
+    if link and not link_url:
+        raise CardError("link is present but link.url is empty. A QR code that goes nowhere "
+                        "is worse than none: a viewer scanning it cannot tell it failed")
+    if link_url and not link_label:
+        raise CardError("link.label is required: say what a viewer gets for scanning it. "
+                        "The code itself says nothing, and nobody scans an unlabelled square")
+
     sources = _rows(data.get("sources"), "sources")
     if image_manifest is not None:
         row = images_row(image_manifest)
@@ -176,6 +221,9 @@ def load_credits(path: Path, image_manifest: Path | None = None) -> dict:
                  "title_alt": (film.get("title_alt") or "").strip(),
                  "kind": (film.get("kind") or "").strip(),
                  "year": str(film.get("year") or "").strip(),
+                 "image": image,
+                 "image_credit": image_credit,
+                 "byline": byline,
                  "rows": film_rows},
         "project": {"name": (project.get("name") or "").strip(), "rows": project_rows},
         "sources": sources,
@@ -184,6 +232,7 @@ def load_credits(path: Path, image_manifest: Path | None = None) -> dict:
         "funding": (data.get("funding") or "").strip(),
         "accountability": {"responsible": acc["responsible"].strip(),
                            "contact": acc["contact"].strip()},
+        "link": {"label": link_label, "url": link_url},
         "identity": dict(data.get("identity") or {}),
         "duration_s": float(data.get("duration_s") or 6.0),
     }
@@ -238,7 +287,9 @@ def sections_of(c: dict) -> list[dict]:
     out = []
     for key, label in SECTIONS:
         if key == "film":
-            rows = c["film"]["rows"]
+            # Moved to the header, not copied: a byline that also left a block behind
+            # would credit the same person twice on one card.
+            rows = [] if c["film"]["byline"] else c["film"]["rows"]
         elif key == "project":
             rows = c["project"]["rows"]
         else:
@@ -250,6 +301,24 @@ def sections_of(c: dict) -> list[dict]:
             title = f"{label} — {c['project']['name']}"
         out.append({"label": title, "rows": rows})
     return out
+
+
+def byline_pairs(c: dict) -> list[tuple[str, str]]:
+    """The film's credits as (role, names), ready to set on one line."""
+    return [(r["role"], ", ".join(r["names"])) for r in c["film"]["rows"]]
+
+
+def byline_lines(c: dict, width: int) -> int:
+    if not c["film"]["byline"]:
+        return 0
+    text = BYLINE_SEP.join(f"{role}  {names}" for role, names in byline_pairs(c))
+    return wrapped(text, BYLINE_SIZE, width - 2 * PAD_X)
+
+
+def byline_height(c: dict, width: int) -> float:
+    if not c["film"]["byline"]:
+        return 0.0
+    return BYLINE_MT + byline_lines(c, width) * BYLINE_LH
 
 
 def column_width(width: int, cols: int) -> float:
@@ -300,6 +369,47 @@ def identity_already_named(c: dict) -> bool:
             == c["accountability"]["responsible"].strip().casefold())
 
 
+def has_showcase(c: dict) -> bool:
+    """Whether this card carries a still, a QR code, or both."""
+    return bool(c["film"]["image"] or c["link"]["url"])
+
+
+def showcase_height(c: dict, width: int) -> float:
+    """The room the showcase takes, and therefore the room the credits do not get.
+
+    Reserved rather than measured. Without it choose_layout would hand the whole card to
+    the credits, the still would be flattened to nothing by its own max-height, and the
+    only sign of it would be a card that looks wrong in the browser -- which is the check
+    doing the build script's job.
+
+    The still gets a floor, not a share: STILL_MIN is the smallest a frame can be and still
+    be worth putting on screen. When the credits leave more than that, the flex layout gives
+    it away for free and this estimate is simply conservative, which is the safe direction.
+    """
+    if not has_showcase(c):
+        return 0.0
+
+    rail = 0.0
+    if c["link"]["url"]:
+        rail = (c["link"]["_qr_px"] + LINKOUT_GAP
+                + wrapped(c["link"]["label"], FLOOR, LINKOUT_W, EM_MONO_TRACKED) * LINK_LH)
+        if c["link"].get("_show_url"):
+            rail += LINKOUT_GAP + wrapped(c["link"]["url"], FLOOR, LINKOUT_W,
+                                          EM_MONO) * LINK_LH
+
+    still = 0.0
+    if c["film"]["image"]:
+        still = STILL_MIN
+        if c["film"]["image_credit"]:
+            room = width - 2 * PAD_X
+            if c["link"]["url"]:
+                room -= LINKOUT_W + SHOWCASE_GAP
+            still += LINKOUT_GAP + wrapped(c["film"]["image_credit"], FLOOR,
+                                           max(200.0, room)) * LINK_LH
+
+    return SHOWCASE_MT + max(rail, still)
+
+
 def credits_budget(c: dict, width: int, height: int) -> float:
     """The vertical room left for credits once the fixed furniture has taken its share."""
     inner = width - 2 * PAD_X
@@ -308,6 +418,7 @@ def credits_budget(c: dict, width: int, height: int) -> float:
             + RULE_H)
     if c["film"]["title_alt"]:
         head += TITLE_ALT_H
+    head += byline_height(c, width)
     disc = DISCLOSURE_CHROME + wrapped(c["disclosure"], FLOOR, inner - 26) * DISCLOSURE_LH
 
     ident, half = c["identity"], inner / 2
@@ -325,7 +436,8 @@ def credits_budget(c: dict, width: int, height: int) -> float:
         left = WORDMARK_LH * (bool(ident.get("name")) + bool(ident.get("name_alt"))
                               + bool(c["funding"]))
     foot = FOOTER_CHROME + max(stamp_lines * STAMP_LH, left)
-    return (height - PAD_TOP - PAD_BOTTOM) - head - disc - foot
+    return ((height - PAD_TOP - PAD_BOTTOM) - head - disc - foot
+            - showcase_height(c, width))
 
 
 def split_block(block: dict, col_w: float, budget: float) -> list[dict]:
@@ -378,8 +490,19 @@ def choose_layout(c: dict, width: int, height: int, pages: int) -> tuple[int, li
     """Return (columns, one section list per card), or raise if it will not fit."""
     budget = credits_budget(c, width, height)
     blocks = sections_of(c)
-    if not blocks:
+    if not blocks and not c["film"]["byline"]:
         raise CardError("nothing to credit: every section is empty")
+    if byline_lines(c, width) > BYLINE_MAX_LINES:
+        raise CardError(
+            f"film.byline runs to {byline_lines(c, width)} lines, and a byline past "
+            f"{BYLINE_MAX_LINES} is a credits block wearing a hat. Drop film.byline and "
+            f"let these roles be a block, or move all but the author into another section.")
+    if budget <= 0:
+        raise CardError(
+            f"the fixed furniture already fills the card: no room is left for one credit.\n"
+            f"  The showcase reserves about {showcase_height(c, width):.0f}px, and the\n"
+            f"  disclosure and the footer take what is left. Drop film.image, drop the\n"
+            f"  link, or shorten the disclosure -- do not shrink the type.")
 
     # One card is the ordinary answer, and one column is the better-looking one, so both are
     # tried in that order before anything is allowed to get longer or busier.
@@ -433,6 +556,14 @@ def render_content(c: dict, page_blocks: list[dict], cols: int, page: int, pages
     parts.append(f'    <h1 class="title">{e(f["title"])}</h1>')
     if f["title_alt"]:
         parts.append(f'    <div class="title-alt">{e(f["title_alt"])}</div>')
+    if f["byline"]:
+        bits = []
+        for i, (role, names) in enumerate(byline_pairs(c)):
+            if i:
+                bits.append('<span class="sep">·</span>')
+            bits.append(f'<span class="pair"><span class="role">{e(role)}</span>'
+                        f'<span class="who">{e(names)}</span></span>')
+        parts.append('    <div class="byline">' + "".join(bits) + "</div>")
     parts.append('    <div class="rule"></div>')
     parts.append("  </header>")
 
@@ -446,6 +577,29 @@ def render_content(c: dict, page_blocks: list[dict], cols: int, page: int, pages
         parts.append(render_rows(b["rows"]))
         parts.append("    </section>")
     parts.append("  </div>")
+
+    # The showcase repeats on every page for the same reason the disclosure does, and for
+    # one more: credits_budget subtracts its room from every page's budget, so a showcase
+    # that appeared on only one of them would make the estimate wrong about the others.
+    if has_showcase(c):
+        link = c["link"]
+        parts.append('  <div class="showcase">')
+        if f.get("_image_data"):
+            parts.append('    <div class="still">')
+            parts.append(f'      <div class="frame"><img src="{f["_image_data"]}" '
+                         f'alt="{e(f["title"])}"></div>')
+            if f["image_credit"]:
+                parts.append(f'      <div class="credit">{e(f["image_credit"])}</div>')
+            parts.append("    </div>")
+        if link["url"]:
+            parts.append('    <div class="linkout">')
+            parts.append(f'      <div class="label">{e(link["label"])}</div>')
+            parts.append(f'      <div class="qr"><img src="{link["_qr_data"]}" '
+                         f'alt="{e(link["url"])}"></div>')
+            if link.get("_show_url"):
+                parts.append(f'      <div class="url">{e(link["url"])}</div>')
+            parts.append("    </div>")
+        parts.append("  </div>")
 
     # The disclosure and the identity repeat on every page. They are the two things a viewer
     # must not be able to miss by looking away for four seconds.
@@ -482,6 +636,16 @@ def render_content(c: dict, page_blocks: list[dict], cols: int, page: int, pages
     return "\n".join(parts)
 
 
+def data_uri(src: str, base: Path, what: str) -> str:
+    """One file beside the credits file, inlined. Nothing is fetched at render time, so
+    every image on the card has to arrive this way."""
+    p = Path(src) if Path(src).is_absolute() else (base / src)
+    if not p.exists():
+        raise CardError(f"{what} not found: {p}")
+    mime = mimetypes.guess_type(p.name)[0] or "image/png"
+    return f"data:{mime};base64,{base64.b64encode(p.read_bytes()).decode('ascii')}"
+
+
 def embed_logo(c: dict, base: Path) -> None:
     """Inline the logo, and suppress the wordmark when one is present.
 
@@ -489,21 +653,78 @@ def embed_logo(c: dict, base: Path) -> None:
     Printing the name again beside it reads as a mistake, so the logo replaces the wordmark
     rather than joining it.
     """
-    src = c["identity"].get("logo")
-    if not src:
+    if c["identity"].get("logo"):
+        c["identity"]["_logo_data"] = data_uri(c["identity"]["logo"], base, "identity.logo")
+
+
+def embed_still(c: dict, base: Path) -> None:
+    """Inline the representative frame, if the film named one."""
+    if c["film"]["image"]:
+        c["film"]["_image_data"] = data_uri(c["film"]["image"], base, "film.image")
+
+
+def qr_svg(url: str) -> tuple[str, int]:
+    """The link as a QR code: a data URI, and the exact pixel size to draw it at.
+
+    Built here and inlined, for the same reason the fonts are: nothing may be fetched at
+    render time. A code pulled from a chart service would also hand that service the URL
+    of every film anyone ever renders, which is not its business.
+
+    The size is a whole number of modules times a whole number of pixels, never a round
+    260. A code whose modules land on fractional pixels gets resampled by the browser,
+    and the result looks right in a still and fails to scan off a compressed frame --
+    which is the failure mode nobody catches by looking at the card.
+    """
+    try:
+        import segno
+    except ModuleNotFoundError as exc:
+        raise CardError("this card has a link, so it needs a QR code, and segno is not "
+                        "installed: python -m pip install segno") from exc
+    code = segno.make(url, error=QR_ERROR, mode="byte")
+    modules = code.symbol_size(scale=1, border=QR_BORDER)[0]
+    scale = max(1, round(QR_TARGET / modules))
+    buf = io.BytesIO()
+    code.save(buf, kind="svg", scale=scale, border=QR_BORDER,
+              dark=QR_DARK, light=QR_LIGHT, xmldecl=False, svgns=True, nl=False)
+    return (f"data:image/svg+xml;base64,{base64.b64encode(buf.getvalue()).decode('ascii')}",
+            modules * scale)
+
+
+def same_target(a: str, b: str) -> bool:
+    """True when two written-out addresses point at the same place.
+
+    The link-out and the accountability contact do different jobs -- one is where a viewer
+    goes next, the other is where a correction goes -- but on a small project they are
+    usually the same address, written once with a scheme and once without. Printing it
+    twice on one card reads as a mistake, exactly as naming the institution twice does,
+    so the rail keeps the code and the footer keeps the text.
+    """
+    def norm(s: str) -> str:
+        s = s.strip().casefold()
+        for scheme in ("https://", "http://"):
+            if s.startswith(scheme):
+                s = s[len(scheme):]
+                break
+        return s.removeprefix("www.").rstrip("/")
+    return bool(a and b) and norm(a) == norm(b)
+
+
+def prepare_link(c: dict) -> None:
+    """Draw the QR, and decide whether its URL is worth printing as text as well."""
+    link = c["link"]
+    link["_qr_px"] = QR_TARGET
+    if not link["url"]:
         return
-    p = Path(src) if Path(src).is_absolute() else (base / src)
-    if not p.exists():
-        raise CardError(f"identity.logo not found: {p}")
-    mime = mimetypes.guess_type(p.name)[0] or "image/png"
-    data = base64.b64encode(p.read_bytes()).decode("ascii")
-    c["identity"]["_logo_data"] = f"data:{mime};base64,{data}"
+    link["_qr_data"], link["_qr_px"] = qr_svg(link["url"])
+    link["_show_url"] = not same_target(link["url"], c["accountability"]["contact"])
 
 
 def build(credits_path: Path, out: Path, width: int, height: int, pages: int,
           image_manifest: Path | None, extra_fonts: Path | None = None) -> list[Path]:
     c = load_credits(credits_path, image_manifest)
     embed_logo(c, credits_path.parent)
+    embed_still(c, credits_path.parent)
+    prepare_link(c)
     cols, split = choose_layout(c, width, height, pages)
 
     template = TEMPLATE.read_text(encoding="utf-8")
@@ -523,6 +744,8 @@ def build(credits_path: Path, out: Path, width: int, height: int, pages: int,
                 .replace("__WIDTH__", str(width))
                 .replace("__HEIGHT__", str(height))
                 .replace("__COLS__", str(cols))
+                .replace("__CARDCLASS__", "has-showcase" if has_showcase(c) else "")
+                .replace("__QRPX__", str(int(c["link"]["_qr_px"])))
                 .replace("__LOGOH__", str(int(c["identity"].get("logo_height") or 56)))
                 .replace("__DURATION__", str(per_page))
                 .replace("__CONTENT__", content))
@@ -536,6 +759,17 @@ def build(credits_path: Path, out: Path, width: int, height: int, pages: int,
           f"{per_page:g}s each, {width}x{height}")
     for w in written:
         print(f"  {w}")
+    if c["film"]["byline"]:
+        print(f"  byline: the film's {len(c['film']['rows'])} role(s) are above the rule, "
+              f"on {byline_lines(c, width)} line(s), not in a credits block")
+    if c["film"]["image"]:
+        print(f"  still: {c['film']['image']}, at most "
+              f"{width - 2 * PAD_X - (LINKOUT_W + SHOWCASE_GAP if c['link']['url'] else 0)}px wide")
+    if c["link"]["url"]:
+        print(f"  QR: {c['link']['_qr_px']}px, error correction "
+              f"{QR_ERROR.upper()}, pointing at {c['link']['url']}")
+        print("  scan that code off a rendered frame before the film ships:")
+        print("  a code that survives a still and dies in H.264 looks perfect here.")
     print("  next: check_card.py, which is what actually decides whether it fits")
     return written
 

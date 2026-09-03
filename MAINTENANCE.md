@@ -44,6 +44,24 @@ inherits. They are visible in the frame, so the finding is real. Either the film
 exempt from the floor and the check should say so, or that example needs a rebuild. Waits on the
 user, because it is a question about what the floor is for.
 
+### `segno` is a new dependency, needed only for a card with a QR code — waits on the user
+
+`_shared/endcard/build_card.py` imports it lazily and refuses with the pip line when a credits
+file has a `link` and segno is absent. Every other card builds without it. Nothing in this
+repository declares dependencies, so this is recorded rather than pinned:
+
+```bash
+python -m pip install segno
+```
+
+### `_shared/endcard/example/example-card.png` does not reproduce on this machine — waits on the user
+
+Rebuilding `credits.example.json` and rendering it here gives a PNG that differs from the committed
+one across the whole card, at up to 230 levels per channel. Not caused by the showcase work: the
+pre-change and post-change code produce byte-identical renders here, so the shipped file was made
+somewhere with different font rasterisation. It is documentation, not a fixture nothing compares
+against, so the choice is to rebuild it here or to stop treating it as reproducible.
+
 ### The end card has never closed a real film — waits on the next film
 
 `_shared/endcard/` is proven end to end on a throwaway clip: the card renders through the film's

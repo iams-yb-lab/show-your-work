@@ -127,7 +127,18 @@ JS_STRUCTURE = r"""
     if (!text(r.querySelector('.names'))) bad.push(`row ${i} has a role but nobody in it`);
   });
 
-  if (!document.querySelectorAll('.row').length) bad.push('the card credits nobody');
+  // A byline credits the film above the rule instead of in a block below it, so it meets
+  // the same requirement -- and is held to the same rule. A role with nobody in it, or a
+  // name with no role, is exactly the omission this check exists to catch, and moving the
+  // credit into the header must not be a way around it.
+  const pairs = [...document.querySelectorAll('.byline .pair')];
+  pairs.forEach((p, i) => {
+    if (!text(p.querySelector('.role'))) bad.push(`byline ${i} has a name but no role`);
+    if (!text(p.querySelector('.who'))) bad.push(`byline ${i} has a role but nobody in it`);
+  });
+
+  if (!document.querySelectorAll('.row').length && !pairs.length)
+    bad.push('the card credits nobody');
   return bad;
 }
 """

@@ -71,6 +71,7 @@ here is an opinion on content, tone or structure.
 - Duration comes from the locked master and lives in the page; the root box equals the authored size.
 - Scene table and cue sheet drive it; the licensed images sit in it unchanged; on-screen labels use
   the document's vocabulary.
+- The exporter, its seek protocol and the checks are documented in [`method/README.md`](method/README.md).
 - Check before any long render: [`composition_check.py`](method/composition_check.py) — overflow, font floor, determinism, duration. Probe
   sixty frames, then a contact sheet, never a single frame.
 - Where a project instead uses a Claude Design bundle, the same checks and the same seek protocol

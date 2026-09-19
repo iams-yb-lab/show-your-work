@@ -264,3 +264,14 @@ this machine otherwise.
 The note above about the two `narration-assembly*.md` files being "registered in
 `check_links.py`'s EXTERNAL list" is stale — `EXTERNAL` is empty and was empty before this change.
 The files are fine; the claim about how was not.
+
+## 2026-09-20 — `education-video` reworked at the PI's direction
+
+The skill is now process notes only: order of steps, what to ask, how to do the voice, the images,
+the picture and the film. Removed: the plan-checklist-and-wait, the mandatory ten-question windowed
+interview, stage-numbered message headers, the required closing decision, and all opinions on the
+content, tone or structure of a film (those belong to the project's own style guide). Removed the
+skill's "never edit" clause in favour of open changes on a branch with a pull request. Method scripts'
+docstrings lose "GATE n" wording. New hashes `2903e6d3da0319ff` (SKILL.md),
+`23000d5e26e4cef5` (interview.md), `7040a0b53920c61f` (images.md), blessed into
+`tools/skill-hashes.txt`. Branch `skill/education-video-flexible`.

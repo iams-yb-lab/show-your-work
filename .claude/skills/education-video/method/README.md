@@ -81,7 +81,7 @@ false defect report.
 
 ## `deliver_film.py` — the mux, and the subtitle track that stays off
 
-Takes the silent render, the mix approved at GATE 3 and the `.srt`, and writes the delivered MP4:
+Takes the silent render, the mix approved at the audio stage and the `.srt`, and writes the delivered MP4:
 video stream copied, audio to AAC, captions as a `mov_text` track. Then it checks its own work — the
 video stream's MD5 before and after, the track extracted back out and diffed against the sidecar, the
 picture/audio duration gap against one frame — and exits non-zero rather than handing over a file that

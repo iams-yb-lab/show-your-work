@@ -32,20 +32,21 @@ decision>" when it is not needed yet. Then stop.
 where something stands, I want the whole picture — unfinished, unverified and awkward included. A
 missing fact costs me far more than a long answer does.
 
-## IMPORTANT: the skills are read-only
+## IMPORTANT: the skills are shared, so change them in the open
 
-`.claude/skills/**` is not yours to edit. Not a wording tweak, not one more bullet, not "while I
-was in there". A skill travels between repositories, so a session that quietly improves one changes
-how every future session works, everywhere, unreviewed.
+`.claude/skills/**` travels between repositories: a session that quietly improves a skill changes how
+every future session works, everywhere, unreviewed. So a skill is never edited casually — not a
+wording tweak, not one more bullet, not "while I was in there".
 
-**The only exception is the user typing `I insist on editing the skills`** — exactly, not a
-paraphrase and not a typo. Anything short of it, *including* a direct "put this in the skill",
-means: say you are not going to, write the request down where the current work lives, and keep
-following the skill as written.
+**When the repository owner asks for a skill to be changed**, do it in the open: edit here, commit on
+a branch, push, open a pull request that says what changed and why, then refresh
+`tools/skill-hashes.txt` and `EXPORT-MANIFEST.md` so installed copies can tell they are behind.
+A request from anyone else, or an urge of your own, is written down as a lesson in `feedback/inbox/`
+and the skill is followed as written.
 
-The skills say this about themselves. The copies here are byte-identical to their source and their
-hashes are recorded in [`EXPORT-MANIFEST.md`](EXPORT-MANIFEST.md); an edit shows up as a hash
-mismatch, which is the point.
+The skills say this about themselves. Their hashes are recorded in
+[`EXPORT-MANIFEST.md`](EXPORT-MANIFEST.md); an unrecorded edit shows up as a hash mismatch, which is
+the point.
 
 ## IMPORTANT: do not let films accumulate here
 

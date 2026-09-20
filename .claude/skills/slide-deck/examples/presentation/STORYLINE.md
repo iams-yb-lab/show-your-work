@@ -1,4 +1,4 @@
-# Storyline — how-to-use-the-skills deck (rev 6: the problem stated first at GATE 4, user's call — real community evidence that raw output is unreadable; 18 slides)
+# Storyline — how-to-use-the-skills deck (rev 6: the problem stated first at STAGE 4, user's call — real community evidence that raw output is unreadable; 18 slides)
 
 <!-- Parsed by the cross-check tool. Every non-blank line that does not start with
      "ACT" or "<" or "#" is exactly one slide headline, in deck order.
@@ -9,16 +9,16 @@ ACT I — WHERE YOU'RE STANDING
 You've finished real work — and now it has to reach people who weren't there.
 The complaint about AI writing is almost never that it's wrong — it's that nobody can read it.
 This repo turns finished work into four deliverables — a report, a deck, an explainer film, a showoff film — one skill each.
-Every skill runs the same shape: it interviews you, posts a checklist, and only you approve each gate.
+Every skill runs the same shape: it interviews you, posts a checklist, and only you approve each stage.
 
 ACT II — THE DOCUMENTS: REPORT AND DECK
 
 technical-report builds the document that stands alone: evidence → skeleton → sections → cold read.
 Say "write up this project as a report" and the skill takes over: interview, evidence map, skeleton — no prose until you approve the structure.
 slide-deck puts the argument on slides: source → storyline → slide scripts → build → cold pass.
-Say "make slides about this project" and you get what you're watching — this deck is that run, gate by gate.
-Every tick is your approval, not the skill's progress — this run stopped at GATE 2 and waited until you said go.
-This is the same run closed: six gates ticked, and every artifact it produced named on screen.
+Say "make slides about this project" and you get what you're watching — this deck is that run, stage by stage.
+Every tick is your approval, not the skill's progress — this run stopped at STAGE 2 and waited until you said go.
+This is the same run closed: six stages ticked, and every artifact it produced named on screen.
 
 ACT III — THE VIDEOS
 
@@ -32,4 +32,4 @@ Say "make the board look amazing" and the costs stay honest: render hours are me
 ACT V — START NOW
 
 Starting costs one sentence in Claude Code: name the output you want, and the interview takes it from there.
-Name the output, answer the interview, and the gates carry you to a delivered report, deck, or video.
+Name the output, answer the interview, and the stages carry you to a delivered report, deck, or video.

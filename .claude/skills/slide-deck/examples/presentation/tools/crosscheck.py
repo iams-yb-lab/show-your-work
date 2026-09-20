@@ -5,7 +5,7 @@
    STORYLINE.md (written independently) and exits non-zero on any
    difference in count, order, or bytes (after whitespace collapse).
 2. Static font-floor check: every font-size in the master, CSS or SVG
-   or JS-generated, must be >= the GATE 0 floor (28px on the 1080p canvas).
+   or JS-generated, must be >= the STAGE 0 floor (28px on the 1080p canvas).
 """
 import html as htmllib
 import io, os, re, sys

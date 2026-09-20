@@ -1,10 +1,10 @@
 # sha256 of every skill file, byte-identical to the source repository.
-# The skills are read-only; a mismatch here means one was edited.
+# The skills change only by pull request; a mismatch here means an unrecorded edit.
 # Regenerate only after an edit the repository owner asked for.
 81d57ac5bc959a852d23efceedec547129740ff15c084894672b593566d63ee2  .claude/skills/education-video/SKILL.md
 7040a0b53920c61f2d1a3713066cb17a46cfbfbd963c26e49594dd594c7d9eb2  .claude/skills/education-video/images.md
 23000d5e26e4cef5aacbf41d68be6226cab5b92a1d28c2ee80bb80d5f0c217a3  .claude/skills/education-video/interview.md
-f6b8b08fd2c9b83c702e226f91ddc3f0dac768821f9af32be1a8cca295c3f60d  .claude/skills/natural-voice/SKILL.md
-ff6df3c1ca528e0c9fcad32031b3f65cb0c4b0b99f441be89731292a267499e5  .claude/skills/showoff-render/SKILL.md
-81c1ffda24cb4f9f4c0f3ca05edaf6de66896e4336406d5be06aa20e2b31b989  .claude/skills/slide-deck/SKILL.md
-7cd8330ab1311a3b39b35f54253147eb0ba25d035658522075479af3e1ea950e  .claude/skills/technical-report/SKILL.md
+a008252b13b2e651d27c20c924a4e262e77f156176504ed35e0da091656cf0ae  .claude/skills/natural-voice/SKILL.md
+5a967550a425a43849ad2a5a3c5f5166967659575abc200bb1858fb4623f3207  .claude/skills/showoff-render/SKILL.md
+c8c152114181f6451799ce1cb3ecb7396f795d13efaffff955fe51c58ab0b368  .claude/skills/slide-deck/SKILL.md
+eea9de6909bf42847f2e67af52ee8f04ab901b47bbbe73e4065d65070fedfdb6  .claude/skills/technical-report/SKILL.md

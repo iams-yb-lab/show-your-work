@@ -102,7 +102,7 @@ LEAKS = (
 )
 
 ENTRY_RE = re.compile(
-    r"^### (?P<date>\d{4}-\d{2}-\d{2}) · (?P<skill>[\w.-]+)(?: · (?P<gate>[^\n]+))?\n"
+    r"^### (?P<date>\d{4}-\d{2}-\d{2}) · (?P<skill>[\w.-]+)(?: · (?P<stage>[^\n]+))?\n"
     r"(?P<body>(?:- \*\*\w+:\*\* [^\n]*\n)+)", re.M)
 
 
@@ -240,8 +240,8 @@ def save_session(sid: str, data: dict) -> None:
 
 BRIEF_TAIL = """\
 When this session ends, if anything here went wrong — a correction, rework, a wrong assumption, a \
-gate re-run — record it in one line each:
-  {script} note --session {sid} --skill {skill} [--gate G] \
+stage re-run — record it in one line each:
+  {script} note --session {sid} --skill {skill} [--stage G] \
 --complaint "what they said" --mistake "what I did" --fix "what worked" --rule "the line that \
 would have prevented it" [--cost "2 turns"]
 Clean run: {script} note --session {sid} --skill {skill} --none
@@ -301,7 +301,7 @@ def cmd_note(a) -> int:
         return 2
 
     entry = {"date": date.today().isoformat(), "host": host(), "skill": a.skill,
-             "gate": (a.gate or "").strip()}
+             "stage": (a.stage or "").strip()}
     for f in FIELDS:
         v = " ".join(getattr(a, f).split())
         if (found := leak_in(v)):
@@ -329,7 +329,7 @@ def cmd_note(a) -> int:
 
 BLOCK = """\
 A skill from show-your-work ran this session ({skills}) and no friction entry was recorded. Before \
-finishing: if the user corrected you, if anything was reworked, if a gate had to be re-run, or if \
+finishing: if the user corrected you, if anything was reworked, if a stage had to be re-run, or if \
 you assumed something wrong — record it now, in one silent command, and say nothing about it to the \
 user:
   {script} note --session {sid} --skill <skill> --complaint "..." --mistake "..." \
@@ -362,8 +362,8 @@ def render(entries: list[dict]) -> str:
     chunks = []
     for e in entries:
         head = f"### {e['date']} · {e['skill']}"
-        if e.get("gate"):
-            head += f" · {e['gate']}"
+        if e.get("stage"):
+            head += f" · {e['stage']}"
         lines = [head]
         for f in FIELDS:
             lines.append(f"- **{f}:** {e.get(f, '')}")
@@ -675,7 +675,7 @@ def parse_inbox(repo: Path) -> list[dict]:
         text = p.read_text(encoding="utf-8")
         for m in ENTRY_RE.finditer(text):
             e = {"date": m.group("date"), "skill": m.group("skill"),
-                 "gate": (m.group("gate") or "").strip()}
+                 "stage": (m.group("stage") or "").strip()}
             for line in m.group("body").splitlines():
                 k = re.match(r"- \*\*(\w+):\*\* (.*)$", line)
                 if k:
@@ -712,11 +712,11 @@ def cmd_compact(a) -> int:
             continue
         key = re.sub(r"\W+", "", rule.lower())[:60]
         slot = agg.setdefault(e["skill"], {}).setdefault(
-            key, {"count": 0, "rule": rule, "date": "", "mistake": "", "gate": ""})
+            key, {"count": 0, "rule": rule, "date": "", "mistake": "", "stage": ""})
         slot["count"] += 1
         if e.get("date", "") >= slot["date"]:      # the newest occurrence describes it
             slot.update(date=e.get("date", ""), rule=rule,
-                        mistake=e.get("mistake", "").rstrip("."), gate=e.get("gate", ""))
+                        mistake=e.get("mistake", "").rstrip("."), stage=e.get("stage", ""))
 
     changed = []
     for skill, rules in sorted(agg.items()):
@@ -729,7 +729,7 @@ def cmd_compact(a) -> int:
                           if not l.startswith("*(no reviewed lessons yet")).rstrip()
 
         lines = [f"- **{r['rule']}** — otherwise: {r['mistake']}"
-                 f"{f' ({r["gate"]})' if r['gate'] else ''}. "
+                 f"{f' ({r["stage"]})' if r['stage'] else ''}. "
                  f"*(seen {r['count']}×, last {r['date']})*"
                  for r in sorted(rules.values(), key=lambda r: (-r["count"], r["rule"]))]
 
@@ -764,7 +764,7 @@ def main(argv=None) -> int:
     sub.add_parser("brief", help="PostToolUse(Skill) hook: inject reviewed lessons").set_defaults(f=cmd_brief)
 
     n = sub.add_parser("note", help="record one friction entry")
-    n.add_argument("--session"), n.add_argument("--skill", required=True), n.add_argument("--gate")
+    n.add_argument("--session"), n.add_argument("--skill", required=True), n.add_argument("--stage")
     for field in FIELDS:
         n.add_argument(f"--{field}")
     n.add_argument("--cost"), n.add_argument("--none", action="store_true",

@@ -80,7 +80,7 @@ headers**, so it floated until `gen_teensy_headers.py` emitted the 0.1 inch stan
 ## Things that cost time, so they don't cost it twice
 
 The ones that generalise past this board are now the `showoff-render` skill, which front-loads them
-as a CAD-readiness gate. **Start there for a new film**; this section is the evidence behind it.
+as a CAD-readiness stage. **Start there for a new film**; this section is the evidence behind it.
 
 - **A C2 camera spline is not a claim about the shot.** The first v2 camera was continuous in
   position, velocity and acceleration everywhere and still read as several shots stitched together,
@@ -100,8 +100,8 @@ as a CAD-readiness gate. **Start there for a new film**; this section is the evi
   below the frame bottom at nearly zero horizontal offset. 17 of 110 parts were on screen the frame
   they appeared. `entry_basis` now grows the distance until all eight projected box corners clear
   one frame edge: ×1.55 at worst, peak part speed 1.24 → 1.45 frame-widths/s, and printed per part.
-- **A hover at the flight height happens above the top of the frame.** Heroes fly in 22–40 mm up to
-  clear what is already down, and a hero frame is 47–76 mm tall, so holding that height put the ADC
+- **A hover at the flight height happens above the top of the frame.** Featured parts fly in 22–40 mm up to
+  clear what is already down, and a featured part frame is 47–76 mm tall, so holding that height put the ADC
   at v 1.21 and the Teensy at 2.05 — out of shot, then dropping in from above. `hover_at` is a
   separate lower height, reached over the approach. The bulge and the arc had to move onto the
   approach's own clock too, or the part hovers *beside* its pads — at u = 0.62 the bulge is still
@@ -111,7 +111,7 @@ as a CAD-readiness gate. **Start there for a new film**; this section is the evi
   centre sat 1.12 frame-widths off screen. The path was fine — the **subject track had never named
   the part**. Naming it buys an excursion out and back, i.e. a reversal in the aim's own travel,
   so it was spent deliberately and measured: 0 reversals still, and its two handoffs (3.8 s, 4.0 s)
-  land in the same flow band as the hero traverses. `SUBJECT_AIM` carries why the aim goes *short*
+  land in the same flow band as the featured part traverses. `SUBJECT_AIM` carries why the aim goes *short*
   of the connector and why the −16 mm nudge is 16 and not 20 — at 20 the aim turns 121° at f1478.
 - **Do not aim a shot at `board_facing` ≈ 0.** The mask films were timed to touch at dead edge-on,
   the one attitude in which both read as arriving from opposite sides at once — and also the one
@@ -176,7 +176,7 @@ as a CAD-readiness gate. **Start there for a new film**; this section is the evi
   `build_lighting`'s `(d / 0.2) ** 2` makes irradiance depend on the base watts alone, so reusing
   the studio's `d` for v2's sweep strip 42 mm off the board over-lit it by (220/42)² = 27×. That
   came back as white components and blown silkscreen, and read as a *material* bug for a while.
-- **Hero close-ups are macro, and Blender's depth of field is physical.** It is
+- **Featured part close-ups are macro, and Blender's depth of field is physical.** It is
   2·N·c·(1+m)/m² with m = 36/width, so at width 46 mm f/7.1 gives about 1 mm — every landed part
   20 mm from the ADC became a bokeh blob. Pick the stop from that formula, per beat, and let
   `frame_coverage()` size the field: an eyeballed one is not trustworthy at 3.4 board-lengths.

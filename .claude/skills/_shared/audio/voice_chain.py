@@ -6,7 +6,7 @@ outputs read as "very AI", and a later early-reflection pass was "a robot with e
 reach for them in new work. They stay for reproducing historical cuts — the assembly film's
 pre-v7.2 mixes and the intro film's `scored.mp4` were made with them.
 
-`deess` and `compress` are ordinary corrective tools and carry no such verdict.
+`deess` and `compress` are ordinary corrective tools and carry no such judgement.
 
 The current method is in [`../natural-voice/README.md`](../natural-voice/README.md): preserve a
 convincing model performance, its endings and its bandwidth, then apply minimal corrective EQ.

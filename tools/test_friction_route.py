@@ -170,7 +170,7 @@ def build_lab(root: Path):
 
 
 def entry(rule: str) -> dict:
-    return {"date": "2026-08-23", "host": "testbox", "skill": "natural-voice", "gate": "",
+    return {"date": "2026-08-23", "host": "testbox", "skill": "natural-voice", "stage": "",
             "complaint": "c", "mistake": "mi", "fix": "f", "rule": rule}
 
 

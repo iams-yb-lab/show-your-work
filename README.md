@@ -75,8 +75,8 @@ still live in the project they are about.
 
 ## How the skills improve
 
-They are read-only, so they do not improve by being edited mid-run. They improve because runs are
-recorded. A `PostToolUse` hook on `Skill` reads `feedback/lessons/<skill>.md` into the start of a
+They change only in the open, by pull request, so they do not improve by being edited mid-run. They
+improve because runs are recorded. A `PostToolUse` hook on `Skill` reads `feedback/lessons/<skill>.md` into the start of a
 run; when something goes wrong, Claude records one capped entry, silently; the `Stop` hook pushes it
 to `friction/<hostname>` and keeps one standing pull request per machine. You review the PR, fold
 what is worth keeping into `feedback/lessons/`, and the next run everywhere starts knowing it.
@@ -88,8 +88,7 @@ python tools/friction.py flush --check    # what this machine would send, changi
 
 Nothing unreviewed is ever read back, no user is ever prompted, and no hook can fail a turn — the
 buffer just waits for the next session. `feedback/README.md` has the format and the redaction rule:
-entries carry a rule, never film content. Repeated entries are what a `proposals/` document argues
-from when a skill genuinely needs to change.
+entries carry a rule, never film content. Repeated entries are the evidence a skill change is argued from.
 
 ## Installing elsewhere
 
@@ -158,12 +157,12 @@ It is deliberately narrow:
 - **Fast-forward only.** A checkout that has diverged, or where the merge would overwrite
   something, is reported and left exactly as it is — never merged, never rebased, never stashed.
 - **In a project it re-installs from the checkout on this machine**, the one `install_skills.py`
-  left a pointer to. The files that are read-only by contract — the skill instruction files and
+  left a pointer to. The files that are replaced on update by contract — the skill instruction files and
   everything in `_shared/`, tools and lessons included — are replaced when they differ, because a
   difference there is staleness or damage. A skill's `method/`, `examples/` or `profiles/` that the
   project has edited is left alone and named. With no checkout on the machine it says that, rather than looking successful.
 - **After an update it runs `check_links.py` on what landed**, so a version that arrives broken
-  says so at the start of the session instead of three gates later.
+  says so at the start of the session instead of three stages later.
 - **It says nothing when there is nothing to say.** A session that was already current starts
   silently; it speaks up when it changed something, and when it could not.
 - **It never asks, and it cannot fail a session.** No prompt, every path exits 0. Offline long
@@ -184,7 +183,7 @@ Five checks, exit non-zero with the file and line on any failure:
 | check | catches |
 |---|---|
 | geometry | a skill that can no longer reach its method |
-| skills | a skill file that was edited — they are read-only, and verified by hash |
+| skills | a skill file that differs from its recorded hash, which means an unrecorded edit |
 | independence | any absolute path naming another checkout, so this repository never quietly needs one — and, inside the payload, any literal home directory, which resolves on one machine and names its owner |
 | travel | a link from inside the installable payload to a file that would not travel with it |
 | links | any relative link that does not resolve |
@@ -230,9 +229,10 @@ is meant.
 
 ## The one rule about the skills themselves
 
-**They are read-only.** Not a wording tweak, not one more bullet. A skill travels between
-repositories, so a session that quietly improves one changes how every future session works,
-everywhere, unreviewed. The skills say this about themselves, and it is why the copies here are
-byte-identical rather than adapted — the hashes are in [`EXPORT-MANIFEST.md`](EXPORT-MANIFEST.md).
+**They change only in the open.** A skill travels between repositories, so a session that quietly
+changes one changes how every future session works, everywhere, unreviewed. Changes are made when
+the repository owner asks for them, on a branch, as a pull request, with the hashes in
+`tools/skill-hashes.txt` and [`EXPORT-MANIFEST.md`](EXPORT-MANIFEST.md) refreshed.
 
-The only exception is the user typing `I insist on editing the skills`, exactly.
+The skills are toolboxes of process notes, written in plain English. They carry no opinions on the
+content, tone or structure of what gets made; that belongs to the project's own style guide.

@@ -116,4 +116,4 @@ bpy.ops.import_scene.gltf(filepath=r"...\out.glb", loglevel=50)
   lost upstream.
 - **STEP colours still lie** — the 125-14's vendor model is *green*; the real board is
   red. The conversion preserving colours does not make them true. Check against
-  photographs of the real hardware, per the showoff-render skill's GATE 1.
+  photographs of the real hardware, per the showoff-render skill's STAGE 1.

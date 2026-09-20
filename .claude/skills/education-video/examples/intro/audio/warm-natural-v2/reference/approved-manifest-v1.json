@@ -255,14 +255,14 @@
     "line": 19,
     "start": 104.75999999999999,
     "end": 111.94,
-    "caption": "Accuracy we can live without \u2014 the working point is found on the bench. Drift is the one that matters.",
-    "spoken": "Accuracy we can live without , the working point is found on the bench. Drift is the one that matters.",
+    "caption": "Accuracy we can live without \u2014 the working point is found in the lab. Drift is the one that matters.",
+    "spoken": "Accuracy we can live without , the working point is found in the lab. Drift is the one that matters.",
     "group": 6,
     "group_take": 4,
     "source_start": 7.37,
     "source_end": 11.94,
     "duration": 4.57,
-    "alignment_hyp": "accuracy we can live without the working point is found on the bench drift is the one that matters",
+    "alignment_hyp": "accuracy we can live without the working point is found in the lab drift is the one that matters",
     "alignment_wer": 0.0
   },
   {

@@ -2,7 +2,7 @@
 """Rendered checks on the built master, plus slide screenshots for the export.
 
 For every slide: (1) no visible element extends past the 1920x1080 canvas;
-(2) no visible text renders below the GATE 0 floor (28px computed); (3) nothing is drawn
+(2) no visible text renders below the STAGE 0 floor (28px computed); (3) nothing is drawn
 on top of anything else — words on words, words on a picture, a picture on a picture;
 (4) inside a diagram, no line, curve or block edge crowds a word; and (5) a 1920x1080 PNG
 is written for the pixel-faithful PowerPoint export.

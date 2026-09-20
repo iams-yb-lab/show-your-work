@@ -18,7 +18,7 @@
 
 .EXAMPLE
   .\animate_v2.ps1 -PlanOnly
-  Prints the schedule, the sub-waves, the hero resolution and the camera/board diagnostics
+  Prints the schedule, the sub-waves, the featured part resolution and the camera/board diagnostics
   in a few seconds, without importing the board. Retime here before rendering anything.
 
 .EXAMPLE

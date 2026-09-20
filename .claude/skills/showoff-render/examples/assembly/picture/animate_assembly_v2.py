@@ -106,12 +106,12 @@ F_HANDOFF = 24           # frames from contact to the board carrying its own mas
 F_FILM_FADE = 30         # frames for an arriving film to come up from invisible
 F_PADS = (664, 752)      # 22.13 - 25.07  mask openings develop, ENIG plates
 F_SILK = (736, 846)      # 24.53 - 28.20  silkscreen widens and travels
-# 92 frames of clear air between one hero landing and the next entrance. It is this long
+# 92 frames of clear air between one featured landing and the next entrance. It is this long
 # because it is not dead time: it is how long the camera takes to travel from the part that
 # just landed to the pads of the next one, at a speed that reads as a move rather than a
 # reposition. The ADC and the driver are 38 mm apart on the board and the driver and the
 # Teensy 67 mm, so this is the number that sets the traverse.
-F_HERO_GAP = 92
+F_FEATURED_GAP = 92
 F_MIN_TAIL = 150         # the finale needs at least this long after the Teensy lands
 
 # Etch geometry, in millimetres on the board. `phi` is the sweep axis: the front is a line
@@ -156,7 +156,7 @@ FILM_ALPHA_AIR = 0.55
 # The three parts that get their own introduction, keyed on the part number in the board's
 # Value field rather than on a designator -- designators get renumbered, and this repo has
 # already moved one four times. Resolved to designators at runtime and printed.
-HEROES = (
+FEATURED = (
     ("adc", "AD7124"),      # AD7124-8BCPZ, the ADC
     ("driver", "MAX1968"),  # MAX1968EUI+T, the TEC driver
     ("mcu", "Teensy"),      # Teensy 4.1, the controller module
@@ -178,7 +178,7 @@ HEROES = (
 #            reads as a part turning to face its own footprint
 #   lift     extra mid-flight height, as a fraction of `rise`
 #   settle   amplitude of the single small hop at the end, in mm (0 = none)
-# and three more that only the heroes use, in HERO_MOVES: `approach`, `hover`, `hover_at`.
+# and three more that only the featured use, in FEATURED_MOVES: `approach`, `hover`, `hover_at`.
 # `reach` scales the just-off-frame distance entry_basis solves, so 1.0 means "as close to the
 # frame edge as still clears it" and larger values give the bigger parts a longer, more
 # deliberate run in. It is not a distance.
@@ -214,7 +214,7 @@ WAVES = (
                        arc=0.32, spin=-14, tumble=24, lift=0.26, settle=0.35)),
     ("headers", dict(start=1340, span=60, sub=1, travel=70, rise=34, reach=1.14,
                      arc=0.34, spin=16, tumble=26, lift=0.28, settle=0.30)),
-    # Lands on 1524, and is the last thing to land: F_HERO_GAP and the three hero travels
+    # Lands on 1524, and is the last thing to land: F_FEATURED_GAP and the three featured travels
     # are chained off that frame, so this row is what puts the ADC's landing on 1720.
     ("harting", dict(start=1440, span=0, sub=1, travel=84, rise=46, reach=1.24,
                      arc=0.30, spin=10, tumble=18, lift=0.24, settle=0.45)),
@@ -222,7 +222,7 @@ WAVES = (
 
 # Which parts belong to which group, tested against the board's own footprint field so the
 # grouping is a fact about the part rather than a list to maintain. First match wins; the
-# heroes are removed before any of this runs.
+# featured are removed before any of this runs.
 GROUP_TESTS = (
     ("resistors", ("Resistor_SMD:R_",)),
     ("ceramics", ("Capacitor_SMD:C_",)),
@@ -234,23 +234,23 @@ GROUP_TESTS = (
     ("harting", ("HARTING",)),
 )
 
-# The hero entrances. Each is a different shape of move, which is the requirement: the ADC
+# The featured entrances. Each is a different shape of move, which is the requirement: the ADC
 # arcs in from frame left and turns far enough to show its contacts, the driver comes in
 # low, flat and fast from the right foreground, the Teensy makes the long one out of depth
 # with real mass. `sector` is degrees about the camera's view axis -- 0 frame right, 180
 # frame left, 90 behind the board, 270 in front of it.
 #
-# `approach` and `hover` are what make a hero landing a landing: the flight in is over at
+# `approach` and `hover` are what make a featured landing a landing: the flight in is over at
 # u = approach, the part then holds still above its own pads for `hover` of the flight, and
 # everything left is a descent along the board normal -- perpendicular to the board, because
 # that is the only direction still in the offset by then. See flight_world. In frames, for the
-# three of them: 64 / 14 / 26, 62 / 13 / 25 and 82 / 16 / 38, so each hero floats for about
+# three of them: 64 / 14 / 26, 62 / 13 / 25 and 82 / 16 / 38, so each featured floats for about
 # half a second and takes 0.83 - 1.27 s to come down.
 #
 # `settle` is 0 for all three, and that is a consequence rather than an omission: the hop
 # exists to sell a part being dropped, and a part that has just descended 22 - 62 mm under
 # control has nothing to bounce off.
-HERO_MOVES = (
+FEATURED_MOVES = (
     # `hover_at` 11 rather than 17: it reads as a part being *placed* only if the last gap is
     # small enough that the descent is a settle rather than a drop. Same 26 frames over 11 mm
     # instead of 17, so it comes down at 0.42 mm/frame against 0.65, and the ADC still floats
@@ -266,7 +266,7 @@ HERO_MOVES = (
                  hover_at=16)),
 )
 
-# Subject names in TARGET_BEATS that are wave groups rather than heroes: the aim goes to the
+# Subject names in TARGET_BEATS that are wave groups rather than featured: the aim goes to the
 # group's own centre. Only the connector needs one -- it is the one part the camera path
 # cannot present on its own.
 #
@@ -277,7 +277,7 @@ HERO_MOVES = (
 #               of it beyond is bare backdrop -- the part sits on the board's east edge with
 #               nothing past it. At 0.78 it lands on the right third with the board filling
 #               the rest, and the aim's excursion is a fifth shorter, which is what keeps the
-#               two handoffs it adds in the same family as the hero traverses instead of the
+#               two handoffs it adds in the same family as the featured parts traverses instead of the
 #               fastest moves in the piece (flow 4.7 and 5.3 x median at 1.00, 3.8 and 4.8 at
 #               0.78, against 4.2 for adc -> driver).
 #   nudge -16   the connector is 94 mm long, it runs along the board's north-south axis, and
@@ -296,7 +296,7 @@ SUBJECT_AIM = {"harting": dict(bias=0.78, nudge=(0.0, -16.0))}
 
 # Amplitude of the hover float, in mm: (along the board normal, across it). Periods are 1.6 s
 # and 2.3 s -- incommensurate, so the pair never repeats inside a hover. Small on purpose: at a
-# hero close-up 0.5 mm is 5 px of a 960-wide frame and 12 of a 2560, which reads as a part being
+# featured close-up 0.5 mm is 5 px of a 960-wide frame and 12 of a 2560, which reads as a part being
 # held rather than as a part moving. See flight_world.
 FLOAT_MM = (0.5, 0.35)
 
@@ -324,7 +324,7 @@ ENTRY_TRIES = 48
 #           on it; the world frame only holds the lights. It runs -437 to -77 here: one
 #           continuous 360 deg lap around the board, ending exactly where it started.
 #   el      elevation, degrees, unaffected by the board's yaw. One arc for the whole piece
-#           -- 7 deg grazing on the copper, up to 35 over the hero landings, easing back to
+#           -- 7 deg grazing on the copper, up to 35 over the featured landings, easing back to
 #           27. Roll is the board's job (see RIG_BEATS): the underside is shown by turning
 #           the board over, not by dipping the camera under the board plane, which is what
 #           v2 did and what cost it a reversal in elevation at f204.
@@ -336,12 +336,12 @@ ENTRY_TRIES = 48
 #   fstop   restrained, and the numbers are computed rather than chosen for feel. Depth of
 #           field is 2*N*c*(1+m)/m^2 with m = 36/width, so at width 46 mm f/7.1 gives ~1 mm
 #           of depth: the first probe pass turned every landed part 20 mm from the ADC into
-#           a bokeh blob. Hero close-ups therefore sit at width 62-70 mm and f/13-f/16
+#           a bokeh blob. Featured close-ups therefore sit at width 62-70 mm and f/13-f/16
 #           (4-6 mm), fabrication and the swarm at f/18-f/20 (15-24 mm, which covers the
 #           whole board surface), and the finale at f/14. There is still a visible falloff
 #           behind the subject; there is no longer a shot where most of the board is soft.
 #   light   rides the whole calibrated rig; fillx/rimx additionally narrow the lighting
-#           onto a hero landing by pulling the fill down and the rim up.
+#           onto a featured landing by pulling the fill down and the rim up.
 #
 # Every column is two or three monotone arcs, and their turning points are deliberately *not*
 # at the same frames: width crests at f610 and bottoms out at f1880, elevation crests at
@@ -401,7 +401,7 @@ CAM_BEATS = (
     (1760,   113.1, 35.3,  96.0,  92.0, 17.2, 0.81, 1.16, 1.28,  0.40),
     (1820,   132.5, 35.3,  88.0,  92.9, 16.9, 0.79, 1.17, 1.31,  0.57),
     # The closest the camera gets, 32 frames before the driver lands, and the one minimum in
-    # `width`. There is no second push and no pull-back between the heroes: the ADC and the
+    # `width`. There is no second push and no pull-back between the featured parts: the ADC and the
     # driver are 38 mm apart on the board, so the camera simply travels from one to the other
     # at this width, and the Teensy's landing is covered by a retreat that has already begun.
     (1880,   150.4, 35.0,  84.0,  93.6, 16.6, 0.78, 1.18, 1.34,  0.75),
@@ -423,7 +423,7 @@ CAM_BEATS = (
     # 192, and a falling elevation shrinks its vertical extent as the frame opens. It read
     # 238 while the parenting bug had the assembly spanning 252 mm instead of 165: a framing
     # number tuned against a broken scene encodes the breakage. Light rides back *up* here,
-    # because the hero section held the mask 20 % under and deep purple is the whole point of
+    # because the featured parts section held the mask 20 % under and deep purple is the whole point of
     # the chosen variant.
     (2320,   252.3, 29.2, 173.0,  98.2, 14.6, 0.92, 1.09, 1.50,  2.25),
     (2390,   264.1, 28.3, 190.0,  98.8, 14.2, 0.94, 1.07, 1.44,  2.51),
@@ -517,8 +517,8 @@ RIG_BEATS = (
 )
 
 # The fifth light: a narrow strip that rides with the board, so a controlled highlight can
-# be walked along the etch front, narrowed onto a hero landing, and swept across the metal
-# in the finale. `at` names a hero whose position supplies px/py; otherwise px/py are board
+# be walked along the etch front, narrowed onto a featured landing, and swept across the metal
+# in the finale. `at` names a featured part whose position supplies px/py; otherwise px/py are board
 # millimetres from the board centre. pz is signed, so a negative one lights the underside.
 #   f      e     px    py   pz    sx    sy   at
 SWEEP_BEATS = (
@@ -539,13 +539,13 @@ SWEEP_BEATS = (
     (900,  0.18,  40,   0,   58,  130,  14, None),
     (980,  0.00,   0,   0,   64,  120,  13, None),
     (1240, 0.00,   0,   0,   58,  110,  12, None),
-    # px/py on an `at` row are placeholders: bake_lights substitutes the named hero's board
+    # px/py on an `at` row are placeholders: bake_lights substitutes the named featured's board
     # position into the table before splining, so the strip travels between the three of them
     # instead of jumping. The row between the driver and the Teensy sits at px 0 — on the path
     # from -36.4 to +27 — so that travel does not double back on itself either.
     (1600, 0.90,   0,   0,   26,   26,  10, "adc"),
     # Holds the ADC level for its landing, and stops `e` overshooting to 0.99 on the way past
-    # 0.90 — a long rise into a knot rings after it, and this is the hero close-up.
+    # 0.90 — a long rise into a knot rings after it, and this is the featured parts close-up.
     (1700, 0.90,   0,   0,   25,   26,  10, "adc"),
     (1800, 0.85,   0,   0,   24,   26,  10, "driver"),
     (1930, 0.30,   0,   0,   50,   60,  14, None),
@@ -784,12 +784,12 @@ def match_objects(components, parts, offset_mm):
     return matched
 
 
-def resolve_heroes(parts):
+def resolve_featured(parts):
     found = {}
-    for name, needle in HEROES:
+    for name, needle in FEATURED:
         hits = [p for p in parts if needle.lower() in p["value"].lower()]
         if len(hits) != 1:
-            sys.exit(f"hero '{name}': {len(hits)} parts match {needle!r} "
+            sys.exit(f"featured '{name}': {len(hits)} parts match {needle!r} "
                      f"({[h['ref'] for h in hits]}) -- expected exactly one")
         found[name] = hits[0]["ref"]
     return found
@@ -806,10 +806,10 @@ def order_key_factory(parts):
     return pos, lambda ref: pos[ref][0] * math.cos(phi) + pos[ref][1] * math.sin(phi)
 
 
-def group_parts(refs, parts, heroes, order_key):
-    """Sort designators into hero, placement group, or unclassified."""
+def group_parts(refs, parts, featured, order_key):
+    """Sort designators into featured, placement group, or unclassified."""
     part_of = {p["ref"]: p for p in parts}
-    groups, seen = {}, set(heroes.values())
+    groups, seen = {}, set(featured.values())
     for label, needles in GROUP_TESTS:
         picked = [r for r in refs if r not in seen
                   and any(n in part_of[r]["footprint"] for n in needles)]
@@ -861,10 +861,10 @@ def wave_schedule(groups, parts, order_key):
     return plan, subwaves
 
 
-def hero_schedule(after_waves):
+def featured_schedule(after_waves):
     out, f = {}, after_waves
-    for name, m in HERO_MOVES:
-        start = f + F_HERO_GAP
+    for name, m in FEATURED_MOVES:
+        start = f + F_FEATURED_GAP
         out[name] = (start, start + m["travel"], m)
         f = start + m["travel"]
     return out, f
@@ -991,7 +991,7 @@ def frame_coverage(cam: Camera, rig: Rig, frame: int, hull_local, aspect: float)
     """How much of the frame the assembly fills, as (horizontal, vertical) fractions.
 
     1.0 means a point sits exactly on the frame edge, so anything above 1.0 is clipped. A
-    hero composition wants ~0.9: an eyeballed `width` cannot be trusted here, because at a
+    featured composition wants ~0.9: an eyeballed `width` cannot be trusted here, because at a
     working distance of only ~3.4 board-lengths the near end of a tilted board projects
     considerably larger than the far end, and the first pass duly cropped the Harting.
     """
@@ -1040,10 +1040,10 @@ def flight_world(rig: Rig, entry: dict, land_basis: Matrix, pre: Matrix,
     position. `entry` is the camera's basis at the entry frame, computed once per part.
 
     A part carrying `approach` splits that overlap into three phases instead of blending
-    them, which is what the three hero landings want: the whole approach -- lateral, arc and
+    them, which is what the three featured landings want: the whole approach -- lateral, arc and
     orientation -- finishes at u = `approach`, the part then holds still above its own pads
     for `hover` of the flight, and the rest is a descent along the board normal alone. The
-    first draft ran the lateral and the height decays concurrently for a hero too, and 104
+    first draft ran the lateral and the height decays concurrently for a featured part too, and 104
     frames of two overlapping eases read as one continuous swoop with no moment of arrival
     in it. The cost is a faster approach, since the same distance is covered in 62 % of the
     frames -- measured, peak screen speed 0.47 -> 0.52 frame-widths/s for the ADC, against 1.45
@@ -1085,8 +1085,8 @@ def flight_world(rig: Rig, entry: dict, land_basis: Matrix, pre: Matrix,
 
     # The height the part holds while it hovers, which is not the height it flew in at: those
     # were one number in the first cut of this and the hover then happened *above the top of
-    # the frame*. A hero flies in 24 - 40 mm up because that is what clears the parts already
-    # on the board, and the frame is 47 - 76 mm tall at a hero close-up, so holding the flight
+    # the frame*. A featured flies in 24 - 40 mm up because that is what clears the parts already
+    # on the board, and the frame is 47 - 76 mm tall at a featured part close-up, so holding the flight
     # height put the ADC at v 1.21 and the Teensy at 2.05 -- both out of shot, both then
     # dropping into frame from above. The excess over `hover` is given back over the approach,
     # so the part arrives at the height it is going to hold.
@@ -1097,7 +1097,7 @@ def flight_world(rig: Rig, entry: dict, land_basis: Matrix, pre: Matrix,
     # held in air rather than parked in space. `a * (1 - b)` is the envelope and costs nothing
     # extra: it is zero through the fast part of the approach, exactly 1 across the hover, and
     # back to zero by the land frame, so the landing cannot inherit a wobble. Phase comes from
-    # the part's own jitter, so no two heroes bob together.
+    # the part's own jitter, so no two featured parts bob together.
     float_env = a * (1.0 - b) if approach else 0.0
     bob = FLOAT_MM[0] / 1000.0 * math.sin(frame * 0.130 + jitter[0])
     sway = FLOAT_MM[1] / 1000.0 * math.sin(frame * 0.091 + jitter[0] * 1.7)
@@ -1710,7 +1710,7 @@ def build_riders(strength: float, diag: float):
     """Two lights that ride with the board rather than standing in the studio.
 
     SWEEP is a narrow strip: the controlled travelling highlight that walks along the etch
-    front, narrows onto a hero landing, and crosses the metal in the finale. UNDER is a
+    front, narrows onto a featured landing, and crosses the metal in the finale. UNDER is a
     broad box below the board, on only while the underside is what the shot is about --
     the four studio lights are all above, so bare copper on the bottom face is a black
     mirror without it.
@@ -1737,7 +1737,7 @@ def build_riders(strength: float, diag: float):
     return out
 
 
-def bake_lights(lights, riders, rig: Rig, cam: Camera, heroes_local: dict, diag: float,
+def bake_lights(lights, riders, rig: Rig, cam: Camera, featured_local: dict, diag: float,
                 end: int):
     """Ride the calibrated rig, and walk the two board-mounted lights along with it.
 
@@ -1750,15 +1750,15 @@ def bake_lights(lights, riders, rig: Rig, cam: Camera, heroes_local: dict, diag:
     # Per-frame lookup made the strip's position a step function: it is a narrow, bright,
     # board-mounted highlight, and it teleported 40 mm the frame it grabbed the ADC and 76 mm
     # between the driver and the Teensy. That was always here -- v2's busier camera merely hid
-    # it, and a calmer one would have put a lighting pop on the ADC's hero reveal. Substituting
-    # the hero positions here leaves px/py a single continuous spline that *travels* between
+    # it, and a calmer one would have put a lighting pop on the ADC's featured reveal. Substituting
+    # the featured parts positions here leaves px/py a single continuous spline that *travels* between
     # them, which is what the camera is doing over the same frames anyway.
     rows = []
     for beat in SWEEP_BEATS:
         vals, at_name = list(beat[:-1]), beat[-1]
         if at_name is not None:
-            vals[2] = heroes_local[at_name].x * 1000.0
-            vals[3] = heroes_local[at_name].y * 1000.0
+            vals[2] = featured_local[at_name].x * 1000.0
+            vals[3] = featured_local[at_name].y * 1000.0
         rows.append(vals)
     fs = [r[0] for r in rows]
     ch = {name: Spline(fs, [r[1 + i] for r in rows])
@@ -1786,7 +1786,7 @@ def bake_lights(lights, riders, rig: Rig, cam: Camera, heroes_local: dict, diag:
         sweep.location = rig.to_world(frame, Vector((px / 1000.0, py / 1000.0, pz)))
         aim_at(sweep, rig.to_world(frame, Vector((px / 1000.0, py / 1000.0, 0.0))))
         # Watts at 0.2 m, rescaled to wherever the light actually is, so `e` means the same
-        # thing whether the strip is 24 mm off a hero or 52 mm off the whole board.
+        # thing whether the strip is 24 mm off a featured part or 52 mm off the whole board.
         sweep.data.energy = (sweep.data["base_energy"] * max(0.0, ch["e"](frame))
                              * (max(0.012, abs(pz)) / 0.2) ** 2)
         sweep.data.size = max(0.002, ch["sx"](frame) / 1000.0)
@@ -1817,7 +1817,7 @@ def bake_lights(lights, riders, rig: Rig, cam: Camera, heroes_local: dict, diag:
 def group_targets(groups: dict, pos_of: dict, top_of: dict | None = None) -> dict:
     """Aim points for the wave groups TARGET_BEATS names, taken from the parts themselves.
 
-    A group rather than a designator, for the same reason the heroes are resolved by part
+    A group rather than a designator, for the same reason the featured are resolved by part
     number: J8 has been renumbered before. The centre of the group, so a second connector on
     a later board revision cannot silently go unshown.
     """
@@ -1827,7 +1827,7 @@ def group_targets(groups: dict, pos_of: dict, top_of: dict | None = None) -> dic
         if not refs:
             continue
         c = sum((pos_of[r] for r in refs), Vector()) / len(refs)
-        # A little above the part, not at its pads -- same reason as heroes_local.
+        # A little above the part, not at its pads -- same reason as featured_local.
         z = (max(top_of[r] for r in refs) + 0.004) if top_of else c.z + 0.006
         aim = SUBJECT_AIM[label]
         out[label] = Vector((c.x * aim["bias"] + aim["nudge"][0] / 1000.0,
@@ -1994,8 +1994,8 @@ def print_entries(entries: dict, showcased: dict, silhouettes: bool = True):
               f"storyboard says they are the subject")
 
 
-def print_plan(rig: Rig, cam: Camera, end: int, floor_z: float, subwaves, hero_sched,
-               heroes, parts, hull=None, aspect=16 / 9, entries=None, showcased=None,
+def print_plan(rig: Rig, cam: Camera, end: int, floor_z: float, subwaves, featured_sched,
+               featured, parts, hull=None, aspect=16 / 9, entries=None, showcased=None,
                silhouettes=True):
     print(f"\n  timeline: {end} frames, {end / FPS:.2f} s at {FPS} fps")
     print(f"    copper        1 - {F_COPPER_END}")
@@ -2007,9 +2007,9 @@ def print_plan(rig: Rig, cam: Camera, end: int, floor_z: float, subwaves, hero_s
     for label, j, sector, band, first, last in subwaves:
         print(f"    {label:10s} wave {j + 1}  {first:4d}-{last:4d}  sector {sector:4d}  "
               f"{len(band):3d}  {', '.join(band[:7])}{' ...' if len(band) > 7 else ''}")
-    for name, (start, land, _m) in hero_sched.items():
-        val = next(p["value"] for p in parts if p["ref"] == heroes[name])
-        print(f"    hero {name:6s} {start:4d} -> {land:4d}   {heroes[name]} ({val})")
+    for name, (start, land, _m) in featured_sched.items():
+        val = next(p["value"] for p in parts if p["ref"] == featured[name])
+        print(f"    featured {name:6s} {start:4d} -> {land:4d}   {featured[name]} ({val})")
 
     print("\n  camera / board, at the probe frames")
     print("    frame    orb   az_w   el  width  radius   camz  facing  cam d/dt  "
@@ -2127,31 +2127,31 @@ def main() -> int:
     print(f"{args.parts.name}: {len(parts)} placed footprints from {data['board']} "
           f"(KiCad {data['kicad']}), layer bounds {size_mm[0]} x {size_mm[1]} mm")
 
-    heroes = resolve_heroes(parts)
+    featured = resolve_featured(parts)
     pos_mm, order_key = order_key_factory(parts)
     refs = [p["ref"] for p in parts]
-    groups = group_parts(refs, parts, heroes, order_key)
+    groups = group_parts(refs, parts, featured, order_key)
     plan, subwaves = wave_schedule(groups, parts, order_key)
-    # The three heroes get their own entrances and must not also arrive in a wave. group_parts
+    # The three featured parts get their own entrances and must not also arrive in a wave. group_parts
     # removes them before grouping, so this can only fail if a GROUP_TEST is widened to catch
     # one -- which is exactly the edit that would do it silently.
-    intruders = sorted(set(plan) & set(heroes.values()))
+    intruders = sorted(set(plan) & set(featured.values()))
     if intruders:
-        sys.exit(f"hero(es) {intruders} are scheduled in a supporting wave as well")
+        sys.exit(f"featured(es) {intruders} are scheduled in a supporting wave as well")
     after_waves = max(land for _s, land, _sec, _sp in plan.values())
-    hero_sched, after_heroes = hero_schedule(after_waves)
+    featured_sched, after_featured = featured_schedule(after_waves)
     end = int(CAM_BEATS[-1][0])
-    if after_heroes + F_MIN_TAIL > end:
-        sys.exit(f"the Teensy lands on {after_heroes} but the camera table ends on {end}: "
+    if after_featured + F_MIN_TAIL > end:
+        sys.exit(f"the Teensy lands on {after_featured} but the camera table ends on {end}: "
                  f"the finale needs at least {F_MIN_TAIL} frames")
-    # Every flight in one dict, heroes included, so the schedule has a single home for both
+    # Every flight in one dict, featured included, so the schedule has a single home for both
     # the plan and the keying.
     flights = dict(plan)
-    for name, (start, land, spec) in hero_sched.items():
-        flights[heroes[name]] = (start, land, spec["sector"], spec)
+    for name, (start, land, spec) in featured_sched.items():
+        flights[featured[name]] = (start, land, spec["sector"], spec)
     # The parts the storyboard promises the viewer will see arrive, which are the only ones
     # held to being in frame when they land.
-    showcased = {r: f"hero {n}" for n, r in heroes.items()}
+    showcased = {r: f"featured {n}" for n, r in featured.items()}
     for label in SUBJECT_GROUPS:
         for r in groups.get(label) or []:
             showcased[r] = f"subject '{label}'"
@@ -2165,7 +2165,7 @@ def main() -> int:
         pos_local = {r: Vector(((pos_mm[r][0] - cx) / 1000.0,
                                 (pos_mm[r][1] - cy) / 1000.0, 0.004)) for r in refs}
         rig = Rig(Vector((0.0, 0.0, 0.0)))
-        named = {n: pos_local[r] for n, r in heroes.items()}
+        named = {n: pos_local[r] for n, r in featured.items()}
         named.update(group_targets(groups, pos_local))
         cam = Camera(rig, build_targets(named, plan, pos_local, size_mm, end))
         # Centres, not silhouettes -- part extents come from the scene. Weaker, and still
@@ -2186,8 +2186,8 @@ def main() -> int:
                             silhouette_frame(cam, start, [spawn], aspect)[1], entry["grew"],
                             silhouette_frame(cam, land, [rig.to_world(land, pos_local[ref])],
                                              aspect)[0])
-        print_plan(rig, cam, end, -0.0008 - FLOOR_DROP_MM / 1000.0, subwaves, hero_sched,
-                   heroes, parts, aspect=args.width / args.height, entries=entries,
+        print_plan(rig, cam, end, -0.0008 - FLOOR_DROP_MM / 1000.0, subwaves, featured_sched,
+                   featured, parts, aspect=args.width / args.height, entries=entries,
                    showcased=showcased, silhouettes=False)
         return 0
 
@@ -2223,10 +2223,10 @@ def main() -> int:
     by_ref = {}
     for obj in components:
         by_ref.setdefault(matched[obj.name], []).append(obj)
-    missing = (set(plan) | set(heroes.values())) - set(by_ref)
+    missing = (set(plan) | set(featured.values())) - set(by_ref)
     if missing:
         sys.exit(f"scheduled parts with no objects in the scene: {sorted(missing)}")
-    unscheduled = set(by_ref) - set(plan) - set(heroes.values())
+    unscheduled = set(by_ref) - set(plan) - set(featured.values())
     if unscheduled:
         sys.exit(f"parts with objects but no slot in the schedule: {sorted(unscheduled)}")
 
@@ -2310,11 +2310,11 @@ def main() -> int:
         box_of[ref] = [Vector((x, y, z)) for x in (lo_p.x, hi_p.x)
                        for y in (lo_p.y, hi_p.y) for z in (lo_p.z, hi_p.z)]
 
-    # Aim a little above a hero, not at its pads: at these focal lengths, aiming at the pads
+    # Aim a little above a featured part, not at its pads: at these focal lengths, aiming at the pads
     # puts the part in the lower half of the frame.
-    heroes_local = {n: Vector((local_of[r].x, local_of[r].y, top_of[r] + 0.004))
-                    for n, r in heroes.items()}
-    subjects = dict(heroes_local)
+    featured_local = {n: Vector((local_of[r].x, local_of[r].y, top_of[r] + 0.004))
+                    for n, r in featured.items()}
+    subjects = dict(featured_local)
     subjects.update(group_targets(groups, local_of, top_of))
     cam = Camera(rig, build_targets(subjects, plan, local_of, size_mm, end))
 
@@ -2365,7 +2365,7 @@ def main() -> int:
             for kp in fc.keyframe_points:
                 kp.interpolation = "LINEAR"  # the path is already smooth; don't overshoot
 
-    bake_lights(lights, riders, rig, cam, heroes_local, (hi - lo).length, end)
+    bake_lights(lights, riders, rig, cam, featured_local, (hi - lo).length, end)
 
     # -------------------------------------------------------------------- the components
     rng = random.Random(SEED)
@@ -2470,7 +2470,7 @@ def main() -> int:
             print(f"    OUTSIDE by {d:7.1f} mm: {name}")
         sys.exit(f"{len(over)} component(s) are not on the board")
 
-    print_plan(rig, cam, end, floor.location.z, subwaves, hero_sched, heroes, parts,
+    print_plan(rig, cam, end, floor.location.z, subwaves, featured_sched, featured, parts,
                hull=hull, aspect=args.width / args.height, entries=entries,
                showcased=showcased)
 
@@ -2486,7 +2486,7 @@ def main() -> int:
     if frames == "probe":
         frames = ",".join(str(f) for f in PROBE_FRAMES + (end,))
         (args.outdir / "labels.txt").write_text(
-            "\n".join(f"{f} {text}" for f, text in PROBES + ((end, "final hero, drifting"),)),
+            "\n".join(f"{f} {text}" for f, text in PROBES + ((end, "final featured, drifting"),)),
             encoding="utf-8")
     print(f"  rendering {frames} at {args.width}x{args.height}, {args.samples} samples, "
           f"{FPS} fps, shutter {SHUTTER}")

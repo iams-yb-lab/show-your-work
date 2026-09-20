@@ -2,7 +2,7 @@
 
 Complementary band split at 240 Hz (low = zero-phase FFT lowpass, high =
 original minus low, so recombination is exact). In the low band only:
-the pulse segment [69.68, 72.28) is lifted out, the hole is patched with
+the pulse segment [69.68, 72.28) is lifted out, the gap is patched with
 the adjacent steady-pedal bed [68.30, 69.60), and the segment is put back
 1.30 s later with raised-cosine crossfades at every seam. Also nudges
 line 5's start to 58.9 s (after the ADC bell strike at 57.3 s decays).
@@ -22,7 +22,7 @@ MEDIA = Path(os.environ["TEMP"]) / "temperature-controller-media"
 SPLIT_HZ = 240
 SHIFT = 1.30
 T_ON, T_OFF = 69.68, 72.28   # pulse segment in the original
-FILL_SRC = 68.30             # steady bed, same length as the hole (1.30 s)
+FILL_SRC = 68.30             # steady bed, same length as the gap (1.30 s)
 XF = 0.05                    # 50 ms crossfades
 
 def xfade_replace(dst, seg, i0):
@@ -41,16 +41,16 @@ def main():
     y = y.T.copy()
 
     a, b = int(T_ON * SR), int(T_OFF * SR)
-    hole = int(SHIFT * SR)
+    gap = int(SHIFT * SR)
     fa = int(FILL_SRC * SR)
 
     for ch in range(2):
         low = spectral(y[ch], lambda f: lowpass(f, SPLIT_HZ, 2))
         high = y[ch] - low
         pulse = low[a:b].copy()
-        fill = low[fa:fa + hole].copy()
+        fill = low[fa:fa + gap].copy()
         xfade_replace(low, fill, a)                  # patch the vacated 1.3 s with bed
-        xfade_replace(low, pulse, a + hole)          # pulse lands 1.3 s later
+        xfade_replace(low, pulse, a + gap)          # pulse lands 1.3 s later
         y[ch] = high + low
 
     sf.write(str(MEDIA / "cinematic_score_v2.wav"), y.T, SR, subtype="PCM_24")

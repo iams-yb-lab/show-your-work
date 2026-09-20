@@ -54,7 +54,7 @@ Allow different groups to arrive with slightly different timing/direction so the
 
 All components must end at their exact real positions and orientations.
 
-4. ADC HERO INTRODUCTION
+4. ADC FEATURED PART INTRODUCTION
 Treat the ADC as an important component rather than just another object.
 
 Identify the ADC from the actual project/board rather than guessing from visual appearance alone.
@@ -67,7 +67,7 @@ The motion should make the viewer naturally understand that this component is im
 
 Do not add explanatory text into the Blender render yet; the PowerPoint can provide labels separately.
 
-5. TEC DRIVER HERO INTRODUCTION
+5. TEC DRIVER FEATURED PART INTRODUCTION
 Introduce the TEC driver separately after the ADC.
 
 Identify the actual driver from the project.
@@ -91,8 +91,8 @@ A tiny controlled overshoot or settling motion is acceptable if it improves the 
 
 It must finish exactly at its real mounted location.
 
-7. FINAL HERO SHOT
-After the Teensy lands, transition smoothly into a completed-board hero shot.
+7. FINAL SHOWCASE SHOT
+After the Teensy lands, transition smoothly into a completed-board showcase shot.
 
 Pull the camera back enough to reveal the entire assembled PCB.
 
@@ -259,7 +259,7 @@ Every object ends exactly at its real completed-board transform.
 
 The camera dynamically guides attention without harming readability.
 
-The completed board ends in a strong hero composition.
+The completed board ends in a strong featured part composition.
 
 The animation looks suitable for a serious research presentation rather than a generic AI animation.
 

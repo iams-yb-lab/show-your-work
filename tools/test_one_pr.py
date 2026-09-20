@@ -1,4 +1,4 @@
-"""Test matrix for `.claude/hooks/one-pr.py` — the one-open-pull-request gate.
+"""Test matrix for `.claude/hooks/one-pr.py` — the one-open-pull-request check.
 
 Run it after touching that hook: `python3 tools/test_one_pr.py`. Exits non-zero on
 any failure. Two of these cases are regressions, both found by this file denying the

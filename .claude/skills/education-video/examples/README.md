@@ -17,7 +17,7 @@ already changed once.
 
 An earlier generic film — how to explain your own work — was built here on 2026-08-13 and
 **deliberately deleted** so the `education-video` skill could be retested from a clean start. That
-retest is `how-to-make-an-explainer/`, run end to end from GATE 0 with nothing inherited. The deleted
+retest is `how-to-make-an-explainer/`, run end to end from STAGE 0 with nothing inherited. The deleted
 one is recoverable from git history; what was learned from both is in the skill.
 
 Films here share the audio engine and the voice method. Neither is owned by a film: a second copy of

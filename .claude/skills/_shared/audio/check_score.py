@@ -102,7 +102,7 @@ def main() -> int:
 
     groups = [
         ("component landings", [p["land"] for p in cues["parts"]]),
-        ("hero landings", [h["land"] for h in cues["heroes"]]),
+        ("featured landings", [h["land"] for h in cues["featured"]]),
     ]
     for name, frames in groups:
         errs = [onset_error(fr, args.tol) for fr in frames]
@@ -130,8 +130,8 @@ def main() -> int:
         ("etch + coat", fab["copper_end"], fab["pads"][0]),
         ("plate + print", fab["pads"][0], fab["done"]),
         ("swarm", fab["populate"], cues["waves"][-1]["land_last"]),
-        ("heroes", cues["heroes"][0]["spawn"], cues["heroes"][-1]["land"]),
-        ("finale", cues["heroes"][-1]["land"], cues["frames"]),
+        ("featured", cues["featured"][0]["spawn"], cues["featured"][-1]["land"]),
+        ("finale", cues["featured"][-1]["land"], cues["frames"]),
     ]
     for name, a, b in sections:
         i, j = int((a - 1) / fps * sr), int((b - 1) / fps * sr)

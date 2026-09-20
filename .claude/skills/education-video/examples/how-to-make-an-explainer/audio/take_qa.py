@@ -152,7 +152,7 @@ def main() -> int:
 
     # Transcribing is the expensive half; scoring is the half that gets calibrated. So transcripts
     # are cached and --rescore replays them. Changing an equivalence group then costs seconds rather
-    # than an hour, which is the difference between calibrating a gate and living with a wrong one.
+    # than an hour, which is the difference between calibrating a stage and living with a wrong one.
     cache = {}
     if (previous := WORK / "takes-qa.json").exists():
         cache = {(r["section"], r["take"]): r
@@ -224,10 +224,10 @@ def main() -> int:
         row["words_ok"] = row["wer"] <= WER_CEILING and not row["substitutions"]
         row["f0_offset_hz"] = round(abs(row["median_f0_hz"] - PROFILE_F0), 2)
         rows.append(row)
-        verdict = "words ok" if row["words_ok"] else "REJECTED"
+        judgement = "words ok" if row["words_ok"] else "REJECTED"
         print(f"  [{row['section']}] take {row['take']}  {row['duration_s']:6.2f} s  "
               f"WER {row['wer']:.3f}  F0 {row['median_f0_hz']:6.1f} Hz "
-              f"({row['f0_offset_hz']:+.1f} vs profile)  {verdict}", flush=True)
+              f"({row['f0_offset_hz']:+.1f} vs profile)  {judgement}", flush=True)
         for e in row["edits"]:
             print(f"        {e['op']:<10} script={e['script']!r} heard={e['heard']!r}", flush=True)
 
@@ -252,14 +252,14 @@ def main() -> int:
         # Select for the narrator: closest to the profile's own median pitch.
         best = min(candidates, key=lambda r: r["f0_offset_hz"])
         selected[section] = best["take"]
-        # A human verdict outranks the pitch rule — ears are the authority here, metrics are not.
+        # A human judgement outranks the pitch rule — ears are the authority here, metrics are not.
         # It does not outrank the word check: a take that says the wrong word cannot be chosen by
         # anyone, so the override is refused out loud rather than applied quietly.
         if (want := EAR.get(section)) is not None:
             chosen = next((r for r in candidates if r["take"] == want), None)
             if chosen:
                 selected[section] = want
-                overridden[section] = "human verdict"
+                overridden[section] = "human judgement"
             else:
                 bad = next((r for r in rows if r["section"] == section and r["take"] == want), None)
                 why = ("wrong words: " + ", ".join(f"{e['script']!r}→{e['heard']!r}"
@@ -271,7 +271,7 @@ def main() -> int:
         "aimed_at": "raw takes",
         "wer_ceiling": WER_CEILING,
         "profile_median_f0_hz": PROFILE_F0,
-        "selection_rule": "no substitutions first, then the human verdict, then median F0",
+        "selection_rule": "no substitutions first, then the human judgement, then median F0",
         "chosen_by_ear": EAR,
         "override_outcome": overridden,
         "flagged_for_listening": flagged,

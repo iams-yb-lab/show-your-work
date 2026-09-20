@@ -32,11 +32,11 @@
     "echo_taps": false,
     "room_tone": false,
     "denoise": false,
-    "gate": false,
+    "stage": false,
     "compression": false,
     "exciter": false,
     "stereo_processing": false,
-    "optional_speech_restoration": "MossFormer2_SR_48K with per-section fallback gates"
+    "optional_speech_restoration": "MossFormer2_SR_48K with per-section fallback stages"
   },
   "proven_education_v2_eq": {
     "highpass_hz": 45,

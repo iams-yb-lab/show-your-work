@@ -20,17 +20,17 @@ because the viewer is also looking at something.
 | 0:20 | 0:24 | 600–720 | ADC descends and lands | "The AD7124-8. Twenty-four bits, and the reason a millikelvin can be seen at all." |
 | 0:24 | 0:28 | 720–830 | TEC driver descends and lands | "The MAX1968 drives the cooler — about three amps, either direction." |
 | 0:28 | 0:31 | 830–930 | Teensy descends and lands | "And the controller. The loop closes here, on the board, not over a network." |
-| 0:31 | 0:32.5 | 930–974 | held hero shot | "One millikelvin, peak to peak, held for an hour." |
+| 0:31 | 0:32.5 | 930–974 | held showcase shot | "One millikelvin, peak to peak, held for an hour." |
 
 ## Delivery notes
 
 - **Leave the last line alone in the silence.** It is the spec, and the only claim in the
-  script that the project has to earn on the bench. Do not talk over the hero shot.
+  script that the project has to earn in the lab. Do not talk over the showcase shot.
 - **"AD7124-8" is said "A-D seven-one-two-four dash eight"**, and MAX1968 "max nineteen
   sixty-eight". Naming the parts out loud is the point — it is what makes the animation a
   technical document rather than a graphic.
 - Nothing here says "we designed" or "our board". The parts and the numbers carry it.
-- The two hero lines sit *after* each part starts moving, not before: the viewer sees a
+- The two featured part lines sit *after* each part starts moving, not before: the viewer sees a
   component descend, then hears what it is.
 
 ## Facts used, and where each comes from

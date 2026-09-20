@@ -56,7 +56,7 @@ V72_EQ = (
     "treble=g=3:f=10000"
 )
 
-# the method's restoration gates (README.md "Bandwidth restoration")
+# the method's restoration stages (README.md "Bandwidth restoration")
 GATE_WER = 0.12
 GATE_DUR_FRAC, GATE_DUR_ABS = 0.012, 0.050
 GATE_F0_HZ = 5.0

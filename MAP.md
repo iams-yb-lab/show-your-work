@@ -10,9 +10,9 @@ finds a skill if its `SKILL.md` is there.
 | skill | instructions | method | worked examples | size |
 |---|---|---|---|---|
 | [`education-video`](.claude/skills/education-video/) | `SKILL.md`, `interview.md`, `images.md` | [`method/`](.claude/skills/education-video/method/) — the picture method, the composition check, the HTML-to-video exporter, the delivery mux | [`examples/`](.claude/skills/education-video/examples/) — two films: `intro/` and `how-to-make-an-explainer/` | 2.9 MB |
-| [`natural-voice`](.claude/skills/natural-voice/) | `SKILL.md` — a pointer document; its body is the link into `method/` | [`method/`](.claude/skills/natural-voice/method/) — `README.md` is the method itself, `EXPERIMENTS.md` is what is ruled out, `audio_audit.py` measures | [`profiles/`](.claude/skills/natural-voice/profiles/) — `warm-natural/` (approved) and `deep-onyx-slow/` | 984 KB |
+| [`natural-voice`](.claude/skills/natural-voice/) | `SKILL.md` — a pointer document; its body is the link into `method/` | [`method/`](.claude/skills/natural-voice/method/) — `README.md` is the method itself, `EXPERIMENTS.md` is what is ruled out, `audio_audit.py` measures | [`profiles/`](.claude/skills/natural-voice/profiles/) — `warm-natural/` (approved), `af-heart-normal/` (the lab's female explainer voice) and `deep-onyx-slow/` | 984 KB |
 | [`showoff-render`](.claude/skills/showoff-render/) | `SKILL.md` — self-contained | none; the skill carries its own method | [`examples/assembly/`](.claude/skills/showoff-render/examples/assembly/) — one film: the Blender and KiCad pipeline, its render log, its audio record | 600 KB |
-| [`slide-deck`](.claude/skills/slide-deck/) | `SKILL.md` — self-contained, contains no paths | none | [`examples/presentation/`](.claude/skills/slide-deck/examples/presentation/) — the how-to-use-the-skills deck, delivered, with every gate document | 12 MB |
+| [`slide-deck`](.claude/skills/slide-deck/) | `SKILL.md` — self-contained, contains no paths | none | [`examples/presentation/`](.claude/skills/slide-deck/examples/presentation/) — the how-to-use-the-skills deck, delivered, with every stage document | 12 MB |
 | [`technical-report`](.claude/skills/technical-report/) | `SKILL.md` — self-contained, contains no paths | **none** | **none** | 20 KB |
 
 **`technical-report` owns nothing else, and that is not an oversight.** It is the only
@@ -39,7 +39,7 @@ it as a skill.
 | [`tools/`](tools/) | this repository's own machinery, which no skill calls: `install_skills.py`, `update.py`, `check_links.py`, `friction.py`, `skill-hashes.txt` |
 | [`references/`](references/) | set aside, not yet deleted — see [`references/README.md`](references/README.md) |
 | [`feedback/`](feedback/) | `lessons/<skill>.md` is injected at the start of a run of that skill; `inbox/` is raw and stays on this machine |
-| `proposals/` | absent, which is the rule working: it holds only skill text waiting for the user's exact phrase, and the pull request that applies one deletes it |
+| `proposals/` | absent, which is the rule working: it holds only skill text waiting for the owner's decision, and the pull request that applies one deletes it |
 | [`MAINTENANCE.md`](MAINTENANCE.md) | open items on this repository's own machinery — the tooling, the checks, the hooks, the rules. One line each, deleted when done |
 
 ## What travels, and what does not

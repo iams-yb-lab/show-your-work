@@ -1,7 +1,7 @@
 """Measure voice files without modifying them.
 
 The report is evidence, not an automatic naturalness score. It makes prompt, raw, restored and
-mixed variants comparable while the listening verdict remains human.
+mixed variants comparable while the listening judgement remains human.
 """
 
 from __future__ import annotations
@@ -72,7 +72,7 @@ def measure(path: Path) -> dict:
         "power_ratio_above_12000_hz": float(spectrum[frequency >= 12000].sum() / total_power),
         "stereo_correlation": correlation,
         "trailing_seconds_below_minus_50_dbfs": trailing_below_minus_50,
-        "warning": "No metric here is a naturalness score; use loudness-matched listening gates.",
+        "warning": "No metric here is a naturalness score; use loudness-matched listening checks.",
     }
 
 

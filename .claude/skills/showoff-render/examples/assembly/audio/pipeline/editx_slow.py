@@ -1,8 +1,8 @@
 """Calmer/slower pass: EditX 'speed: slower' edit on each chosen line.
 
-Model-generated retiming (not a time-stretch). Gates: words unchanged,
+Model-generated retiming (not a time-stretch). Stages: words unchanged,
 duration within the (slower) slot cap, F0 still deep. A line failing
-gates keeps its current take. Originals preserved as line{N}_fast.wav.
+stages keeps its current take. Originals preserved as line{N}_fast.wav.
 """
 import os, json, re, difflib, shutil, sys
 from pathlib import Path
@@ -85,7 +85,7 @@ def main():
                                   wer=round(w, 3), f0=round(f0, 1), hyp=hyp)
             print(f"line{lid} ACCEPTED slower take", flush=True)
         else:
-            print(f"line{lid} slower take REJECTED (gates) — keeping previous", flush=True)
+            print(f"line{lid} slower take REJECTED (stages) — keeping previous", flush=True)
 
     (SRC / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print("DONE", flush=True)

@@ -51,7 +51,7 @@ Each line is timed to the visual it belongs to. Start speaking at the timecode; 
 
 **1:39.3**  [5.5s]  And absolute accuracy: how close the reading is to the truth.
 
-**1:44.8**  [9.0s]  Accuracy we can live without — the working point is found on the bench. Drift is the one that matters.
+**1:44.8**  [9.0s]  Accuracy we can live without — the working point is found in the lab. Drift is the one that matters.
 
 
 ## The blind term  (1:52.6 – 2:40.9)

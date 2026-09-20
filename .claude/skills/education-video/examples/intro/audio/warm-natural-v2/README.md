@@ -33,7 +33,7 @@ lock it, then time captions and picture to it.
 - Register: warm and collaborative, not deep/epic.
 - Context: two to four sentences generated together.
 - Bandwidth: conditional MossFormer2_SR_48K restoration; 36 cues accepted, 13 clean-resample fallbacks.
-- Voice processing: corrective EQ and gain only—no denoise, gate, compression, exciter, reverb or echo.
+- Voice processing: corrective EQ and gain only—no denoise, stage, compression, exciter, reverb or echo.
 - Music: 104 BPM, G major, constant −29.5 LUFS bed; no noise sources and no ducking.
 - Master: measured −14.59 LUFS / −0.99 dBTP.
 - Picture: H.264 stream-copied; MD5 `eed58d07f776f0be1a0b0860461b4f64`, identical to the silent master.

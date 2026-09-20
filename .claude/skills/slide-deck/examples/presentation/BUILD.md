@@ -1,6 +1,6 @@
 # The build chain, in order
 
-GATE 4 asks for one named command chain, written down where the deck's files live, with every
+STAGE 4 asks for one named command chain, written down where the deck's files live, with every
 derived artifact after the thing it derives from. This is that chain for this deck. Run **all** of
 it: re-running the whole thing must be cheaper than remembering which parts to re-run, because the
 one step you skip is the step that ships a stale figure while every check still passes.
@@ -14,7 +14,7 @@ python $T/render_check.py && \
 python $T/make_pptx.py
 ```
 
-Every step exits non-zero on failure, so `&&` between them is a working gate.
+Every step exits non-zero on failure, so `&&` between them is a working stage.
 
 | step | reads | writes | why it is here |
 |---|---|---|---|

@@ -291,7 +291,7 @@ def layer_marks(mix: Mix, scenes: list) -> np.ndarray:
 
 
 def layer_shimmer(mix: Mix, scenes: list, variant: dict) -> np.ndarray:
-    """Air over the two scenes that open out: the plot zooming four decades, and the hero shot
+    """Air over the two scenes that open out: the plot zooming four decades, and the showcase shot
     of the board. High enough to stay clear of speech entirely."""
     out = np.zeros(mix.n)
     for s in scenes:

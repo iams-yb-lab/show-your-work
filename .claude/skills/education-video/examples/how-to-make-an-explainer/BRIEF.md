@@ -30,9 +30,9 @@ The picture register is literal on purpose: a film that tells you to write a doc
 one, is demonstrating rather than asserting.
 
 **Order of the scenes, decided after the first review of [`SOURCE.md`](SOURCE.md):** scene one is
-where the viewer is standing — you finished the thing, people have to understand it, you want a
+the viewer's situation — you finished the thing, people have to understand it, you want a
 short clean video and don't know how to start. Scene two is the architecture, whole, before any
-detail. Then the four stages in order, then the verdict and the install.
+detail. Then the four stages in order, then the judgement and the install.
 
 **Nothing about what goes wrong appears in the opening.** The viewer has not started, so they have
 not failed; a cost only means something once they know which stage it belongs to.
@@ -45,7 +45,7 @@ choice this film made is never spoken as a finding. Every row of [`NUMBERS.md`](
 its grade and the method that produced it, and the measured ones re-derive with
 [`tools/verify_numbers.py`](tools/verify_numbers.py).
 
-## The verdict it ends on
+## The judgement it ends on
 
 **The four stages, in this order: document → script → audio → picture.** Each reversal is named
 with its own cost — document last, script skipped, audio last — and loses on screen. The film does
@@ -59,7 +59,7 @@ labels those same things with the working words, so a viewer leaves able to read
 without ever being lectured mid-sentence.
 
 Reuse the phrases already load-bearing in the source where they fit — one number, one home; the
-sound decides the timing; leave a hole at the top of every scene.
+sound decides the timing; leave a pause at the top of every scene.
 
 ## The skill, and the honest limit
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PreToolUse gate: one open pull request at a time.
+"""PreToolUse check: one open pull request at a time.
 
 Contract, deliberately narrow:
 
@@ -14,10 +14,10 @@ Contract, deliberately narrow:
     one standing request per machine open by design, so counting it would refuse
     every ordinary pull request from the moment a skill first ran. It is opened by
     `friction.py` from the `Stop` hook rather than through the Bash tool, so this
-    gate never sees that call either way — but the exemption has to be explicit,
+    check never sees that call either way — but the exemption has to be explicit,
     because the bug it prevents looks like the rule working.
   - ALLOWS whenever it cannot be sure — `gh` missing, not logged in, no network,
-    malformed input. A gate that blocks work because GitHub was unreachable is worse
+    malformed input. A check that blocks work because GitHub was unreachable is worse
     than the thing it prevents. Never guesses.
 
 There is no bypass flag. If the refusal is wrong, the user decides in chat, which is

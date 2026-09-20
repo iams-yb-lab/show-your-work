@@ -1,7 +1,7 @@
 r"""Choose ONE narrator across all six lines.
 
 v7's correction, kept: every earlier generator picked each line's take on its
-own merits — duration fit, per-line gates — and the result was a narrator whose
+own merits — duration fit, per-line stages — and the result was a narrator whose
 character changed between lines inside one video. Per-line optimisation trades
 away exactly what a narrator is. So nothing here scores a take against its own
 line's needs, and duration deliberately does not appear in the cost at all; the

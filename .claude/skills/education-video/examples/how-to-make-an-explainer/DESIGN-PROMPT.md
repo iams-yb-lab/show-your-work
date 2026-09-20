@@ -46,7 +46,7 @@ and purposeful, never bouncy. Every scene opens on a held frame so the music mar
 
 ## Scene table — locked
 
-| scene | title | in | out | duration | hole before first word |
+| scene | title | in | out | duration | pause before first word |
 |---|---|---|---|---|---|
 | 1 | Where you're standing | 0:00.0 | 0:23.2 | 23.2 s | 1.00 s |
 | 2 | Step one | 0:23.2 | 0:43.0 | 19.7 s | 1.00 s |
@@ -58,7 +58,7 @@ and purposeful, never bouncy. Every scene opens on a held frame so the music mar
 | 8 | Four stages, and where to start | 3:54.1 | 4:30.3 | 36.2 s | 1.00 s |
 
 **Scene boundaries came from the audio and are contiguous** — each scene ends exactly where the
-next begins, and the table sums to the file duration. The hole at the top of every scene is
+next begins, and the table sums to the file duration. The pause at the top of every scene is
 silence with a music mark in it: put the cut there, and hold the first frame of the new scene
 through it. Do not speak-over it and do not fill it with motion.
 
@@ -421,7 +421,7 @@ The finished object from cue 1 returns, now with an audience around it that is f
 - **No URLs, repository names, skill names or file paths on screen.** The link lives in the video
   description. Cue 53 says so out loud.
 - **No product UI screenshots or recognisable brand chrome.** Draw a generic app window instead.
-- **No tolerances, gate names, checklists internals, loudness figures or engineering plumbing.**
+- **No tolerances, stage names, checklists internals, loudness figures or engineering plumbing.**
   The viewer came for a clear video, not for a quality system.
 - **No claim about how anything sounds** — not natural, not human, not studio quality.
 - **No number that is not spoken in the line it sits under.**

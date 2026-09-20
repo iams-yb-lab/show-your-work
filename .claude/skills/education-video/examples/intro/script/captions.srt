@@ -72,7 +72,7 @@ And absolute accuracy: how close the reading is to the truth.
 
 19
 00:01:44,760 --> 00:01:51,940
-Accuracy we can live without — the working point is found on the bench. Drift is the one that matters.
+Accuracy we can live without — the working point is found in the lab. Drift is the one that matters.
 
 20
 00:01:53,770 --> 00:01:55,790

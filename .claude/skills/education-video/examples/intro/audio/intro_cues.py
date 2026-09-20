@@ -153,7 +153,7 @@ def main() -> int:
     print(f"\n  {len(lines)} narration lines, {words} words, "
           f"{words / duration * 60:.0f} wpm over the whole film")
 
-    # Every scene begins in a hole -- the film's own cut leaves the narrator quiet across each
+    # Every scene begins in a pause -- the film's own cut leaves the narrator quiet across each
     # boundary, which is what makes a section mark in the music free.
     holes = []
     for s in scenes:

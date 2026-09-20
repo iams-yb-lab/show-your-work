@@ -126,7 +126,7 @@ def main() -> int:
 
     end = int(v2.CAM_BEATS[-1][0])
     rig = v2.Rig(Vector((0.0, 0.0, 0.0)))
-    # The `swarm` target rides the centroid of what is airborne and the hero targets are board
+    # The `swarm` target rides the centroid of what is airborne and the featured parts targets are board
     # positions, so both come from the board's own dump when it is there -- a flow metric run
     # against a stand-in swarm would be measuring a different camera from the one that renders.
     subjects_local, plan, pos_local = dict(SUBJECTS_LOCAL), {}, {}
@@ -281,21 +281,21 @@ def main() -> int:
 
 
 def from_board(parts_json: Path, size_mm):
-    """The real hero positions and wave plan, the same way `--plan-only` gets them."""
+    """The real featured positions and wave plan, the same way `--plan-only` gets them."""
     import json
 
     data = json.loads(parts_json.read_text(encoding="utf-8-sig"))
     parts = [p for p in data["parts"] if p["models"] and not p["dnp"]]
-    heroes = v2.resolve_heroes(parts)
+    featured = v2.resolve_featured(parts)
     pos_mm, order_key = v2.order_key_factory(parts)
     refs = [p["ref"] for p in parts]
-    groups = v2.group_parts(refs, parts, heroes, order_key)
+    groups = v2.group_parts(refs, parts, featured, order_key)
     plan, _sub = v2.wave_schedule(groups, parts, order_key)
     bb = data["edge_bbox_mm"]
     cx, cy = bb["left"] + bb["width"] / 2.0, -(bb["top"] + bb["height"] / 2.0)
     pos_local = {r: Vector(((pos_mm[r][0] - cx) / 1000.0, (pos_mm[r][1] - cy) / 1000.0,
                             0.004)) for r in refs}
-    named = {n: pos_local[r] for n, r in heroes.items()}
+    named = {n: pos_local[r] for n, r in featured.items()}
     named.update(v2.group_targets(groups, pos_local))   # the connector -- see SUBJECT_GROUPS
     return named, plan, pos_local
 

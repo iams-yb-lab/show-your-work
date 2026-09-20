@@ -1,4 +1,4 @@
-"""Move the climax sub swell's onset ~1 s later, keeping its landing on the
+"""Move the peak sub swell's onset ~1 s later, keeping its landing on the
 Teensy seat (71.3 s).
 
 The swell is deterministic in mix_audio.py: sin(2π·73.416·t)·smoothstep(t/2.5)²,

@@ -1,4 +1,4 @@
-"""Restore the approved 24 kHz voice clips to 48 kHz with strict fallback gates."""
+"""Restore the approved 24 kHz voice clips to 48 kHz with strict fallback stages."""
 
 from __future__ import annotations
 

@@ -15,11 +15,11 @@ sentence. None crosses a scene break.
 
 ## Scene 1 — Where you're standing
 
-1. [A] You finished the thing. Now other people have to understand it, and none of them were there. → §Where the viewer is standing
-2. You want a few clean minutes that explain it, not a course. → §Where the viewer is standing
-3. [B] And you don't want to become a video producer to get one. → §Where the viewer is standing
-4. You want to hand the work to something that can do it quickly, and still end up with something you'd put your name on. → §Where the viewer is standing
-5. That's a reasonable thing to want. It's also, now, a reasonable thing to get — as long as you know which parts are yours to decide. → §Where the viewer is standing
+1. [A] You finished the thing. Now other people have to understand it, and none of them were there. → §the viewer's situation
+2. You want a few clean minutes that explain it, not a course. → §the viewer's situation
+3. [B] And you don't want to become a video producer to get one. → §the viewer's situation
+4. You want to hand the work to something that can do it quickly, and still end up with something you'd put your name on. → §the viewer's situation
+5. That's a reasonable thing to want. It's also, now, a reasonable thing to get — as long as you know which parts are yours to decide. → §the viewer's situation
 
 ## Scene 2 — Step one
 
@@ -83,11 +83,11 @@ sentence. None crosses a scene break.
 
 ## Scene 8 — Four stages, and where to start
 
-48. [Q] Document, script, sound, picture. Do it backwards and each step has its own price. → §The verdict
-49. Picture first is the normal way, and the expensive one: the sentence is what gets damaged. → §The verdict, alternative 1
-50. Document last, and the video becomes where your thinking happens — errors at full volume, in a confident voice. → §The verdict, alternative 2
-51. Skip the script, and a problem you'd have fixed with a keystroke costs a whole re-record. → §The verdict, alternative 3
-52. Sound last, and nothing sets the clock, so every length is a guess. → §The verdict, alternative 4
+48. [Q] Document, script, sound, picture. Do it backwards and each step has its own price. → §The judgement
+49. Picture first is the normal way, and the expensive one: the sentence is what gets damaged. → §The judgement, alternative 1
+50. Document last, and the video becomes where your thinking happens — errors at full volume, in a confident voice. → §The judgement, alternative 2
+51. Skip the script, and a problem you'd have fixed with a keystroke costs a whole re-record. → §The judgement, alternative 3
+52. Sound last, and nothing sets the clock, so every length is a guess. → §The judgement, alternative 4
 53. [R] All four stages come out of one repository. The link is below this video. → §The skill
 54. Built and verified with Claude. Other models haven't been tested — that's unknown, not broken. → §The skill
-55. Now go and explain the thing you made. → §The verdict
+55. Now go and explain the thing you made. → §The judgement

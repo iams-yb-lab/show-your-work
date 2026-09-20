@@ -13,7 +13,7 @@ objects you'll want are named for it:
     KEY / FILL / RIM / TOP the four studio lights
     BACKDROP               the floor plane
     FOCUS                  empty the camera's depth-of-field focuses on
-    CAM_hero, CAM_top, ... one camera per shot
+    CAM_featured, CAM_top, ... one camera per shot
 
 Scene units are metres and the importer centres the board on the origin, so a 163 mm
 board is 0.163 m wide. Light sizes and camera distances are all derived from the board's
@@ -99,7 +99,7 @@ BACKDROPS = {
     # Values are the same order of magnitude as `dark`, so exposure carries over.
     "mood": None,  # built by build_mood_floor / set_world_gradient, not by set_backdrop
     # floor base colour, floor roughness, world colour, world strength.
-    # Roughness is deliberately high: at the grazing angles the low and hero cameras use,
+    # Roughness is deliberately high: at the grazing angles the low and featured cameras use,
     # Fresnel makes a smooth floor throw a blown-out specular hotspot behind the board
     # that competes with the subject. 0.42 spreads it into a soft pool instead.
     # A bright sweep also acts as a huge bounce card, so its world strength is kept low --

@@ -1,8 +1,8 @@
 # feedback — what the skills got wrong, and the line that would have prevented it
 
-The skills here are **read-only**. That rule protects every future session from an unreviewed
-tweak, and on its own it throws away the one thing a run actually teaches: the moment the user had
-to correct Claude. This directory is the other half of the rule.
+The skills here change only in the open, by pull request. That protects every future session from an
+unreviewed tweak, and on its own it throws away the one thing a run actually teaches: the moment the
+user had to correct Claude. This directory is the other half of the rule.
 
 Nothing in here is a diary. One entry per thing that went wrong, six fields, and the field that
 matters is `rule` — the single line that would have made the run one-pass. Everything else is
@@ -21,11 +21,11 @@ you review the PR                 with Claude, at your pace
                                     -> lessons/<skill>.md on main
                                     -> read back at the start of the next run of that skill
   a pattern, seen 3x, 5x          proposals/<something>.md, citing the entries
-                                    -> you type the exact phrase -> the skill changes
+                                    -> the owner approves -> the skill changes
 ```
 
 **Only `lessons/` is ever read back.** An unreviewed entry cannot change how a skill behaves — the
-same guarantee the read-only rule gives, applied to the feedback loop. `inbox/` is evidence; it is
+same guarantee the open-change rule gives, applied to the feedback loop. `inbox/` is evidence; it is
 never injected into a run.
 
 ## How it gets here, with or without push rights
@@ -71,7 +71,7 @@ twice changes nothing.
 ## The entry
 
 ```
-### 2026-08-20 · education-video · GATE 3
+### 2026-08-20 · education-video · STAGE 3
 - **complaint:** what the user actually pushed back on
 - **mistake:** what Claude did instead
 - **fix:** what worked in the end
@@ -92,7 +92,7 @@ path, a filename from the user's project. `friction.py note` refuses what a patt
 absolute paths, `~/` paths, UNC shares, `file://` URLs, email addresses — but it cannot recognise a
 title or a name, so treat the check as a floor and not as the rule. That judgement is the writer's.
 
-Skill, gate, mistake, fix, rule. Nothing about *what* the film was.
+Skill, stage, mistake, fix, rule. Nothing about *what* the film was.
 
 ## What a good entry looks like
 
@@ -110,10 +110,9 @@ about the same stage are themselves the finding.
 
 ## Turning entries into a skill edit
 
-Entries are the **only** sanctioned route to changing a skill. A `proposals/` document argues from
-them — how often, at which gate, what it cost — and the user types the exact phrase, or the skill
-does not change. A proposal with no entries behind it is someone's taste, which is precisely what
-the read-only rule exists to keep out.
+Entries are the evidence a skill change is argued from. A `proposals/` document argues from them —
+how often, at which stage, what it cost — and the repository owner decides. A proposal with no
+entries behind it is someone's taste, which is what the open-change rule exists to keep out.
 
 A proposal is opened only when the user asks for one, and the pull request that applies it deletes
 it: the rationale then lives in the commit message, where a reviewer looks for it. `proposals/` is

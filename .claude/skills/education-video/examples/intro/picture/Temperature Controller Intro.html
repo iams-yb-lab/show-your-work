@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // an origin exists), and both directions are origin-gated (on https
     // a foreign sender's origin can never equal this document's; in
     // opaque contexts — file:// — everything serializes as 'null', where
-    // an embedded EXTERNAL frame still fails the gate by carrying its
+    // an embedded EXTERNAL frame still fails the stage by carrying its
     // own real origin, and a sandboxed child of such a frame is excluded
     // by the own-child-frames check plus uuid unguessability). Shape is
     // deny-by-default: one request form, one reply form, no error
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.addEventListener('message', function (e) {
       const d = e.data;
       if (!d || typeof d !== 'object' || !e.source) return;
-      // Origin gate first; the structural checks below (own-child-frames
+      // Origin stage first; the structural checks below (own-child-frames
       // for requests, direct-parent + solicited-uuid for replies, the
       // root's never-relay rule) are what hold in fully opaque chains
       // where origin strings can't discriminate — a sandboxed root's

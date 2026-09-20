@@ -9,7 +9,7 @@ Two rules it exists to obey:
 
   * **the narration is the subject.** Nothing here is allowed to compete: no drums, no transient
     percussion, no melody in the range the voice occupies, no build that arrives mid-sentence.
-  * **a mark lands on the cut, not on a word.** Each scene begins with a hole before its first word —
+  * **a mark lands on the cut, not on a word.** Each scene begins with a pause before its first word —
     1.0 s, recorded in master.json — and that is where the bell goes.
 
     python3 audio/music.py
@@ -142,7 +142,7 @@ def main() -> int:
         add(out, bar * BAR * 4, BAR * 4.4, ROOT - 12, 0.05 * level(bar * BAR * 4), 1.6, 2.0,
             partials=(1.0, 0.12))
 
-    # One bell on each scene cut, inside the hole before the first word.
+    # One bell on each scene cut, inside the pause before the first word.
     marks = []
     for index, scene in enumerate(scenes):
         at = scene["in_s"] + 0.10

@@ -22,7 +22,7 @@ Three ideas carry it.
 
   The grid comes from the schedule, not from a metronome. The first component sets off on
   frame 880, the ADC lands on 1720 and the Teensy on 2140 -- exactly 28.0 s and then 14.0 s
-  apart -- so a bar of exactly 70 frames starting at frame 880 puts both hero landings on
+  apart -- so a bar of exactly 70 frames starting at frame 880 puts both featured landings on
   downbeats with no tempo map and no drift. BAR_FRAMES is that number and it is the only
   place the tempo exists.
 
@@ -72,7 +72,7 @@ ROOT_MIDI = 38                       # D2 = 73.416 Hz
 PEDAL = ((26, 0.25), (38, 1.0))      # D1 + D2, held for the whole film
 
 # One bar = 70 frames = 2.3333 s = 102.857 BPM. See the module docstring: this is not a
-# chosen tempo, it is the interval that makes both hero landings fall on downbeats.
+# chosen tempo, it is the interval that makes both featured landings fall on downbeats.
 BAR_FRAMES = 70
 BEATS_PER_BAR = 4
 
@@ -96,7 +96,7 @@ CHORDS = {
     4: ((2, 1), (4, 1), (5, 1), (1, 2)),        # F A C E
     8: ((4, 1), (5, 1), (1, 2), (2, 2)),        # A C E F
     12: ((5, 1), (1, 2), (3, 2), (0, 3)),       # C E G D -- the lift, on the ADC landing
-    16: ((2, 1), (4, 1), (5, 1)),               # F A C   -- pull back before the climax
+    16: ((2, 1), (4, 1), (5, 1)),               # F A C   -- pull back before the peak
     18: ((0, 1), (2, 1), (4, 1), (0, 2)),       # D F A D -- the Teensy lands
     21: ((0, 1), (4, 1), (1, 2)),               # D A E   -- back where it began
 }
@@ -367,7 +367,7 @@ def layer_structure(mix: Mix, sc: Score, variant: str) -> np.ndarray:
             bell[1] += voice * math.sin(a)
         bell /= len(chord)
         if variant == "cine" and b == 18:
-            # The climax gets a sub swell underneath it, arriving *into* the hit rather than
+            # the peak gets a sub swell underneath it, arriving *into* the hit rather than
             # after it -- 2.5 s of rise that lands on the frame the Teensy seats.
             rise = int(2.5 * SR)
             tr = np.arange(rise) / SR
@@ -382,7 +382,7 @@ def layer_structure(mix: Mix, sc: Score, variant: str) -> np.ndarray:
 
 
 def layer_cine_bed(mix: Mix, sc: Score) -> np.ndarray:
-    """`cine` only: a bowed low layer that grows across the heroes and falls away after the
+    """`cine` only: a bowed low layer that grows across the featured parts and falls away after the
     Teensy. This is the whole difference between a bed and an arc."""
     t = mix.t
     gen = rng_for("cine-bed")
@@ -582,7 +582,7 @@ def layer_components(mix: Mix, sc: Score, cues: dict, variant: str,
         # Sector is degrees about the view axis, 0 = frame right, 180 = frame left, so the
         # cosine is the pan directly. Held to 0.72 so nothing sits outside the picture.
         pan = math.cos(math.radians(p["sector"])) * 0.72
-        # J8 is a showcased subject rather than a hero, and it is the largest thing on the
+        # J8 is a showcased subject rather than a featured part, and it is the largest thing on the
         # board bar the Teensy: it gets weight without getting a music accent.
         gain = 0.30 * (2.1 if p["ref"] == "J8" else 1.0) * gen.uniform(0.88, 1.12)
         if emit:
@@ -598,7 +598,7 @@ def layer_components(mix: Mix, sc: Score, cues: dict, variant: str,
 
 
 def layer_flights(mix: Mix, sc: Score, cues: dict):
-    """Movement: one swell per wave, one approach per hero. Not one per part -- 107 whooshes
+    """Movement: one swell per wave, one approach per featured part. Not one per part -- 107 whooshes
     is a wind tunnel, and the ticks already say how many things arrived."""
     gen = rng_for("flights")
 
@@ -617,7 +617,7 @@ def layer_flights(mix: Mix, sc: Score, cues: dict):
         pan = math.cos(math.radians(w["sector"])) * 0.6
         whoosh(sc.t(w["spawn"]), sc.t(w["land_first"]), 400, 4800, pan, 0.045)
 
-    for h in cues["heroes"]:
+    for h in cues["featured"]:
         pan = math.cos(math.radians(h["sector"]))
         t0, t1 = sc.t(h["spawn"]), sc.t(h["land"])
         whoosh(t0, t1, 200, 5200, pan * 0.8, 0.085)
@@ -626,7 +626,7 @@ def layer_flights(mix: Mix, sc: Score, cues: dict):
         note = sc.note_for(t1, v["octave"] - 1, index=0)
         s = tick(h["cls"], midi_hz(note), gen, "cold")
         mix.add(t1, s, pan=pan * 0.4, gain=0.85)
-        # A short low bloom under the seat, so a hero landing has a floor the swarm does not.
+        # A short low bloom under the seat, so a featured landing has a floor the swarm does not.
         n = int(1.4 * SR)
         bloom = partial(n, midi_hz(note - 12), 0.45) * 0.5
         mix.add(t1, spectral(bloom, lambda f: lowpass(f, 320, 2)), pan=0.0, gain=0.30)
@@ -687,8 +687,8 @@ def lufs(stereo: np.ndarray) -> float:
     keep = loud > -70.0
     if not keep.any():
         return -np.inf
-    gate = -0.691 + 10 * np.log10(power[keep].mean()) - 10.0
-    keep &= loud > gate
+    stage = -0.691 + 10 * np.log10(power[keep].mean()) - 10.0
+    keep &= loud > stage
     return -0.691 + 10 * np.log10(power[keep].mean())
 
 

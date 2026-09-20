@@ -35,7 +35,7 @@ Use this order for new work:
 4. Transcribe every take and reject wrong words before judging style.
 5. Select a coherent set by ear. Keep each selected section continuous.
 6. Preserve the raw beginning, ending and internal silences. Do not split at sentence punctuation.
-7. Run optional 48 kHz restoration and retain it only when it passes the performance gates.
+7. Run optional 48 kHz restoration and retain it only when it passes the performance checks.
 8. Apply minimal corrective EQ and make one continuous narration master.
 9. Lock that master. Derive caption timestamps and picture timing from the finished audio.
 10. Add music and effects last, then master and mux with the picture stream copied unchanged.
@@ -56,7 +56,7 @@ Each reusable voice lives under `video/natural-voice/profiles/<voice-id>/` and c
 | `README.md` | Voice-specific use, limits and listening notes |
 
 Never overwrite a profile. A changed prompt, model or material conditioning change is a new profile version.
-Do not normalize, denoise, gate, resample or lossy-encode a stored prompt.
+Do not normalize, denoise, stage, resample or lossy-encode a stored prompt.
 
 For a new voice, audition the raw prompt before generating a film. It should already sound like a plausible
 close spoken recording. A post-processing chain cannot rescue a prompt that sounds synthetic, distant,
@@ -76,13 +76,13 @@ each candidate:
 - duration;
 - median fundamental frequency and F0 interquartile range;
 - prompt hash;
-- a short human listening verdict.
+- a short note of what a listener heard.
 
 Reject incorrect words first. Then reject theatrical, unstable or metronomic candidates. Pitch is a
 consistency measurement, not a quality score: the correct voice may be high or low.
 
 For a consented recorded speaker, use a lossless close-mic sample with no clipping, automatic gain control,
-noise suppression, gate, music or overlapping voices. A quiet real room is fine; audible reverb is not a
+noise suppression, stage, music or overlapping voices. A quiet real room is fine; audible reverb is not a
 substitute for good capture and may be exaggerated by cloning.
 
 The approved synthetic warm profile is in [`profiles/warm-natural/`](../profiles/warm-natural/). Its prompt
@@ -133,14 +133,14 @@ Chatterbox 0.1.7 produces 24 kHz audio, so the native Nyquist limit is 12 kHz. T
 read like a noise-cancelling headset even when the performance is excellent.
 
 The proven restoration model is `MossFormer2_SR_48K` through ClearVoice. Run it per continuous section and
-compare it with a clean 48 kHz resample of the original. Restoration is accepted only when all gates pass:
+compare it with a clean 48 kHz resample of the original. Restoration is accepted only when all checks pass:
 
 - transcript word-error rate ≤ 0.12;
 - duration change ≤ 1.2% + 50 ms;
 - median F0 change ≤ 5 Hz;
 - measurable energy appears above 12 kHz.
 
-If any gate fails—or the result sounds phasey, papery or less human—ship the clean resample. Education v2
+If any check fails—or the result sounds phasey, papery or less human—ship the clean resample. Education v2
 accepted restoration on 36 of 49 edited cues and fell back on 13; preserving the performance took priority
 over uniform processing.
 
@@ -166,7 +166,7 @@ better.
 Avoid by default:
 
 - denoisers and noise-cancelling speech enhancement;
-- hard gates;
+- hard checks;
 - exciters;
 - synthetic breaths;
 - pitch drift or chorus;
@@ -188,7 +188,7 @@ master target. Its measured result was −14.59 LUFS and −0.99 dBTP.
 Those levels are project values, not universal law. Preserve the relationship: speech clearly leads, music
 does not pump, and final limiting does not flatten consonants or tails.
 
-## QA and listening gates
+## QA and listening checks
 
 Automation catches correctness; ears accept realism. For each new voice and production:
 
@@ -199,7 +199,7 @@ Automation catches correctness; ears accept realism. For each new voice and prod
 5. Listen on headphones for phase, echo, pumping and chopped air.
 6. Listen on laptop speakers for intelligibility and excessive low body.
 7. Audition the opening, densest technical passage, longest sentence and ending before full rendering.
-8. Keep every rejected treatment and its verdict in the film's audio log.
+8. Keep every rejected treatment and its judgement in the film's audio log.
 
 Do not let a metric overrule an audible failure. This repository has rejected word-perfect, loudness-correct
 voices because they still sounded synthetic.
@@ -210,7 +210,7 @@ The legacy [`voice_chain.py`](../../_shared/audio/voice_chain.py) added de-essin
 micro-pitch drift, synthetic breaths and a stereo room impulse. Its outputs were rejected as more artificial.
 
 The showoff v7.3 experiment added room tone, 17/29/43 ms early-reflection taps and soft-knee compression.
-It was rejected as “a robot with echoes.” The exact experiment and verdict are preserved in
+It was rejected as “a robot with echoes.” The exact experiment and judgement are preserved in
 [`showoff-render/examples/assembly/audio/VOICE-LOG.md`](../../showoff-render/examples/assembly/audio/VOICE-LOG.md).
 
 The lesson is not that all rooms or compressors are forbidden. It is that acoustic realism must already be
@@ -231,6 +231,6 @@ Every finished narration must preserve:
 - exact EQ, level and mastering settings;
 - final narration WAV before music;
 - full mix and final decode report;
-- rejected variants and human verdicts.
+- rejected variants and human judgements.
 
 If those artifacts exist, the voice is reusable. If only the final mixed video exists, it is not.

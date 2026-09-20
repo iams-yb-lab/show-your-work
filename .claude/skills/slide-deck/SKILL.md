@@ -331,7 +331,7 @@ which slide, and what changed because of it.
 a cold viewer is still holding are the user's call — a gap in the deck, or a question the deck
 is right to leave open — and the user says so. Only then does their own pass open.
 
-Then the user's own pass, because **their eyes are the bench**: for a talk deck, rehearsing it
+Then the user's own pass, because **their eyes are the real test**: for a talk deck, rehearsing it
 aloud once end to end; for a reading deck, reading it as the recipient would. A deck every check
 passed can still lose its room, and only a human notices where. Fix what the pass surfaces under
 the same rules, then deliver: the storyline, the slide scripts, the master, the exports, the

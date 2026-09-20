@@ -249,8 +249,8 @@ question: does the playback match the verdict you meant?
 
 ## GATE 5 — the user's read, then delivery.
 
-The user reads the report end to end — reading, not skimming — because **their eyes are the
-bench**: a report every check passed can still lose its reader, and only a human notices where.
+The user reads the report end to end — reading, not skimming — because **their reading is the
+real test**: a report every check passed can still lose its reader, and only a human notices where.
 Fix what the reading surfaces; a wording fix re-runs the GATE 3 verification for the touched
 sections, and a fix that changes what any section claims reopens GATE 4 — the document the cold
 reader certified no longer exists.

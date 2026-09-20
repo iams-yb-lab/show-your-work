@@ -1,7 +1,7 @@
 # sha256 of every skill file, byte-identical to the source repository.
 # The skills are read-only; a mismatch here means one was edited.
 # Regenerate only after an edit the repository owner asked for.
-22a3b0e0b770b63e86ad23f77186e3546571d7642ca338f246c415bc7c075a2b  .claude/skills/education-video/SKILL.md
+81d57ac5bc959a852d23efceedec547129740ff15c084894672b593566d63ee2  .claude/skills/education-video/SKILL.md
 7040a0b53920c61f2d1a3713066cb17a46cfbfbd963c26e49594dd594c7d9eb2  .claude/skills/education-video/images.md
 23000d5e26e4cef5aacbf41d68be6226cab5b92a1d28c2ee80bb80d5f0c217a3  .claude/skills/education-video/interview.md
 f6b8b08fd2c9b83c702e226f91ddc3f0dac768821f9af32be1a8cca295c3f60d  .claude/skills/natural-voice/SKILL.md

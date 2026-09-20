@@ -85,6 +85,11 @@ here is an opinion on content, tone or structure.
   unless the user asks for that as an extra file. Extract the track back out and diff it.
 - Measure the delivered file: loudness, true peak, duration against the master (at most half a
   frame short). [`deliver_film.py`](method/deliver_film.py) does mux, disposition and checks in one pass.
+- **Every film ends on the project's closing credit slate**, held 2–3 s (default 3): lab logo and
+  name, video title, release date, website with QR code, and the supporters' logos. Build it from the
+  project's slate tooling ([`method/credit_slate/`](method/credit_slate/README.md)); the narration master carries matching tail silence
+  before it is locked so the slate falls inside the timed picture. Same slate for every film and every
+  language; only the title changes.
 - Cross-check mechanically: a tool that parses the scene table from the picture and the cues from
   the script and fails on disagreement above 0.1 s, plus scene durations summing to the file
   duration within 0.05 s.

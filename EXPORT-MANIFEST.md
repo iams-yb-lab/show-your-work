@@ -35,7 +35,7 @@ self-contained HTML composition we author and the user approves silent — and a
 muxes the approved mix, attaches the captions as a subtitle track the viewer switches on, and hands
 over the film. Six gates where there were five. The order `document → script → audio → picture` and
 GATE 0 through GATE 4 are untouched; `interview.md` loses two Claude Design references and gains one
-settled question, and `images.md` loses one. New hashes `22a3b0e0b770b63e` (SKILL.md),
+settled question, and `images.md` loses one. New hashes `81d57ac5bc959a85` (SKILL.md),
 `31fd7a97d918746e` (interview.md) and `9b30e8b1da0d596c` (images.md), blessed into
 `tools/skill-hashes.txt`. **These copies now lead the source repository**, as `showoff-render` already
 does. The rationale, the evidence it argues from and what it deliberately leaves alone are in the commit
@@ -272,6 +272,7 @@ the picture and the film. Removed: the plan-checklist-and-wait, the mandatory te
 interview, stage-numbered message headers, the required closing decision, and all opinions on the
 content, tone or structure of a film (those belong to the project's own style guide). Removed the
 skill's "never edit" clause in favour of open changes on a branch with a pull request. Method scripts'
-docstrings lose "GATE n" wording. New hashes `22a3b0e0b770b63e` (SKILL.md),
+docstrings lose "GATE n" wording. New hashes `81d57ac5bc959a85` (SKILL.md),
 `23000d5e26e4cef5` (interview.md), `7040a0b53920c61f` (images.md), blessed into
-`tools/skill-hashes.txt`. Branch `skill/education-video-flexible`.
+`tools/skill-hashes.txt`. Also adds `method/credit_slate/` — the closing credit slate every film ends on (template, builder,
+README), the new default. Branch `skill/education-video-flexible`.

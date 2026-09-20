@@ -15,8 +15,8 @@ skills because they call it.
 
 The BS.1770-4 loudness meter, the true-peak limiter, the van Herk sliding maximum, the voice chain
 and the pitch set. Written for the assembly film; every film since imports it and none of them owns
-it. **A second copy of a loudness meter is a second answer to the same question**, and this
-repository's bench is a person's ears, which will not catch a wrong number.
+it. **A second copy of a loudness meter is a second answer to the same question**, and the final judge
+here is a person's ears, which will not catch a wrong number.
 
 `natural-voice/method/README.md` links `audio/voice_chain.py` directly, so that path is load-bearing
 and `tools/check_links.py` fails if it moves.

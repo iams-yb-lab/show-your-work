@@ -43,7 +43,7 @@ here as correct. Seventeen parts were on screen the frame they appeared, up to 0
 in. The fault was real and this file did not and cannot find it: a swarm is busy everywhere, so one
 more part arriving is not *isolated*. What finds it is geometry rather than pixels -- the
 entrances-and-landings table `animate_assembly_v2.py` prints, from each part's projected bounding
-box on the frame it becomes visible. Two tools, two questions; neither one is the verdict.
+box on the frame it becomes visible. Two tools, two questions; neither one is the judgement.
 
 What it cannot see is anything smoothly wrong. A mushy transition or a bad composition differs
 from its neighbours by very little, by construction.

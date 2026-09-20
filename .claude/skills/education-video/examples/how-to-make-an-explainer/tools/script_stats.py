@@ -37,7 +37,7 @@ TRACE = re.compile(r"\s*→\s*(.+?)\s*$")
 # words on screen instead, so the viewer leaves able to read the skill's files without having been
 # lectured mid-sentence. Anything here in spoken text is a violation, not a style note.
 BANNED_VOCABULARY = [
-    "cue", "slot", "cue sheet", "timecode", "narration master", "tolerance", "gate ",
+    "cue", "slot", "cue sheet", "timecode", "narration master", "tolerance", "stage ",
     "lufs", "dbtp", "true peak", "wpm", "words per minute", "sample rate", "waveform",
 ]
 # The film may not claim how anything sounds — this repo has no instrument for it.

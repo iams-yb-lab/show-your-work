@@ -5,7 +5,7 @@ e.g.   editx_style.py editx editx_story style story
        editx_style.py editx_slow_takes editx_gentle style gentle
 
 Reads line{N}_fast.wav if present (pre-slow originals) unless src dir's
-best files are wanted; edits each with the given style, gates on WER,
+best files are wanted; edits each with the given style, stages on WER,
 slot cap, and F0, falls back to the source take on failure. Writes a
 mix_final-compatible dir (line{N}_best.wav + manifest.json).
 """
@@ -85,7 +85,7 @@ def main():
                                   dur=round(dur, 2), wer=round(w, 3), f0=round(f0, 1), hyp=hyp)
             print(f"line{lid} ACCEPTED", flush=True)
         else:
-            print(f"line{lid} REJECTED (gates) — falling back to source take", flush=True)
+            print(f"line{lid} REJECTED (stages) — falling back to source take", flush=True)
             shutil.copyfile(src, dst)
 
     (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2))

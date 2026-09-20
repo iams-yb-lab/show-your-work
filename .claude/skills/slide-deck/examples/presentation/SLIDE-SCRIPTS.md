@@ -2,7 +2,7 @@
 
 Talk deck. Per slide: the headline (byte-identical to STORYLINE.md), what the slide shows,
 the speaker notes (your voice, spoken register), and the trace. Written act by act at
-GATE 3; an act appears here only after the one before it was approved.
+STAGE 3; an act appears here only after the one before it was approved.
 
 ---
 
@@ -38,7 +38,7 @@ the quote.
 
 **Asset:** `assets/reddit-unreadable-jargon.png` (2022×982) and `assets/reddit-word-salad.png`
 (2014×734), user-supplied 2026-08-19, uncropped. Each shown at 820px — 0.41× — so the post
-titles land near 22px and the body text near 11px. **Below the GATE 0 floor, deliberately, in
+titles land near 22px and the body text near 11px. **Below the STAGE 0 floor, deliberately, in
 line with slides 8–10:** the audience is meant to read the two titles and the vote counts, and
 the speaker reads the rest aloud. If this slide has to work without a speaker, crop each post
 to its title and first paragraph and the floor is recoverable.
@@ -88,11 +88,11 @@ Skills load by opening a session in the directory — README.md:14–15. natural
 
 ### Slide 4
 
-**Headline:** Every skill runs the same shape: it interviews you, posts a checklist, and only you approve each gate.
+**Headline:** Every skill runs the same shape: it interviews you, posts a checklist, and only you approve each stage.
 
 **Shows:** The universal pipeline, one diagram: **posted checklist** (unticked boxes) →
-**interview** (speech bubble: "where do the files go? who's the audience?") → **gates in a
-row**, each gate with a loop back labelled *you approve*. The first gate after the
+**interview** (speech bubble: "where do the files go? who's the audience?") → **stages in a
+row**, each stage with a loop back labelled *you approve*. The first stage after the
 interview carries a highlight: *the source under it — document or CAD — is audited before
 anything is built on it.*
 
@@ -100,19 +100,19 @@ anything is built on it.*
 "Here's the shape, and it's the same in all four skills, so you learn it once. The first
 thing you see is the plan, as a checklist — before any work happens. Then it interviews
 you: where do the files go, who is this for, what's the one takeaway, what's the budget.
-Real questions, and it won't guess when you don't answer. Then it works gate by gate, and
-here's the important part — a gate closes when *you* say it's good. Never by itself. And
-the first real gate is always the same: the source under the thing gets audited. No script
+Real questions, and it won't guess when you don't answer. Then it works stage by stage, and
+here's the important part — a stage closes when *you* say it's good. Never by itself. And
+the first real stage is always the same: the source under the thing gets audited. No script
 against a document that's half-finished, no render against CAD that's missing models.
 That's what makes the later stages cheap instead of painful."
 
 **Trace:** Post plan as unticked checklist before anything, then ask to begin — all four
 SKILL.md "How this runs" sections (e.g. slide-deck SKILL.md; technical-report SKILL.md:45;
 education-video SKILL.md:41; showoff-render SKILL.md:41). Interview first, unanswered
-question is a question not a default — each skill's GATE 0. "A gate ends when the user
+question is a question not a default — each skill's STAGE 0. "A stage ends when the user
 says it is good, never when you decide it is" — verbatim in all four. Source audited
-first: technical-report GATE 1 (evidence map), slide-deck GATE 1 (the source),
-education-video GATE 1 (source document), showoff-render GATE 1 (CAD readiness — "Nothing
+first: technical-report STAGE 1 (evidence map), slide-deck STAGE 1 (the source),
+education-video STAGE 1 (source document), showoff-render STAGE 1 (CAD readiness — "Nothing
 renders until every box is ticked").
 *Diagram-order note: the checklist is posted before the interview; the diagram shows that
 true order (the headline lists the three features, non-temporally).*
@@ -125,10 +125,10 @@ true order (the headline lists the three features, non-temporally).*
 
 **Headline:** technical-report builds the document that stands alone: evidence → skeleton → sections → cold read.
 
-**Shows:** The technical-report pipeline as a gate diagram: **evidence map** (a mini table:
+**Shows:** The technical-report pipeline as a stage diagram: **evidence map** (a mini table:
 value · unit · one home · status) → **skeleton** (whole report, a few lines per section) →
 **sections** (drawn one at a time, each with a verify tick before it advances) → **cold
-read** (a reader figure with an empty head, arrow back: *plays the verdict back to you*).
+read** (a reader figure with an empty head, arrow back: *plays the judgement back to you*).
 Under the first box, small: *measured · specified · calculated · assumed — every number
 wears one.*
 
@@ -155,8 +155,8 @@ Sections one at a time, verified before shown — SKILL.md:171, 208.
 **Headline:** Say "write up this project as a report" and the skill takes over: interview, evidence map, skeleton — no prose until you approve the structure.
 
 **Shows:** A chat mock, two bubbles. Yours: *"write up this project as a report"*.
-Claude's reply, rendered as the real thing: the six-gate checklist verbatim from the skill
-(`GATE 0 the interview … GATE 5 the user's read`) followed by *"Ready to begin?"* — then a
+Claude's reply, rendered as the real thing: the six-stage checklist verbatim from the skill
+(`STAGE 0 the interview … STAGE 5 the user's read`) followed by *"Ready to begin?"* — then a
 zoomed detail of the first interview questions: *where does the report live? who reads it —
 what may they be assumed to know?*
 
@@ -170,7 +170,7 @@ after the prose exists is the expensive way around."
 
 **Trace:** The checklist text — technical-report SKILL.md:48–55, quoted verbatim in the
 mock. "Ready to begin?" — SKILL.md:57. Interview questions shown — SKILL.md:88–107.
-No-prose-before-approved-skeleton — the gate order itself, SKILL.md:64–67 ("prose is the
+No-prose-before-approved-skeleton — the stage order itself, SKILL.md:64–67 ("prose is the
 expensive half") and 133–135.
 
 ---
@@ -196,38 +196,38 @@ approve that argument do slides get scripted, then built into a single HTML file
 a viewer with no context has to play the takeaway back."
 
 **Trace:** Order "source → storyline → slide scripts → build → cold pass" — slide-deck
-SKILL.md heading and gates. Headline as full-sentence assertion, one claim per slide —
-SKILL.md GATE 2. The flip test "read the headlines alone… complete argument" — SKILL.md
-GATE 2. One self-contained HTML master — SKILL.md GATE 4. Cold viewer plays back the
-takeaway — SKILL.md GATE 5.
+SKILL.md heading and stages. Headline as full-sentence assertion, one claim per slide —
+SKILL.md STAGE 2. The flip test "read the headlines alone… complete argument" — SKILL.md
+STAGE 2. One self-contained HTML master — SKILL.md STAGE 4. Cold viewer plays back the
+takeaway — SKILL.md STAGE 5.
 
 ---
 
 ### Slide 8
 
-**Headline:** Say "make slides about this project" and you get what you're watching — this deck is that run, gate by gate.
+**Headline:** Say "make slides about this project" and you get what you're watching — this deck is that run, stage by stage.
 
 **Shows:** The whole editor window, unretouched and uncropped — this repository in the file
-tree, the run in the chat panel, the sentence that was typed and the six-gate checklist that
+tree, the run in the chat panel, the sentence that was typed and the six-stage checklist that
 came back with nothing ticked. First of three full-window captures (slides 7, 8, 9) that walk
 the same run from start to delivery.
 
 **Asset:** `assets/deck-run-original.png`, 3839×2086, whole. Shown at 1306px — **0.34×** —
 which puts the screenshot's own text near 13px on the 1080p canvas. **This is deliberate and
-it breaks the GATE 0 font floor.** The user's instruction at GATE 4 was to show the entire
+it breaks the STAGE 0 font floor.** The user's instruction at STAGE 4 was to show the entire
 work environment rather than a legible crop: the slide's job here is *this is a real tool on
 a real desk*, and the audience is not asked to read it — the checklist's content is carried
 by the speaker's notes and, legibly, by nothing on screen. Readable if a viewer opens the
 PPTX or PDF and zooms; not readable from a seat. `render_check.py` does not and cannot catch
 this — it measures computed DOM font-size and is blind to text inside a bitmap. The legible
-crop this replaced is kept at `assets/slide7-checklist-gate0.png` if the call is reversed.
+crop this replaced is kept at `assets/slide7-checklist-stage0.png` if the call is reversed.
 
 **Says (notes):** see the master's `<aside class="notes">` for slide 7 — the desk, the one
-sentence, the six gates with nothing ticked, the storyline written before the slide, and the
+sentence, the six stages with nothing ticked, the storyline written before the slide, and the
 footnote that slide-deck is the youngest of the four skills.
 
 **Trace:** The screenshot itself (user-supplied, 2026-08-19), plus the run's own artifacts:
-`presentation/GATE0-ANSWERS.md`, `presentation/STORYLINE.md` (this headline is its Act II
+`presentation/STAGE0-ANSWERS.md`, `presentation/STORYLINE.md` (this headline is its Act II
 line 4), this file. "Not distilled from a produced deck… the first deck this skill produces
 is its first evidence" — slide-deck SKILL.md, opening section.
 
@@ -235,14 +235,14 @@ is its first evidence" — slide-deck SKILL.md, opening section.
 
 ### Slide 9
 
-**Headline:** Every tick is your approval, not the skill's progress — this run stopped at GATE 2 and waited until you said go.
+**Headline:** Every tick is your approval, not the skill's progress — this run stopped at STAGE 2 and waited until you said go.
 
-**Shows:** The same window later in the same run. GATE 0 and GATE 1 ticked and naming the
-files they produced; GATE 2 marked *here*; 3, 4 and 5 still open.
+**Shows:** The same window later in the same run. STAGE 0 and STAGE 1 ticked and naming the
+files they produced; STAGE 2 marked *here*; 3, 4 and 5 still open.
 
-**Asset:** `assets/deck-run-gate2-original.png`, 3839×2088, whole, at 1306px (0.34×) — same
+**Asset:** `assets/deck-run-stage2-original.png`, 3839×2088, whole, at 1306px (0.34×) — same
 deliberate floor break as slide 7, same reason. Legible crop kept at
-`assets/slide8-checklist-gate2.png`.
+`assets/slide8-checklist-stage2.png`.
 
 **Two things are now on screen that earlier revisions cropped out**, because "the entire
 window" was the instruction and cropping to flatter would be the dishonest move:
@@ -256,21 +256,21 @@ window" was the instruction and cropping to flatter would be the dishonest move:
 **Says (notes):** see the master. Two ticks, then a stop; and the twenty-six-slides cut told
 in the past tense, as the argument for approving arguments before pixels.
 
-**Trace:** The screenshot; `presentation/GATE0-ANSWERS.md` ("Length and slide budget" records
+**Trace:** The screenshot; `presentation/STAGE0-ANSWERS.md` ("Length and slide budget" records
 the 25–28 → 16–18 revision, "user's call"); `presentation/ASSETS.md` (Act IV removed at
-GATE 3, user's call). The final count is this deck.
+STAGE 3, user's call). The final count is this deck.
 
 ---
 
 ### Slide 10
 
-**Headline:** This is the same run closed: six gates ticked, and every artifact it produced named on screen.
+**Headline:** This is the same run closed: six stages ticked, and every artifact it produced named on screen.
 
-**Shows:** The same window at the end of the run. All six gates ticked, each naming its file;
+**Shows:** The same window at the end of the run. All six stages ticked, each naming its file;
 below them the deck, the export and the tools by path; and last, the two closing notes that
 record what went wrong.
 
-**Asset:** `assets/deck-run-gate5-original.png`, 3839×2086, whole, at 1306px (0.34×). Same
+**Asset:** `assets/deck-run-stage5-original.png`, 3839×2086, whole, at 1306px (0.34×). Same
 floor break, same reason. **One thing on this capture is already stale:** it describes the
 deck as "16 slides", which was true when it was taken and is not now — this slide is the
 seventeenth. Left in, because retouching a screenshot to agree with the present is the one
@@ -283,7 +283,7 @@ so was never cold-viewed. Not that it went perfectly — that when it didn't, th
 wrote it down.
 
 **Trace:** The screenshot; and every file it names, all present in `presentation/`:
-`GATE0-ANSWERS.md`, `SOURCE-AUDIT.md`, `STORYLINE.md`, `SLIDE-SCRIPTS.md`, `COLD-PASS.md`,
+`STAGE0-ANSWERS.md`, `SOURCE-AUDIT.md`, `STORYLINE.md`, `SLIDE-SCRIPTS.md`, `COLD-PASS.md`,
 `how-to-use-the-skills.html`, `exports/how-to-use-the-skills.pptx`, `tools/`. The two closing
 notes are quoted from `COLD-PASS.md`, "Open honesty item, user's call".
 
@@ -370,7 +370,7 @@ comes back to you, because Claude Design's encoder can't do it alone."
 **Trace:** Five deliverables ending in "one prompt the user pastes into Claude Design…
 returns an HTML bundle you then render" — education-video SKILL.md:27–32. "You never
 design, draw or animate the picture" — SKILL.md:34–35. Combined track approved before
-GATE 4, "a voice approved dry is not a voice approved under music" — SKILL.md:144–148.
+STAGE 4, "a voice approved dry is not a voice approved under music" — SKILL.md:144–148.
 Images licensed — SKILL.md:150–153. Prompt "has to work on the first paste", one message,
 self-contained — SKILL.md:158–160. "Claude Design cannot encode video… rendering that page
 to a file is yours" — SKILL.md:172–176.
@@ -415,7 +415,7 @@ end to end*) → **frozen final** (a padlock on the camera, caption: *one camera
 voided 421 finished frames*).
 
 **Says (notes):**
-"The showoff skill is the same gate discipline pointed at Blender, and its first gate is
+"The showoff skill is the same stage discipline pointed at Blender, and its first stage is
 the one that saves you real money: nothing renders — not a draft, not a probe frame —
 until eight checks on the CAD pass. Is every on-camera part actually on disk. Is a model
 hiding behind gitignore. Do the colours match photographs of the real part — STEP colours
@@ -424,7 +424,7 @@ Each of those checks exists because skipping it once cost real render-hours. And
 far end, the camera freezes before the final render, because a camera edit voids every
 finished frame — four hundred and twenty-one finished frames went exactly that way once."
 
-**Trace:** Gates — showoff-render SKILL.md:44–51. "Nothing renders until every box is
+**Trace:** Stages — showoff-render SKILL.md:44–51. "Nothing renders until every box is
 ticked. Not a draft, not a probe frame" — SKILL.md:103. The eight checks and their
 stories (Harting near-white vs beige photos, gitignored model, frozen revision) —
 SKILL.md:105–114. Camera edit voids frames, "421 finished 1440p frames were thrown away
@@ -455,7 +455,7 @@ your eyes find what's wrong."
 
 **Trace:** Colour decided on stills at final quality, "picking it later invalidates
 everything" — showoff-render SKILL.md:139–141. Probe frames, "A guess was 10.5 h; the
-measurement said 16.1 h" — SKILL.md:156–158. Approving measured cost against the GATE 0
+measurement said 16.1 h" — SKILL.md:156–158. Approving measured cost against the STAGE 0
 budget — SKILL.md:159–160, 94–96. "WATCH IT. Non-negotiable… Every fault that mattered
 was found by a human watching" and none by a check — SKILL.md:164–168, 180–182.
 
@@ -498,14 +498,14 @@ README.md:53–61. Global `~/.claude/skills/` install refused, and why — READM
 The four trigger sentences — each SKILL.md frontmatter `description` (technical-report:
 "write up this project"; slide-deck: "make slides"; education-video: "explainer video";
 showoff-render: "make it look amazing"). Checklist first, then interview, first question
-"where do the files go" — each SKILL.md GATE 0 (never next to the skill, never
+"where do the files go" — each SKILL.md STAGE 0 (never next to the skill, never
 defaulted). Read-only rule — README.md:101–108.
 
 ---
 
 ### Slide 18
 
-**Headline:** Name the output, answer the interview, and the gates carry you to a delivered report, deck, or video.
+**Headline:** Name the output, answer the interview, and the stages carry you to a delivered report, deck, or video.
 
 **Shows:** Typographic slide: the takeaway, verbatim, large, on the cream paper with the
 teal accent rule above it. Beneath, one quiet footer row: the four skill names ·
@@ -513,11 +513,11 @@ teal accent rule above it. Beneath, one quiet footer row: the four skill names �
 
 **Says (notes):**
 "That's the whole method in one sentence. Name the output. Answer the interview. Approve
-the gates. The two films on the links are what came out the other side of exactly this
+the stages. The two films on the links are what came out the other side of exactly this
 process — nothing on them was hand-animated, and nothing in them says more than its source
 could defend. Questions."
 
-**Trace:** The takeaway — GATE0-ANSWERS.md, verbatim, as required. "Nothing on them says
+**Trace:** The takeaway — STAGE0-ANSWERS.md, verbatim, as required. "Nothing on them says
 more than its source could defend" — the no-overclaiming rule each film ran under
 (education-video SKILL.md:195–200; showoff-render's checks); the films' existence — the
 user's YouTube statement, links pending.

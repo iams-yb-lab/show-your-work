@@ -22,7 +22,7 @@ GROUPS = [
     [41, 42], [43, 44], [45, 46], [47, 48, 49],
 ]
 
-# These are the takes that passed the original Whisper, pitch, and timing gates.
+# These are the takes that passed the original Whisper, pitch, and timing stages.
 SELECTED_GROUP_TAKES = {
     1: 1, 2: 3, 3: 2, 4: 1, 5: 3, 6: 4, 7: 3, 8: 3, 9: 2,
     10: 2, 11: 1, 12: 1, 13: 4, 14: 2, 15: 4, 16: 4, 17: 1,

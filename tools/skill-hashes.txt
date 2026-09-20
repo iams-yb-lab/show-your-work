@@ -1,10 +1,10 @@
 # sha256 of every skill file, byte-identical to the source repository.
-# The skills are read-only; a mismatch here means one was edited.
-# Regenerate ONLY after an edit the user authorised with the exact phrase.
-615f8d021584040cae33c4eb006a27202e3fc1b4c347b139cb38394080273e65  .claude/skills/education-video/SKILL.md
-9b30e8b1da0d596c299ff92c56c468c3b5a255df207cc47b43df6a21811afc73  .claude/skills/education-video/images.md
-31fd7a97d918746e4f22c81ac37fd426de35e9f9e72dac203a6b7631c577cf2e  .claude/skills/education-video/interview.md
-f6b8b08fd2c9b83c702e226f91ddc3f0dac768821f9af32be1a8cca295c3f60d  .claude/skills/natural-voice/SKILL.md
-ff6df3c1ca528e0c9fcad32031b3f65cb0c4b0b99f441be89731292a267499e5  .claude/skills/showoff-render/SKILL.md
-6b0c277b92fcd76be7ffe6a3ebb911ec024628d95a532fa05eb4b19b9fdf5605  .claude/skills/slide-deck/SKILL.md
-e751dcf3024808718e5cc1a6949e581c352fe132efa87a384f9e5d8d002d172b  .claude/skills/technical-report/SKILL.md
+# The skills change only by pull request; a mismatch here means an unrecorded edit.
+# Regenerate only after an edit the repository owner asked for.
+81d57ac5bc959a852d23efceedec547129740ff15c084894672b593566d63ee2  .claude/skills/education-video/SKILL.md
+7040a0b53920c61f2d1a3713066cb17a46cfbfbd963c26e49594dd594c7d9eb2  .claude/skills/education-video/images.md
+23000d5e26e4cef5aacbf41d68be6226cab5b92a1d28c2ee80bb80d5f0c217a3  .claude/skills/education-video/interview.md
+a008252b13b2e651d27c20c924a4e262e77f156176504ed35e0da091656cf0ae  .claude/skills/natural-voice/SKILL.md
+5a967550a425a43849ad2a5a3c5f5166967659575abc200bb1858fb4623f3207  .claude/skills/showoff-render/SKILL.md
+c8c152114181f6451799ce1cb3ecb7396f795d13efaffff955fe51c58ab0b368  .claude/skills/slide-deck/SKILL.md
+eea9de6909bf42847f2e67af52ee8f04ab901b47bbbe73e4065d65070fedfdb6  .claude/skills/technical-report/SKILL.md

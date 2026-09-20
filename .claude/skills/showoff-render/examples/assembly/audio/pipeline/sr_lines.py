@@ -64,7 +64,7 @@ def main():
               f"f0 {f0_0:.0f}->{f0_1:.0f}Hz HF>12k {hf0:.4%}->{hf1:.4%} :: {hyp!r}", flush=True)
         ok = w <= 0.05 and abs(dur1 - dur0) <= 0.01 * dur0 + 0.05 and abs(f0_1 - f0_0) <= 5.0
         if not ok:
-            print(f"line{lid} FAILED gates — keeping original 24k line", flush=True)
+            print(f"line{lid} FAILED stages — keeping original 24k line", flush=True)
             shutil.copyfile(src, dst)
 
     # nudge line starts off the score's 70-frame (2.333 s) downbeat grid:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check an authored HTML composition before anything long is rendered.
 
-GATE 5 of the education-video skill. The composition is a page that answers a
+The picture stage of the education-video skill. The composition is a page that answers a
 seek with the frame at that instant; export_html_video.py then steps it frame by
 frame. This checks that the page keeps its side of that contract, and that it
 looks right at every instant it is asked about — not just at t=0.

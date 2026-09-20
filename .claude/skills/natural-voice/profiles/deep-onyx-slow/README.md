@@ -10,7 +10,7 @@ input to every generation. **Kokoro takes no conditioning prompt.** `deep_onyx_s
 is an identity reference for auditioning and comparison only; nothing reads it at generation time.
 Reproduce this voice from `voice`, `speed` and `seed`, not from the file.
 
-The profile contract still applies to it: never overwrite it, never normalise, denoise, gate,
+The profile contract still applies to it: never overwrite it, never normalise, denoise, stage,
 resample or lossy-encode it. A changed voice or speed is a new profile version.
 
 ## Use
@@ -40,7 +40,7 @@ Write what comes out. Do not trim it — see below.
 - **Adjust it in small steps.** If the pace needs to move, the next version is 0.76 or 0.80 —
   derived from this profile, one setting at a time. A wide sweep changes narrator identity.
 - Output is 24 kHz, so it has nothing above 12 kHz. `MossFormer2_SR_48K` restoration passed its
-  gates on all six lines of the first production, adding measurable energy above 12 kHz with word
+  stages on all six lines of the first production, adding measurable energy above 12 kHz with word
   error rate 0.000 and pitch moving at most 3 Hz.
 
 ## Listening notes

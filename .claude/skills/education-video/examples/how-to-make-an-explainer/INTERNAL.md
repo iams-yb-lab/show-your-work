@@ -60,7 +60,7 @@ which the viewer never meets:
 - **Every fact exactly once.** Two copies eventually disagree, and the film then picks one at random.
 - **Mechanism as a chain of causes, not a claim.** *"The design handles it"* cannot be animated; *this
   pushes, so that moves, so the two cancel* can, because every step is something a picture can perform.
-- **Typicals, estimates and assumptions labelled inline**, a scope section, and a verdict with reasons.
+- **Typicals, estimates and assumptions labelled inline**, a scope section, and a judgement with reasons.
 
 ## What Claude holds the script to
 

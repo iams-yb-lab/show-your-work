@@ -47,7 +47,7 @@ once or twice on one composition, the layout is the problem.
 
 from __future__ import annotations
 
-# GATE 0 of slide-deck sets the floor and education-video inherits it. Computed px, not
+# STAGE 0 of slide-deck sets the floor and education-video inherits it. Computed px, not
 # authored: a 28px rule authored inside a transformed parent is not 28px on screen.
 FONT_FLOOR = 28.0
 BOX_TOL = 1.0     # px of slack on the canvas edge, for subpixel layout rounding

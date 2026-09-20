@@ -78,7 +78,7 @@ they are re-applied per render rather than baked once.
 `top` (orthographic), `detail` (cropped in) and `usb` (a diagnostic that frames the Teensy's
 micro-USB shell alone, for judging crease shading on thin sheet metal) are also available.
 `top` and `slide` are the best views for showing copper: traces read far more clearly looking
-straight down than at a hero angle, where the mask relief over copper is nearly edge-on.
+straight down than at a featured part angle, where the mask relief over copper is nearly edge-on.
 
 Output lands in `../../../out/showoff/stills/`, scene files in `../../../out/showoff/scene/`, comparison sheets in
 `../../../out/showoff/compare/`. All of `../../../out/showoff/` is gitignored and regenerable; the chosen final set — purple —
@@ -102,7 +102,7 @@ Exposure is tuned to a measured number, not by eye — aim for mean luma 0.16–
 `animate.ps1` → `animate_assembly.py`: 974 frames, 32.5 s at 30 fps, bare board → populated
 controller in one continuous camera move — six staggered waves of passives, four groups of
 larger parts, individual entrances for the ADC, the TEC driver and the Teensy, then a held
-hero shot. Two tables at the top of the script are the whole design: `T` (the storyboard, in
+showcase shot. Two tables at the top of the script are the whole design: `T` (the storyboard, in
 frames) and `BEATS` (camera azimuth, elevation, field width, lens, f-stop, exposure, target).
 
 Two things make it safe to re-run:

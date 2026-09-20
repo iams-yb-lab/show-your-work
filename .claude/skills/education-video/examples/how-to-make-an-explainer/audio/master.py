@@ -10,7 +10,7 @@ Layout rules, all of them from the method rather than invented here:
 
   * sections play in script order, untrimmed: the model's own onset and decay are kept;
   * a short gap inside a scene, a longer one at a scene break, so a cut can land on the break;
-  * a hole at the top of every scene before its first word, HOLE_S, inside the 0.7–1.9 s the
+  * a pause at the top of every scene before its first word, HOLE_S, inside the 0.7–1.9 s the
     reference film uses, so a music mark has somewhere to sit;
   * scene in-points are contiguous — each scene ends exactly where the next begins — so the table
     sums to the file duration with nothing unaccounted for.
@@ -106,7 +106,7 @@ def main() -> int:
         if index:
             at_break = section["scene"] != previous_scene
             gap = GAP_AT_SCENE_BREAK_S if at_break else GAP_IN_SCENE_S
-            # A scene break spends part of its gap as the next scene's hole, so the hole is real
+            # A scene break spends part of its gap as the next scene's pause, so the pause is real
             # silence rather than a number in a table.
             pieces.append(np.zeros(int(round(gap * SR)), dtype=np.float32))
             cursor += gap
@@ -177,7 +177,7 @@ def main() -> int:
         out_s = round(order[i + 1]["first_start"] - HOLE_S, 3) if i + 1 < len(order) else round(total, 3)
         scenes.append({"scene": s["scene"], "title": s["title"], "in_s": in_s, "out_s": out_s,
                        "duration_s": round(out_s - in_s, 3),
-                       "hole_s": round(s["first_start"] - in_s, 3)})
+                       "pause_s": round(s["first_start"] - in_s, 3)})
 
     record = {
         "path": str(path), "sha256": sha256(path), "sample_rate": SR, "channels": 1,
@@ -185,7 +185,7 @@ def main() -> int:
         "integrated_lufs": round(final_lufs, 2), "true_peak_dbtp": round(final_tp, 2),
         "gain_applied_db": round(gain_db, 2),
         "targets": {"lufs": TARGET_LUFS, "ceiling_dbtp": CEILING_DBTP},
-        "layout": {"hole_s": HOLE_S, "gap_in_scene_s": GAP_IN_SCENE_S,
+        "layout": {"pause_s": HOLE_S, "gap_in_scene_s": GAP_IN_SCENE_S,
                    "gap_at_scene_break_s": GAP_AT_SCENE_BREAK_S, "tail_s": TAIL_S},
         "eq": EQ, "sections": placement, "scenes": scenes,
         "scene_table_sums_to_file": abs(sum(s["duration_s"] for s in scenes) - total) < 0.001,
@@ -199,7 +199,7 @@ def main() -> int:
           f"table sums to file: {record['scene_table_sums_to_file']}")
     for s in scenes:
         print(f"    scene {s['scene']}  {s['in_s']:7.3f} → {s['out_s']:7.3f}  "
-              f"{s['duration_s']:6.3f} s  hole {s['hole_s']:.2f}  {s['title']}")
+              f"{s['duration_s']:6.3f} s  pause {s['pause_s']:.2f}  {s['title']}")
     return 0
 
 

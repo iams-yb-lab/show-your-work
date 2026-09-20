@@ -40,7 +40,7 @@ already caught something:
 | [`audio/sections.py`](audio/sections.py) | the 18 performance sections, and the pronunciation aliases |
 | [`audio/generate.py`](audio/generate.py) | seeded takes; one voice, one parameter set, seed the only variable |
 | [`audio/take_qa.py`](audio/take_qa.py) | transcript and pitch per take, cached so re-scoring is free |
-| [`audio/restore.py`](audio/restore.py) | 24 → 48 kHz with four accept-or-fall-back gates |
+| [`audio/restore.py`](audio/restore.py) | 24 → 48 kHz with four accept-or-fall-back stages |
 | [`audio/master.py`](audio/master.py) | EQ, layout, one frozen master, and the per-section review slices |
 | [`audio/align.py`](audio/align.py) | cue times and captions from word timestamps, never arithmetic |
 | [`audio/music.py`](audio/music.py) | the bed, structured from the film's own scene table |

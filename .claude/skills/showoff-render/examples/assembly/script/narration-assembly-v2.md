@@ -29,9 +29,9 @@ a narrator who fills the gaps stops sounding certain. Each line names the thing 
 - **Voice `en-GB-RyanNeural`, rate −12 %, pitch −4 Hz** — deep, calm, unhurried. Swap with
   `--voice`; `python tools/narrate.py --list` prints the candidates.
 - **The last line is alone.** It lands after everything has stopped arriving, and it is the only
-  claim the project still has to earn on the bench. Nothing plays over it but the music decaying.
+  claim the project still has to earn in the lab. Nothing plays over it but the music decaying.
 - **The music ducks under speech and comes back up**, and there are no sound effects in this cut.
-- Lines sit *after* each hero lands, never before: the viewer sees the part seat, then hears what
+- Lines sit *after* each featured part lands, never before: the viewer sees the part seat, then hears what
   it was. The one exception is the opening line, which has nothing to wait for.
 
 ## Facts used, and where each comes from

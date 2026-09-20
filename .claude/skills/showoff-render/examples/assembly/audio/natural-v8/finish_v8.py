@@ -121,7 +121,7 @@ def main():
     print(f"register target {target_f0:.1f} Hz; chosen "
           f"{[(l, chosen[l]['take'], chosen[l]['median_f0_hz']) for l in sorted(chosen)]}\n", flush=True)
 
-    # --- step 7: gated restoration
+    # --- step 7: conditional restoration
     from clearvoice import ClearVoice
     cv = ClearVoice(task="speech_super_resolution", model_names=["MossFormer2_SR_48K"])
     import whisper

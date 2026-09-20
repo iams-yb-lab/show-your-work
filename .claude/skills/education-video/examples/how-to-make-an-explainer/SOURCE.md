@@ -19,7 +19,7 @@ are used, and the film carries the same distinction into the narration:
 **What has never been tested:** whether any of this works with a model other than Claude. That is
 unknown, not broken, and the film says exactly that much.
 
-## Where the viewer is standing
+## the viewer's situation
 
 **You have finished the thing.** Now people have to understand it — a supervisor, a customer, a
 committee, strangers — and none of them were there while you built it.
@@ -127,7 +127,7 @@ That is the whole of stage 4 from where you sit: one paste, then a wait. The las
 and script still agree — is arithmetic rather than watching, because a video is never signed off by
 staring at it hoping.
 
-## The verdict
+## The judgement
 
 **Do it in this order: document → script → sound → picture.** Each stage hands the next one something
 already finished.
@@ -166,5 +166,5 @@ frozen. **The link is in the description**, so nothing in the film dates when th
   parts do what is not the viewer's problem.
 - **No second copy of any number.** Every figure the narrator speaks comes from
   [`NUMBERS.md`](NUMBERS.md), by key, and nothing here restates one.
-- **None of the verification machinery.** No tolerances, no gate names, no checklist internals, no
+- **None of the verification machinery.** No tolerances, no stage names, no checklist internals, no
   loudness or alignment plumbing — all of it is in [`INTERNAL.md`](INTERNAL.md) and stays there.

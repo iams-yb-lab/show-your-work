@@ -122,7 +122,7 @@ def main() -> int:
         delay_ms = round(float(entry["start"]) * 1000)
         inputs.extend(["-i", str(source)])
         tempo_filter = f"atempo={tempo:.8f}," if tempo > 1.0005 else ""
-        # Transparent proximity/clarity correction only. No denoise, gate, exciter, reverb,
+        # Transparent proximity/clarity correction only. No denoise, stage, exciter, reverb,
         # compressor, or headphone-style spectral subtraction.
         eq = (
             "highpass=f=45,"

@@ -9,7 +9,7 @@ Rules for writing here, so it stays a ledger and not a pile:
   user's decision first.
 - **Say who it waits on.** An item nobody can act on is noise.
 - **Delete the line when it is done.** The commit that closes it is the record.
-- **`proposals/` is not for this.** That directory holds skill text waiting for the exact phrase,
+- **`proposals/` is not for this.** That directory holds skill text waiting for the owner's go-ahead,
   and nothing else — see [`CLAUDE.md`](CLAUDE.md).
 
 ## Open
@@ -39,7 +39,7 @@ point and also the part people undo three weeks later.
 ### `education-video/examples/intro/` header text is 14px against a 28px floor
 
 Found by running the composition check against it: "PRECISION TEMPERATURE CONTROLLER" and the
-"01 · 09" counter render at 14px, half the floor `slide-deck` GATE 0 sets and `education-video`
+"01 · 09" counter render at 14px, half the floor `slide-deck` STAGE 0 sets and `education-video`
 inherits. They are visible in the frame, so the finding is real. Either the film's furniture is
 exempt from the floor and the check should say so, or that example needs a rebuild. Waits on the
 user, because it is a question about what the floor is for.

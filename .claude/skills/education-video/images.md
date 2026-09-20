@@ -1,9 +1,9 @@
-# The image gate
+# The images
 
-Read this in full before gathering anything. It is GATE 4 of `SKILL.md`, and it runs after the
-audio is locked and before the picture is built.
+Read this in full before gathering anything. It is the image stage of `SKILL.md`, and it runs after
+the audio is locked and before the picture is built.
 
-## Open it yourself
+## Start it yourself
 
 **The moment the narration master is locked, say so unprompted:** the picture cannot be briefed
 until the images exist, and you are going to go and find candidates now. Do not ask permission to
@@ -23,11 +23,11 @@ invents.
    size. Keep the untouched original beside the edit.
 4. **Then show the user the whole set** — each image, what it is, where it is from, its licence,
    and what you changed.
-5. **Then, and only then, ask what they want to add of their own**, in a question window. Their
+5. **Then, and only then, ask what they want to add of their own.** Their
    own photographs of their own work are usually the best images in the film, and they will not
    think to offer them unless asked.
 
-## Licensing is part of the gate, not paperwork afterwards
+## Licensing is part of the stage, not paperwork afterwards
 
 Every image ships with a source and a licence that genuinely permits the use: public domain, CC0,
 CC-BY with the attribution recorded, an explicit licence grant, or the user's own file.
@@ -48,5 +48,5 @@ so an image with no licence stops the film here, which is cheap, rather
 than after publication, which is not.
 
 If the film genuinely needs no photographs, say that and record the empty manifest with the
-reason. "None needed, everything is drawn" is a legitimate outcome of this gate; skipping the gate
+reason. "None needed, everything is drawn" is a legitimate outcome of this stage; skipping the stage
 is not.

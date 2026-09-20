@@ -26,7 +26,7 @@ costs about as much history as one of them.
 ## assembly-gallery/ — 33 MB
 
 `purple_demo.png`, `purple_showcase.png`, `purple_slide.png`, `purple_cinematic.png` — four
-hero stills from the assembly film, about 8 MB each.
+showcase stills from the assembly film, about 8 MB each.
 
 **Not re-makeable.** The circuit board they were rendered from deliberately never came to
 this repository. Purple was chosen for trace contrast and part separation; red and green
@@ -36,11 +36,11 @@ reproduced); the other three are named by nothing.
 
 ## deck-unused-assets/ — 176 KB
 
-`slide7-checklist-gate0.png` and `slide8-checklist-gate2.png`. The deck's
+`slide7-checklist-stage0.png` and `slide8-checklist-stage2.png`. The deck's
 `master-template.html` has `__ASSET:…__` placeholders for five of its seven images; these
 two have none, so they are not in the built deck. `build.py` fails on a *missing* asset and
 never notices an unused one, which is why nothing caught this. `ASSETS.md` says they were
-kept so a GATE 0 legibility call could be reversed in one edit.
+kept so a STAGE 0 legibility call could be reversed in one edit.
 
 ## frozen-scripts/ — 36 KB
 
@@ -58,9 +58,9 @@ segment was replaced with `<user>` and nothing else in them was touched, for the
 in `EXPORT-MANIFEST.md`: a record stays a record, but a public repository should not
 carry somebody's login.
 
-## slide-deck-gate4-toolkit/ — 40 KB
+## slide-deck-stage4-toolkit/ — 40 KB
 
-The reference implementations that came back with the GATE 4 proposal, on 2026-08-23, after that
+The reference implementations that came back with the STAGE 4 proposal, on 2026-08-23, after that
 proposal was applied and deleted: `mechcheck.js` (the four checks, written to run inside a built
 master), `run_mechcheck.py`, `render_slides.py`, `check_pptx_layout.py`, `deckcfg.py`,
 `render_pptx.ps1` and their README.
@@ -70,7 +70,7 @@ clearance inside a diagram — were ported into `_shared/checks/composition.py`,
 constants and a negative test, so `slide-deck` and `education-video` both run them. What is kept
 here is the original, unported form, because it is the evidence the tuning numbers came from.
 
-`check_pptx_layout.py` is the one piece with **no counterpart in the skills**, deliberately. GATE 4
+`check_pptx_layout.py` is the one piece with **no counterpart in the skills**, deliberately. STAGE 4
 now asks for a mechanical check on any export that is a second implementation; the only deck in
 this repository rebuilds its PowerPoint as one full-bleed image per slide, so there is no second
 layout engine here to check and a ported copy would be code that had never been run. The next deck

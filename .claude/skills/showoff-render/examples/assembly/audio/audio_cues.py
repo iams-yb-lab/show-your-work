@@ -12,7 +12,7 @@ It needs no board and no .pcb3d -- the schedule is a pure function of the parts 
 module's own constants -- so it runs in about a second.
 
 Sector is degrees about the camera's view axis, 0 = frame right, 180 = frame left (see the
-comment above HERO_MOVES). That is a real pan value, so it is carried through per part.
+comment above FEATURED_MOVES). That is a real pan value, so it is carried through per part.
 """
 
 from __future__ import annotations
@@ -70,13 +70,13 @@ def main() -> int:
     parts = [p for p in data["parts"] if p["models"] and not p["dnp"]]
     part_of = {p["ref"]: p for p in parts}
 
-    heroes = v2.resolve_heroes(parts)
+    featured = v2.resolve_heroes(parts)
     _pos_mm, order_key = v2.order_key_factory(parts)
     refs = [p["ref"] for p in parts]
-    groups = v2.group_parts(refs, parts, heroes, order_key)
+    groups = v2.group_parts(refs, parts, featured, order_key)
     plan, subwaves = v2.wave_schedule(groups, parts, order_key)
     after_waves = max(land for _s, land, _sec, _sp in plan.values())
-    hero_sched, _after = v2.hero_schedule(after_waves)
+    featured_sched, _after = v2.featured_schedule(after_waves)
     end = int(v2.CAM_BEATS[-1][0])
 
     wave_of = {}
@@ -95,11 +95,11 @@ def main() -> int:
              cls=size_class(part_of[ref]["footprint"]), value=part_of[ref]["value"])
         for ref, (start, land, sector, _spec) in sorted(plan.items())
     ]
-    hero_cues = [
-        dict(name=name, ref=heroes[name], spawn=start, land=land, sector=spec["sector"],
-             cls=size_class(part_of[heroes[name]]["footprint"]),
-             value=part_of[heroes[name]]["value"])
-        for name, (start, land, spec) in hero_sched.items()
+    featured_cues = [
+        dict(name=name, ref=featured[name], spawn=start, land=land, sector=spec["sector"],
+             cls=size_class(part_of[featured[name]]["footprint"]),
+             value=part_of[featured[name]]["value"])
+        for name, (start, land, spec) in featured_sched.items()
     ]
 
     cues = dict(
@@ -121,7 +121,7 @@ def main() -> int:
                  populate=min(s for s, _l, _sec, _sp in plan.values())),
         waves=waves,
         parts=supporting,
-        heroes=hero_cues,
+        featured=featured_cues,
         probes=[dict(frame=f, caption=c) for f, c in v2.PROBES],
     )
 
@@ -131,13 +131,13 @@ def main() -> int:
     counts = {}
     for p in supporting:
         counts[p["cls"]] = counts.get(p["cls"], 0) + 1
-    print(f"{args.out}: {len(supporting)} supporting + {len(hero_cues)} hero cues over "
+    print(f"{args.out}: {len(supporting)} supporting + {len(featured_cues)} featured cues over "
           f"{end} frames ({end / v2.FPS:.2f} s)")
     print("  classes: " + ", ".join(f"{k} {v}" for k, v in sorted(counts.items())))
     print(f"  waves: {len(waves)}   fabrication done at frame {cues['fab']['done']} "
           f"({cues['fab']['done'] / v2.FPS:.3f} s)")
-    for h in hero_cues:
-        print(f"  hero {h['name']:6s} {h['ref']:4s} spawn {h['spawn']:4d} land {h['land']:4d} "
+    for h in featured_cues:
+        print(f"  featured {h['name']:6s} {h['ref']:4s} spawn {h['spawn']:4d} land {h['land']:4d} "
               f"({h['land'] / v2.FPS:6.3f} s)  sector {h['sector']:3.0f}")
     return 0
 

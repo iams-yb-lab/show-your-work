@@ -385,9 +385,9 @@ def main() -> int:
     warnings = [item for item in alignment_report if item["wer"] > 0.18]
     minimum_tail = min(item["protected_tail_seconds"] for item in alignment_report)
     if warnings:
-        raise RuntimeError(f"Alignment gate failed: {[item['line'] for item in warnings]}")
+        raise RuntimeError(f"Alignment stage failed: {[item['line'] for item in warnings]}")
     if minimum_tail < POST_ROLL_SECONDS - 1e-6:
-        raise RuntimeError(f"Ending-tail gate failed: minimum tail {minimum_tail:.3f}s")
+        raise RuntimeError(f"Ending-tail stage failed: minimum tail {minimum_tail:.3f}s")
 
     alignment_report.sort(key=lambda item: item["line"])
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")

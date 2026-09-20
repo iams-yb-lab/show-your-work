@@ -14,8 +14,8 @@ without this conversation.
   they must match (they have on every cut: `155474b62f81f7315a766d44496a8551`).
 - No cloning of real people's voices. No heavy "humanising" DSP on the voice — that chain is what
   got the edge-tts cuts rejected. Static gain only.
-- The bench for audio is the student's ears. Every measurement below passed on cuts that were
-  still rejected; measurements gate *correctness*, not *quality*.
+- The final judge of audio is the student's ears. Every measurement below passed on cuts that were
+  still rejected; measurements stage *correctness*, not *quality*.
 
 ## Working directories
 
@@ -48,9 +48,9 @@ music-only fade from ~81.4 s.
 Constraint: line 6 must end by ~82.5 s (fade is music-only; a narrator faded mid-sentence was
 fault #4 of the previous sessions). Cap enforced in every generator: 9.6 s.
 
-## Attempts, verdicts, and why
+## Attempts, judgements, and why
 
-| cut | engine / voice | how | verdict |
+| cut | engine / voice | how | judgement |
 |---|---|---|---|
 | v1–v2 (prev. sessions) | edge-tts Christopher/Andrew + humanising DSP chain | network TTS, then de-ess/chest/room/breath synthesis | rejected: "very AI", "so ASS" |
 | v3 | Chatterbox (Resemble, 0.5B, local GPU), built-in voice, no post | 6 takes/line grid over exaggeration×cfg | **natural but wrong voice** — not deep (median F0 118 Hz) |
@@ -112,8 +112,8 @@ regeneration.
   copy + `pip install clearvoice`): MossFormer2_SR_48K (ClearerVoice-Studio, Alibaba) upsamples
   the six chosen lines 24 → 48 kHz, reconstructing the highs. Chosen over Resemble-Enhance
   (DeepSpeed dependency — bad on Windows) and AudioSR (diffusion, slower, noise-sensitive).
-  Gates per line: WER ≤ 0.05, duration within 1 %, median F0 within 3 Hz, and measured energy
-  above 12 kHz must actually appear. A failed gate ships the 24 kHz original for that line.
+  Stages per line: WER ≤ 0.05, duration within 1 %, median F0 within 3 Hz, and measured energy
+  above 12 kHz must actually appear. A failed stage ships the 24 kHz original for that line.
 - **Fix 2 — voice vs. score pulses.** Second observation: lines were starting on top of the
   music's pulses. Checkable against the score's own grid — the bar is exactly 70 frames
   (2.3333 s), and lines 1/4 began within 0.1 s of downbeats (2.23 vs 2.333; 46.73 vs 46.667),
@@ -130,9 +130,9 @@ bandwidth treatment "might be the most important part"; voice should also be cal
 
 **Slower pass** (`editx_slow.py`, EditX `speed: slower` — model retiming, not a stretch): lines
 1/2/5 accepted (+2–4 % duration, natural); line 3 came back *shorter* (rejected), line 4 came back
-at 64 Hz median (voice broke character — rejected), line 6 said "till" for "until" (WER gate —
-rejected). Gates > seeds: rejected lines keep their good takes. SR re-ran clean on the slowed set
-(F0 gate relaxed 3 → 5 Hz; line 2's 3.0 Hz delta was a threshold graze, not an artifact).
+at 64 Hz median (voice broke character — rejected), line 6 said "till" for "until" (WER stage —
+rejected). Stages > seeds: rejected lines keep their good takes. SR re-ran clean on the slowed set
+(F0 stage relaxed 3 → 5 Hz; line 2's 3.0 Hz delta was a threshold graze, not an artifact).
 
 **The candidate matrix** (all: deep EditX voice, breaths, shifted starts, pre-emptive duck,
 48 kHz SR unless noted; all MD5-identical picture):
@@ -153,14 +153,14 @@ filter chain (how the EQ/exciter variants are made).
 All six candidates rendered and MD5-verified; previews and `COMPARE.md` in the media dir.
 Style-pass notes: `story` fell back on lines 2/6 (pitch rose past 105 Hz — no longer our
 narrator); `gentle` fell back on line 6 (same reason), and its SR pass kept lines 2/5 at 24 kHz
-(gate failures) — v6c is the one uneven candidate. The F0 identity gate (70–105 Hz) is doing the
+(stage failures) — v6c is the one uneven candidate. The F0 identity stage (70–105 Hz) is doing the
 work of keeping one narrator across every edit; the style edits are where it earns its keep.
 
 ## v7 — the consistency correction (2026-08-12, post-dinner)
 
 🔴 **The six-candidate matrix was rejected on sight: the narrator changes character between
 lines inside one video.** Root cause is a selection bug of philosophy, not code: every generator
-picked each line's take *independently* (duration fit, per-line gates), and mixing edit kinds
+picked each line's take *independently* (duration fit, per-line stages), and mixing edit kinds
 per line (slowed 1/2/5 beside unslowed 3/4/6; styled lines beside fallbacks) guaranteed
 line-to-line mood swings. Per-line optimization trades away exactly what a narrator is.
 **Select for the narrator, not the line.**
@@ -184,12 +184,12 @@ line-to-line mood swings. Per-line optimization trades away exactly what a narra
 2. **Line 5 moved 57.8 → 58.9 s.** It was entering during the ADC bell's bloom (the bar-12
    structural bell strikes at exactly 57.3 s).
 3. **The 1:10 bass pulse now strikes at 1:11.** Measured, not guessed: low-band (<150 Hz)
-   envelope showed a 13 dB step at 69.7 s decaying through 72 s — the Teensy hero's landing
+   envelope showed a 13 dB step at 69.7 s decaying through 72 s — the Teensy featured part's landing
    bloom, arriving 1.6 s before the seat. First attempt assumed it was the `cine` variant's sub
    swell and reconstructed it analytically — correlation 0.001, **aborted by its own guard: the
    score is not the cine bed**. Second approach (`move_pulse.py`): complementary band split at
    240 Hz (low = zero-phase FFT lowpass, high = residual, recombination exact), lift the pulse
-   segment [69.68, 72.28), patch the hole with adjacent steady-pedal bed, set the pulse down
+   segment [69.68, 72.28), patch the gap with adjacent steady-pedal bed, set the pulse down
    +1.30 s with 50 ms raised-cosine seams. Verified: bed flat −23.8 dB through 70.5 s, strike at
    71.0 s, peak 71.25 s — beside the Teensy bell at 71.3, so the bass now underlines the seat.
    Original `cinematic_score.wav` untouched; the edit lives in `cinematic_score_v2.wav`.
@@ -199,17 +199,17 @@ line-to-line mood swings. Per-line optimization trades away exactly what a narra
 
 ## v7.2 — line 1 alone still fast (2026-08-12, night)
 
-v7.1 verdict: good except line 1. Its chosen take was a brisk read to begin with (4.41 s, the
+v7.1 judgement: good except line 1. Its chosen take was a brisk read to begin with (4.41 s, the
 pool's shorter side) and it hurries through the ellipsis — the global 7 % stretch can't add a
 pause the performance never made. Fix per the standing surgical recipe (`gen_line1_slow.py`):
 8 fresh clone takes of line 1 only, gated to the approved narrator (WER 0, F0 82–86.5 Hz,
-IQR ≤ 14) **plus an unhurried-delivery gate** (duration 4.8–7.5 s pre-stretch), selected for the
+IQR ≤ 14) **plus an unhurried-delivery stage** (duration 4.8–7.5 s pre-stretch), selected for the
 longest internal pause at the ellipsis. Winner replaces `editx_consistent/line1_best.wav`
 (previous kept as `line1_best_v71.wav`), then SR → remix as v7.2. Lines 2–6: untouched.
 
-**Result:** all 8 re-takes were word-perfect but none passed the ≥4.8 s duration gate — the
+**Result:** all 8 re-takes were word-perfect but none passed the ≥4.8 s duration check — the
 clone inherits the prompt's pace, so this line simply doesn't come out longer. Take 1 missed
-the gate by 4 ms of rounding and was otherwise the best line-1 take of the whole project
+the stage by 4 ms of rounding and was otherwise the best line-1 take of the whole project
 (IQR 8.9 = calmest, 84.1 Hz, real 363 ms pause at the ellipsis). Shipped it with a **per-line
 stretch**: line 1 at `atempo=0.90`, lines 2–6 stay at 0.93 (`mix_final.py` now honors a
 `VOICE_FX_<n>` env override). Line 1 spoken duration 4.74 → 5.33 s. `sr_lines.py`'s override
@@ -219,7 +219,7 @@ on the low-level noise floor, duration confirms no extra audio.
 
 ## v7.3 — the last "noise-cancelled" residue: the voice was anechoic (2026-08-12, late night)
 
-v7.2 verdict: "PHENOMENAL", one residue — the voice still faintly reads noise-cancelled. The
+v7.2 judgement: "PHENOMENAL", one residue — the voice still faintly reads noise-cancelled. The
 remaining cause isn't bandwidth (fixed in v6) but **acoustics: the voice existed in no room.**
 Generated speech sits in digital silence — zero noise floor, zero reflections — and daily-life
 voices never do. VO-engineering practice confirms three standard fixes, all now in `mix_final.py`:
@@ -247,7 +247,7 @@ solving.** Room tone alone (untested in isolation) might have been fine; the ER 
 This rhymes with the project's oldest audio lesson — the edge-tts humanising chain was also
 rejected. Post-processing toward "human" has now failed twice; don't propose it a third time.
 
-## FINAL VERDICT — v7.2 is the approved cut (2026-08-12, end of session)
+## FINAL JUDGEMENT — v7.2 is the approved cut (2026-08-12, end of session)
 
 **`assembly_purple_v2_epic_v7_2.mp4` in `%TEMP%\temperature-controller-media\`. No more
 rendering, by instruction.**
@@ -288,7 +288,7 @@ stubbornness, not a property that holds.
 
 🔴 **Every audition file was delivered clipped, and two rounds of listening were wasted on them.**
 Loudness matching by `gain = target − integrated_LUFS` with no headroom check drove peaks to +0.6…
-+3.0 dBFS, then AAC smeared them. The verdict — *"the tone is completely fine, but the acoustic
++3.0 dBFS, then AAC smeared them. The judgement — *"the tone is completely fine, but the acoustic
 effect is so much worse"* — is the sound of clipping. One of the ruined comparisons was a ladder
 whose rungs were clipped by *unequal* amounts, so it was not even a fair test. Fixed in
 `natural-v8/compare_lib.py`: the common level is derived from the material, and delivery is
@@ -308,7 +308,7 @@ about what an engine conditioned on it will produce.**
   0.06 s. Lines are placed by subtracting the measured lead-in from the anchor, so first words land
   on the same frames while the files keep both ends.
 - **No `atempo`** anywhere — the read is unhurried at the source.
-- **Bandwidth**: MossFormer2_SR_48K passed its gates on all six lines, WER 0.000, pitch ≤ 3 Hz.
+- **Bandwidth**: MossFormer2_SR_48K passed its stages on all six lines, WER 0.000, pitch ≤ 3 Hz.
 - **EQ**: high-pass 45 Hz and nothing else. The warm curve is profile-specific; v7.2's is a
   different voice's, and its literal filter string was never written down anyway.
 - **Placement** unchanged from v7.2: 2.85 / 14.5 / 28.7 / 47.25 / 58.9 / 72.95 s. Line 6 ends at

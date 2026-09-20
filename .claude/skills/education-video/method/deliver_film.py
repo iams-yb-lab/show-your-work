@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Mux a silent picture, the approved mix and a subtitle track into the delivered film.
 
-GATE 6 of the education-video skill. The picture arrives silent from
-export_html_video.py, the audio is the combined mix the user approved at GATE 3,
+The film stage of the education-video skill. The picture arrives silent from
+export_html_video.py, the audio is the combined mix the user approved at the audio stage,
 and the captions go in as a soft mov_text track whose ENABLED bit is then cleared
 in the container — so a player offers them and nobody sees them until they ask.
 ffmpeg's own -disposition cannot do that for MP4; this can, in one byte.
@@ -196,7 +196,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--picture", required=True, help="silent MP4 from export_html_video.py")
-    ap.add_argument("--audio", required=True, help="the combined mix approved at GATE 3")
+    ap.add_argument("--audio", required=True, help="the combined mix approved at the audio stage")
     ap.add_argument("--subtitles", help="sidecar .srt; omit only for a film with no captions")
     ap.add_argument("--output", required=True, help="the delivered MP4")
     ap.add_argument("--language", default="eng", help="ISO 639-2 code for the subtitle track")

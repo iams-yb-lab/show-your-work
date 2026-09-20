@@ -18,7 +18,7 @@ Three ideas carry the whole thing:
   Parts are identified from the board, not from the render. `components.json`
   (see dump_components.py) carries designators, footprints and part numbers; objects carry
   only 3D-model filenames. match_objects() joins the two by position and reports the
-  residual, so a mis-identified ADC is a loud failure rather than a wrong hero shot.
+  residual, so a mis-identified ADC is a loud failure rather than a wrong showcase shot.
 
   Groups land one at a time. The schedule is *accumulated* from PLACEMENT rather than
   written out as frame numbers, so a group physically cannot start before the one in front
@@ -52,7 +52,7 @@ FINAL_HOLD = 64   # frames held on the finished board, for cutting into the next
 # The three parts that get their own introduction, keyed on the part number in the board's
 # Value field rather than on a designator -- designators get renumbered, and this repo has
 # already moved one four times. Resolved to designators at runtime and printed.
-HEROES = (
+FEATURED = (
     ("adc", "AD7124"),      # AD7124-8BCPZ, the ADC
     ("driver", "MAX1968"),  # MAX1968EUI+T, the TEC driver
     ("mcu", "Teensy"),      # Teensy 4.1, the controller module
@@ -81,7 +81,7 @@ PLACEMENT = (
 
 # Which parts belong to which group, tested against the board's own footprint field so the
 # grouping is a fact about the part rather than a list to maintain. First match wins; the
-# heroes are removed before any of this runs.
+# featured are removed before any of this runs.
 GROUP_TESTS = (
     ("resistors", ("Resistor_SMD:R_",)),
     ("ceramics", ("Capacitor_SMD:C_",)),
@@ -93,9 +93,9 @@ GROUP_TESTS = (
     ("harting", ("HARTING",)),
 )
 
-# The hero entrances, in order. Slower and taller than anything before them, and each one
+# The featured entrances, in order. Slower and taller than anything before them, and each one
 # different in character while staying in the same language.
-HERO_MOVES = (
+FEATURED_MOVES = (
     ("adc", dict(lead=16, travel=68, gap=16, rise=52, spin=22, tilt=(2.5, -1.5))),
     ("driver", dict(lead=16, travel=70, gap=16, rise=58, spin=-14, tilt=(-1.5, 2.0))),
     ("mcu", dict(lead=18, travel=80, gap=0, rise=82, spin=8, tilt=(1.2, -0.8))),
@@ -118,11 +118,11 @@ def schedule(groups: dict) -> tuple[dict, int]:
     return out, f
 
 
-def hero_schedule(start: int) -> tuple[dict, int]:
-    """Same accumulation for the three hero entrances. `lead` is the head start the camera
+def featured_schedule(start: int) -> tuple[dict, int]:
+    """Same accumulation for the three featured entrances. `lead` is the head start the camera
     gets, so it has arrived before the part comes into frame."""
     out, f = {}, start
-    for name, m in HERO_MOVES:
+    for name, m in FEATURED_MOVES:
         out[name] = (f + m["lead"], f + m["lead"] + m["travel"])
         f = out[name][1] + m["gap"]
     return out, f
@@ -227,17 +227,17 @@ def recover_offset(components, parts) -> Vector:
 
 def resolve_heroes(parts):
     found = {}
-    for name, needle in HEROES:
+    for name, needle in FEATURED:
         hits = [p for p in parts if needle.lower() in p["value"].lower()]
         if len(hits) != 1:
-            sys.exit(f"hero '{name}': {len(hits)} parts match {needle!r} "
+            sys.exit(f"featured '{name}': {len(hits)} parts match {needle!r} "
                      f"({[h['ref'] for h in hits]}) -- expected exactly one")
         found[name] = hits[0]["ref"]
     return found
 
 
-def group_parts(components, matched, parts, heroes, order_key):
-    """Sort the parts into hero, placement group, or unclassified.
+def group_parts(components, matched, parts, featured, order_key):
+    """Sort the parts into featured, placement group, or unclassified.
 
     Objects are collected per designator first, so a part built from several meshes moves
     as one thing -- which is the whole reason for going through designators rather than
@@ -248,8 +248,8 @@ def group_parts(components, matched, parts, heroes, order_key):
         by_ref.setdefault(matched[obj.name], []).append(obj)
 
     part_of = {p["ref"]: p for p in parts}
-    hero_refs = set(heroes.values())
-    groups, seen = {}, set(hero_refs)
+    featured_refs = set(featured.values())
+    groups, seen = {}, set(featured_refs)
     for label, needles in GROUP_TESTS:
         picked = [r for r in by_ref
                   if r not in seen
@@ -266,14 +266,14 @@ def group_parts(components, matched, parts, heroes, order_key):
         groups["power"] = groups.get("power", []) + leftover
 
     print(f"  {len(by_ref)} parts placed in {len([g for g in groups.values() if g])} groups "
-          f"+ {len(hero_refs)} heroes")
+          f"+ {len(featured_refs)} featured")
     for label, _ in PLACEMENT:
         refs = groups.get(label) or []
         if refs:
             print(f"    {label:10s} {len(refs):3d}  {', '.join(refs[:8])}"
                   f"{' ...' if len(refs) > 8 else ''}")
-    for name, ref in heroes.items():
-        print(f"    hero {name:5s} = {ref} ({part_of[ref]['value']})")
+    for name, ref in featured.items():
+        print(f"    featured {name:5s} = {ref} ({part_of[ref]['value']})")
     return by_ref, groups
 
 
@@ -347,8 +347,8 @@ def drop(objs, start, land, rise_mm, drift_mm, spin_deg, tilt_deg, interp="CUBIC
         obj.keyframe_insert("delta_rotation_euler", frame=land)
 
 
-def animate_components(by_ref, groups, joints, heroes, sched, hero_sched):
-    """Group by group, then the three hero entrances. Nothing overlaps a group boundary."""
+def animate_components(by_ref, groups, joints, featured, sched, featured_sched):
+    """Group by group, then the three featured entrances. Nothing overlaps a group boundary."""
     rng = random.Random(SEED)
     land_frame = {}
 
@@ -367,13 +367,13 @@ def animate_components(by_ref, groups, joints, heroes, sched, hero_sched):
                  tilt_deg=spec["tilt"])
             land_frame[ref] = start + spec["travel"]
 
-    # The heroes come down slower still, on a quartic ease so the last third of the travel
+    # The featured come down slower still, on a quartic ease so the last third of the travel
     # is very nearly a hover before it touches.
-    for name, m in HERO_MOVES:
-        start, land = hero_sched[name]
-        drop(by_ref[heroes[name]], start, land, rise_mm=m["rise"], drift_mm=(0.0, 0.0),
+    for name, m in FEATURED_MOVES:
+        start, land = featured_sched[name]
+        drop(by_ref[featured[name]], start, land, rise_mm=m["rise"], drift_mm=(0.0, 0.0),
              spin_deg=m["spin"], tilt_deg=m["tilt"], interp="QUART")
-        land_frame[heroes[name]] = land
+        land_frame[featured[name]] = land
 
     # Solder joints belong to the part above them, so they appear when it lands. A fillet
     # sitting on a bare pad with nothing on it looks like a defect.
@@ -393,7 +393,7 @@ def animate_components(by_ref, groups, joints, heroes, sched, hero_sched):
 # ------------------------------------------------------------------------------- camera
 
 
-def camera_beats(sched, hero_sched, end):
+def camera_beats(sched, featured_sched, end):
     """Camera beats, anchored to the placement schedule rather than to frame numbers.
 
     Each beat is (frame, azimuth, elevation, field width in mm at the target, lens, f-stop,
@@ -415,7 +415,7 @@ def camera_beats(sched, hero_sched, end):
         return dict(f=max(1, int(f)), az=az, el=el, width=width, lens=lens,
                     fstop=fstop, light=light, at=target)
 
-    adc, driver, mcu = hero_sched["adc"], hero_sched["driver"], hero_sched["mcu"]
+    adc, driver, mcu = featured_sched["adc"], featured_sched["driver"], featured_sched["mcu"]
     return (
         # The board phase travels 104 degrees of azimuth and climbs 24, so the camera is
         # always moving somewhere -- but slowly, and always in the same direction, which is
@@ -428,7 +428,7 @@ def camera_beats(sched, hero_sched, end):
         beat(at("headers", 2), 18, 40, 181, 73, 8.0, 0.88, "board"),
         beat(at("terminals", 2), 27, 35, 179, 74, 8.0, 0.88, "board"),
         beat(at("harting", 2), 34, 31, 178, 74, 8.0, 0.88, "board"),
-        # Three beats per hero, not two: the camera keeps pushing *through* the landing
+        # Three beats per featured part, not two: the camera keeps pushing *through* the landing
         # instead of arriving early and sitting still while the part comes down.
         beat(adc[0], 6, 39, 92, 88, 6.3, 0.66, "adc"),
         beat(adc[0] + 42, -14, 37, 62, 95, 5.6, 0.57, "adc"),
@@ -586,7 +586,7 @@ def main() -> int:
         print(f"  warning: recovered offset disagrees with the board centre "
               f"{(-measured).x:+.3f}, {(-measured).y:+.3f} mm")
     matched = match_objects(components, parts, offset)
-    heroes = resolve_heroes(parts)
+    featured = resolve_heroes(parts)
 
     # A rotated sweep axis, so a group arrives as a diagonal front across the board rather
     # than as a column marching sideways.
@@ -597,17 +597,17 @@ def main() -> int:
         x, y = pos[ref]
         return x * math.cos(phi) + y * math.sin(phi)
 
-    by_ref, groups = group_parts(components, matched, parts, heroes, order_key)
+    by_ref, groups = group_parts(components, matched, parts, featured, order_key)
     sched, after_groups = schedule(groups)
-    hero_sched, after_heroes = hero_schedule(after_groups)
-    end = after_heroes + FINAL_HOLD
+    featured_sched, after_featured = featured_schedule(after_groups)
+    end = after_featured + FINAL_HOLD
     print(f"  schedule ({end} frames, {end / FPS:.1f} s at {FPS} fps):")
     for label, _ in PLACEMENT:
         if label in sched:
             first, last, landed = sched[label]
             print(f"    {label:10s} moves {first:4d}-{last:4d}, all down by {landed:4d}")
-    for name, _ in HERO_MOVES:
-        print(f"    hero {name:5s} {hero_sched[name][0]:4d} -> {hero_sched[name][1]:4d}")
+    for name, _ in FEATURED_MOVES:
+        print(f"    featured {name:5s} {featured_sched[name][0]:4d} -> {featured_sched[name][1]:4d}")
 
     lo, hi = studio.world_bbox(objects)
     lights = studio.build_lighting(lo, hi, args.light_strength)
@@ -616,17 +616,17 @@ def main() -> int:
     studio.apply_look(lights, LOOK)
     studio.set_backdrop(floor, BACKDROP)
 
-    animate_components(by_ref, groups, joints_by_ref, heroes, sched, hero_sched)
+    animate_components(by_ref, groups, joints_by_ref, featured, sched, featured_sched)
 
     targets = {"board": (lo + hi) * 0.5}
-    for name, ref in heroes.items():
+    for name, ref in featured.items():
         # Aim a little above the part: at these focal lengths, aiming at the pads puts the
         # part in the lower half of the frame.
         top = max(o.matrix_world.translation.z for o in by_ref[ref])
         centre = sum((o.matrix_world.translation for o in by_ref[ref]),
                      Vector()) / len(by_ref[ref])
         targets[name] = Vector((centre.x, centre.y, top + 0.004))
-    cam = build_camera(targets, lights, camera_beats(sched, hero_sched, end), end)
+    cam = build_camera(targets, lights, camera_beats(sched, featured_sched, end), end)
 
     scene = bpy.context.scene
     scene.camera = cam

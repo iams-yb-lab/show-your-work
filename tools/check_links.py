@@ -175,7 +175,7 @@ def check_skills(fail, bless=False):
         HASHES.write_text(
             "# sha256 of every skill file, byte-identical to the source repository.\n"
             "# The skills are read-only; a mismatch here means one was edited.\n"
-            "# Regenerate ONLY after an edit the user authorised with the exact phrase.\n"
+            "# Regenerate ONLY after an edit the user authorised with the owner's go-ahead.\n"
             + "".join(f"{h}  {n}\n" for n, h in live.items()), encoding="utf-8")
         print(f"blessed {len(live)} skill files -> {rel(HASHES)}")
         return

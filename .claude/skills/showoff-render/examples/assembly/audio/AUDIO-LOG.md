@@ -13,7 +13,7 @@ were rejected before it.** The recipe that worked, and the full session-by-sessi
 
 ## The ten rejections, and what they had in common
 
-| what was tried | verdict |
+| what was tried | judgement |
 |---|---|
 | synthesised per-landing sound effects | "the sound effects sound weird" |
 | cloud TTS narrator, clean | "the narration sounds very AI" |
@@ -37,7 +37,7 @@ student heard it and named it. So did the narration landing on the score's own d
 checkable against a grid this repo authored.
 
 🔴 **Per-line optimisation destroyed the narrator.** Selecting each line's best take by duration and
-gate pass mixed slowed with unslowed, styled with fallback, and once put two different voices in one
+check pass mixed slowed with unslowed, styled with fallback, and once put two different voices in one
 film. Select for the narrator, not the line.
 
 **A human reading [`narration-assembly-v2.md`](../script/narration-assembly-v2.md) was always
@@ -67,7 +67,7 @@ python ../../../engine/check_score.py --wav ../../../out/showoff/audio/music.wav
 
 - **The tempo is a schedule number, not a taste.** The first part sets off on f880, the ADC lands
   on f1720 and the Teensy on f2140 — exactly 28.0 s and then 14.0 s — so a bar of **exactly 70
-  frames** (102.857 BPM) puts both hero landings on downbeats with no tempo map and no drift.
+  frames** (102.857 BPM) puts both featured landings on downbeats with no tempo map and no drift.
   `BAR_FRAMES` is the only place the tempo exists.
 - **One pitch set, sixth degree absent.** D E F G A C, so the mode commits to neither major nor
   minor. Every pitch in the film is drawn from it, including the effects, and a D pedal runs

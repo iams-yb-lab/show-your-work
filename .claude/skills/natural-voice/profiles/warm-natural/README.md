@@ -5,7 +5,7 @@ not normalize, denoise, resample or re-encode the prompt WAV.
 
 `warm_narrator_prompt.wav` is a synthetic Chatterbox voice, not a clone of a real person. It was selected
 from four locally generated readings of one neutral, welcoming passage. `make_warm_prompt.py` contains the
-complete generation grid, seeds, transcription gate, pitch measurements, and selection score.
+complete generation grid, seeds, transcription stage, pitch measurements, and selection score.
 
 The selected prompt is mono, 24 kHz, and intentionally has no added reverb, echo, room impulse response,
 compression, denoising, or noise floor. Its natural character is native model output. The narration

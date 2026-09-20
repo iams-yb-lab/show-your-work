@@ -8,7 +8,7 @@ anything downstream could keep them — and the raw was never saved.
 Here the model's output is written as produced.
 
 Lines 1 and 6 are the audition set: the opening (v7.2's one pace complaint) and
-the longest sentence / ending, per the method's QA gate 7.
+the longest sentence / ending, per the method's QA stage 7.
 
 Takes are plain clones only. v7's consistency correction found that mixing edit
 kinds per line is what made the narrator change character between lines, so no

@@ -57,7 +57,7 @@
     "f0_iqr": 52.37411341978569,
     "wer": 0.0,
     "score": 0.18278757282927122,
-    "hyp": " Drift, the real temperature holds, but the reported number slowly moves. And absolute accuracy, how close the reading is to the truth. Accuracy we can live without, the working point is found on the bench. Drift is the one that matters."
+    "hyp": " Drift, the real temperature holds, but the reported number slowly moves. And absolute accuracy, how close the reading is to the truth. Accuracy we can live without, the working point is found in the lab. Drift is the one that matters."
   },
   {
     "take": 3,

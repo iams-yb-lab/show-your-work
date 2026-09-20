@@ -1,8 +1,8 @@
 # Image manifest
 
-GATE 4 of the `education-video` skill, run after the combined audio track was approved and before
+STAGE 4 of the `education-video` skill, run after the combined audio track was approved and before
 Claude Design is briefed. Every row here has to carry a licence that genuinely permits the use, or the
-film stops at this gate — which is cheap, unlike stopping after publication.
+film stops at this stage — which is cheap, unlike stopping after publication.
 
 ## What the cue sheet actually needs
 
@@ -31,7 +31,7 @@ like it is about that project, when it has to work for whatever the viewer built
 a stylised app window and terminal for the install beat.
 
 **This manifest therefore closes empty, on purpose.** The determination for all 55 cues is in the table
-above; that is the gate being run, not skipped. What follows is the reasoning that was weighed for the
+above; that is the stage being run, not skipped. What follows is the reasoning that was weighed for the
 one slot that could have carried a real image.
 
 ## The one slot that was considered
@@ -41,7 +41,7 @@ machine.** It was not filled by me, for reasons that stand whoever fills it:
 
 - **A product UI screenshot needs a licence I cannot establish**, and the honest sources for one are
   the owner's own press kit or the user's own screen. Scraping a frame from someone else's video or a
-  marketing page is exactly what this gate exists to prevent.
+  marketing page is exactly what this stage exists to prevent.
 - **It dates the film.** A real UI changes; the capture would need replacing before the narration does.
 - **The user's own screen is the best version of this image anyway** — it is their file, cleanly
   licensed, and it shows the version they are actually telling people to install.
@@ -62,6 +62,6 @@ So it was asked for rather than invented, and the answer was to draw it.
 |---|---|---|---|---|---|---|
 | — | — | — | — | — | — | — |
 
-**No rows, and that is the finished state of this gate.** Nothing in the film is photographed, so
-nothing in it can be taken down over an image, and the picture brief carries a do-not-draw list instead
+**No rows, and that is the finished state of this stage.** Nothing in the film is photographed, so
+nothing in it can be taken down over an image, and the picture brief carries a not-to-draw list instead
 of a credits list.

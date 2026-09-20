@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}} — credit slate</title>
+<style>
+  :root {
+    --bg: #FBFAF7;
+    --ink: #1B1F2A;
+    --muted: #5B6170;
+    --rule: #D9D6CE;
+    --accent: #5A3FD6;
+  }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  body { width: 1920px; height: 1080px; overflow: hidden; font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, "Noto Sans", "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif; color: var(--ink); }
+  .slate { position: relative; width: 1920px; height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+  .lab { margin-top: 96px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .lab img { height: {{LAB_LOGO_H}}px; display: block; }
+  .lab .name { font-size: 42px; font-weight: 600; letter-spacing: 0.06em; color: var(--ink); }
+  .lab .sub { font-size: 24px; color: var(--muted); letter-spacing: 0.02em; }
+  .rule { width: 520px; height: 2px; background: var(--rule); margin: 40px 0 36px; }
+  .title { font-size: 60px; font-weight: 600; line-height: 1.15; text-align: center; max-width: 1400px; }
+  .meta { margin-top: 22px; font-size: 28px; color: var(--muted); display: flex; gap: 36px; align-items: baseline; }
+  .meta .dot { color: var(--rule); }
+  .meta a { color: var(--accent); text-decoration: none; }
+  .support { object-fit: contain; }
+  .qr { position: absolute; right: 96px; bottom: 260px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .qr img { width: 168px; height: 168px; display: block; }
+  .qr .qrcap { font-size: 18px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .strip { position: absolute; left: 0; right: 0; bottom: 0; height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: #FAFAFA; border-top: 1px solid var(--rule); }
+  .strip .caption { font-size: 22px; color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase; }
+  .strip .logos { display: flex; align-items: center; justify-content: center; gap: 110px; }
+  /* Fade-in over the first 0.4 s, driven by the composition's clock when embedded; standalone it plays once. */
+  .slate { animation: fade 0.4s ease-out both; }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+</style>
+</head>
+<body>
+<div class="slate" data-slate-seconds="{{SECONDS}}">
+  <div class="lab">
+    <img alt="{{LAB_NAME}}" src="{{LAB_LOGO}}">
+    <div class="name">{{LAB_NAME}}</div>
+    <div class="sub">{{SUBLINE}}</div>
+  </div>
+  <div class="rule"></div>
+  <div class="title">{{TITLE}}</div>
+  <div class="meta">
+    <span>Released {{DATE}}</span>
+    <span class="dot">•</span>
+    <a href="{{URL}}">{{URL_TEXT}}</a>
+  </div>
+  <div class="qr">
+    <img alt="QR code: lab website" src="{{QR}}">
+    <div class="qrcap">lab website</div>
+  </div>
+  <div class="strip">
+    <div class="caption">{{SUPPORTERS_CAPTION}}</div>
+    <div class="logos">
+{{SUPPORT_LOGOS}}
+    </div>
+  </div>
+</div>
+</body>
+</html>

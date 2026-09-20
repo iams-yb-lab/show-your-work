@@ -3,7 +3,7 @@ r"""v8 narration: all six lines from the chosen prompt, with nothing removed.
 Chosen by ear on the A/B audition: prompt B, Kokoro `am_onyx` at speed 0.78.
 That overruled the measurement, which favoured A — B's take-to-take F0 spread
 was 8 Hz against A's 2-3 Hz. `video/natural-voice/README.md` is explicit that a
-metric never overrules an audible verdict, so B ships and the spread is handled
+metric never overrules an audible judgement, so B ships and the spread is handled
 where v7 handled it: joint selection over a larger pool. Hence 8 takes a line
 rather than v7.2's 4.
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-restore.py — 24 → 48 kHz on the selected takes, with the four gates. Runs in sr-venv.
+restore.py — 24 → 48 kHz on the selected takes, with the four checks. Runs in sr-venv.
 
 Chatterbox tops out at 12 kHz of real bandwidth, and that missing octave is the single loudest tell
 this project ever found: it reads as a noise-cancelling headset even when the performance is fine.
 Restoration is how that is fixed, and it is **optional per section** — the performance is not.
 
-A section keeps its restored version only if all four gates pass:
+A section keeps its restored version only if all four checks pass:
 
   words           transcript WER <= 0.12 against what the model was sent
   duration        change <= 1.2 % + 50 ms
@@ -51,7 +51,7 @@ def skills_root(start: Path) -> Path:
 
 SKILLS = skills_root(AUDIO)
 WORK = SKILLS.parents[1] / "out/education/how-to-make-an-explainer"
-GATES = {"wer": 0.12, "duration_fraction": 0.012, "duration_pad_s": 0.05,
+CHECKS = {"wer": 0.12, "duration_fraction": 0.012, "duration_pad_s": 0.05,
          "f0_hz": 5.0, "hf_ratio": 1e-7}
 
 
@@ -117,7 +117,7 @@ def main() -> int:
         restored = np.asarray(result, dtype=np.float32).squeeze()
         if np.max(np.abs(restored)) > 0:
             # ClearVoice returns its own scale; match it back to the performance it came from so the
-            # gates compare like with like and nothing is quietly made louder.
+            # stages compare like with like and nothing is quietly made louder.
             restored *= float(np.max(np.abs(original))) / float(np.max(np.abs(restored)))
 
         before, after = len(original) / original_sr, len(restored) / 48_000
@@ -132,14 +132,14 @@ def main() -> int:
         checks = {
             "wer": round(wer(take["said"], heard), 4),
             "duration_change_s": round(abs(after - before), 4),
-            "duration_allowance_s": round(before * GATES["duration_fraction"] + GATES["duration_pad_s"], 4),
+            "duration_allowance_s": round(before * CHECKS["duration_fraction"] + CHECKS["duration_pad_s"], 4),
             "f0_change_hz": round(abs(f0_after - f0_before), 2),
             "hf_ratio": hf_ratio(restored, 48_000),
         }
-        accepted = (checks["wer"] <= GATES["wer"]
+        accepted = (checks["wer"] <= CHECKS["wer"]
                     and checks["duration_change_s"] <= checks["duration_allowance_s"]
-                    and checks["f0_change_hz"] <= GATES["f0_hz"]
-                    and checks["hf_ratio"] > GATES["hf_ratio"])
+                    and checks["f0_change_hz"] <= CHECKS["f0_hz"]
+                    and checks["hf_ratio"] > CHECKS["hf_ratio"])
 
         chosen = restored if accepted else clean
         sf.write(target, chosen, 48_000, subtype="FLOAT")
@@ -160,7 +160,7 @@ def main() -> int:
 
     out = {
         "aimed_at": "one selected take per section, 24 kHz in, 48 kHz out",
-        "gates": GATES,
+        "stages": STAGES,
         "restored": sum(r["restoration_accepted"] for r in report),
         "fallback": sum(not r["restoration_accepted"] for r in report),
         "sections": report,

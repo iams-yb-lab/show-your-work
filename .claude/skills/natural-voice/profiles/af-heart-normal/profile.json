@@ -1,0 +1,56 @@
+{
+  "profile_id": "af-heart-normal",
+  "profile_version": 1,
+  "purpose": "Clear, warm female explainer at normal speaking pace; teaching a mixed high-school and undergraduate audience, not announcing.",
+  "identity_source": "Kokoro-82M built-in preset voice af_heart. No real-person clone, and no conditioning prompt.",
+  "model": "hexgrad/Kokoro-82M",
+  "generation": {
+    "voice": "af_heart",
+    "speed": 1.0,
+    "lang_code": "a",
+    "base_seed": 20260821
+  },
+  "sample_rate": 24000,
+  "channels": 1,
+  "reference_is_conditioning_input": false,
+  "selection": {
+    "method": "chosen by ear from six Kokoro female presets speaking one identical passage; one variable (the voice), same seed, same speed, loudness-matched to -25.28 LUFS before listening",
+    "median_f0_hz": 201.8,
+    "f0_iqr_hz": 50.8,
+    "word_error_rate": 0.027,
+    "measured_wpm": 182,
+    "rejected_alternatives": [
+      "af_bella (American, 211 Hz, 174 wpm)",
+      "af_nicole (American, 161 Hz, 117 wpm -- markedly slower at the same speed=1.0)",
+      "bf_emma (British, 185 Hz, 197 wpm)",
+      "bf_isabella (British, 202 Hz, 195 wpm, WER 0.000)",
+      "bf_alice (British, 213 Hz, 71 Hz F0 IQR -- widest pitch spread, and band-limited to 10 kHz)",
+      "warm-natural (Chatterbox, male, 108 Hz) -- rejected for this film but kept as an option by the user"
+    ]
+  },
+  "acoustic_policy": {
+    "generate_continuous_sections": true,
+    "preserve_native_endings": true,
+    "engine_speed_floor": 1.0,
+    "time_stretching": false,
+    "artificial_reverb": false,
+    "echo_taps": false,
+    "room_tone": false,
+    "denoise": false,
+    "noise_gate": false,
+    "compression": false,
+    "exciter": false,
+    "stereo_processing": false,
+    "optional_speech_restoration": "MossFormer2_SR_48K TESTED and REJECTED by ear on 2026-08-21. It passed duration, F0 and bandwidth checks and raised energy above 12 kHz from 1.2% to 12.9%, with zero WER change. The listener still preferred the plain 48 kHz resample. Do not apply it to this voice by default."
+  },
+  "known_limits": [
+    "Kokoro outputs 24 kHz, so there is zero energy above 12 kHz. The band-limit is measured, not theoretical -- and on this voice the listener preferred it to restoration.",
+    "No EQ curve has been established for this voice. Do NOT paste the warm-natural curve onto it; that curve is profile-specific and was measured on a male voice an octave lower.",
+    "Speed must stay at 1.0 for this profile. deep-onyx-slow's 0.78 is a different profile's decision."
+  ],
+  "install_notes": "Kokoro will not pip-install on Python 3.13 via its own dependency chain (spacy/thinc have no cp313 wheels). Install spacy alone first, then `pip install --no-deps kokoro misaki`, then loguru num2words phonemizer-fork espeakng-loader. Point phonemizer at the bundled espeak library before constructing KPipeline or G2P returns None phonemes for out-of-dictionary words.",
+  "notes": [
+    "Selected 2026-08-21 for the Doppler cooling / MOT explainer.",
+    "Film-specific seeds and takes live with that film's production record, not here."
+  ]
+}

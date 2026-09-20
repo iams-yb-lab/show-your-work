@@ -77,7 +77,7 @@ def main():
 
     pool = [c for c in cands if c["ok"]]
     if not pool:
-        print("NO TAKE SURVIVED THE GATES — nothing replaced", flush=True)
+        print("NO TAKE SURVIVED THE STAGES — nothing replaced", flush=True)
         sys.exit(1)
     pool.sort(key=lambda c: (-round(c["pause"], 1), abs(c["dur"] - 5.4)))
     best = pool[0]
